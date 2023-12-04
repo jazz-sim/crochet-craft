@@ -3406,8 +3406,9 @@ between column types.}%
         \global\@topnum\z@ \twocolumn[\@maketitle]%%\@IEEEstatictitlevskip\@IEEEaftertitletext%
 %%     \fi
      \thanks{\parindent0pt%
-            \hspace*{-8pt}XXXX-XXX \copyright\ \@pubyear\ IEEE\endgraf
-            Digital Object Identifier 10.1109/XXX.0000.0000000
+            \hspace*{-8pt}%XXXX-XXX \copyright\ \@pubyear\ IEEE\endgraf
+            %Digital Object Identifier 10.1109/XXX.0000.0000000
+            % jtai: commented the above 2 lines
            }
      \thispagestyle{plain}\@thanks%{IEEEtitlepagestyle}\@thanks%
 %%  \fi
