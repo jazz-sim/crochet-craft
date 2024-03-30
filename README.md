@@ -1,4 +1,4 @@
-# mp3-crochet-craft
+# crochet-craft
 🧶3D modelling of crochet designs!
 
 > [!NOTE]
