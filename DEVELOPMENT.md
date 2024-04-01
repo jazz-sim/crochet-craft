@@ -3,6 +3,7 @@
 ## Project setup
 
 ```shell
+$ cd crochetcraft
 $ yarn install
 ```
 
