@@ -18,3 +18,5 @@ This branch is meant to test out [three.js](https://threejs.org/).
 Adds a test page for three.js, with the sample code provided by the [package description](https://yarnpkg.com/package?name=three), made to work with svelte with minimal edits.
 
 Note: The `WebGLRenderer` constructor will attempt to access the `document` object, which will result in an error with svelte. The current fix is to wrap it (and the entire sample code) in a callback function to svelte's `onMount`.
+
+Also added a bezier curve, rendered as a wireframe using a tube geometry and line material. 
