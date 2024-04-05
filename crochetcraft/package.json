@@ -20,6 +20,7 @@
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/eslint": "^8.56.0",
+		"@types/three": "^0",
 		"@typescript-eslint/eslint-plugin": "^7.0.0",
 		"@typescript-eslint/parser": "^7.0.0",
 		"eslint": "^8.56.0",
@@ -35,5 +36,8 @@
 		"vitest": "^1.2.0"
 	},
 	"type": "module",
-	"packageManager": "yarn@4.1.1"
+	"packageManager": "yarn@4.1.1",
+	"dependencies": {
+		"three": "^0.163.0"
+	}
 }
