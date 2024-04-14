@@ -18,6 +18,42 @@
         return new THREE.Line(geometry, material);
     }
 
+    class ColorDemoCube {
+        private mesh: THREE.Mesh;
+        private material: THREE.MeshBasicMaterial;
+        private cycleTime: number;
+
+        constructor() {
+            this.cycleTime = 0;
+
+            const geometry = new THREE.BoxGeometry(1, 1, 1);
+            geometry.translate(0, 3, 0);
+            this.material = new THREE.MeshBasicMaterial({ color: this.cycleTimeToColor() });
+
+            this.mesh = new THREE.Mesh(geometry, this.material);
+        }
+
+        getMesh(): THREE.Mesh {
+            return this.mesh;
+        }
+
+        animate(dt: number) {
+            this.cycleTime += dt;
+            if (this.cycleTime > 4000) {
+                this.cycleTime %= 4000;
+            }
+            this.material.color.set(this.cycleTimeToColor());
+        }
+
+        cycleTimeToColor() {
+            if (this.cycleTime < 2000) {
+                return 0x0000ff * this.cycleTime / 2000;
+            } else {
+                return 0x0000ff * (4000 - this.cycleTime) / 2000;
+            }
+        }
+    }
+
     onMount(() => {
         const width = window.innerWidth,
             height = window.innerHeight;
@@ -43,6 +79,10 @@
             ),
         );
 
+        // Color-changing cube
+        const colorCube = new ColorDemoCube();
+        scene.add(colorCube.getMesh());
+
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(width, height);
         renderer.setAnimationLoop(animation);
@@ -53,8 +93,11 @@
         controls.update(); // Must be called after manually updating camera position
 
         // animation
-
+        let lastFrame = 0;
         function animation(time: number) {
+            const dt = time - lastFrame;
+            lastFrame = time;
+            colorCube.animate(dt);
             renderer.render(scene, camera);
         }
     });
