@@ -22,9 +22,11 @@
         private mesh: THREE.Mesh;
         private material: THREE.MeshBasicMaterial;
         private cycleTime: number;
+        private isHovered: boolean;
 
         constructor() {
             this.cycleTime = 0;
+            this.isHovered = false;
 
             const geometry = new THREE.BoxGeometry(1, 1, 1);
             geometry.translate(0, 3, 0);
@@ -42,21 +44,31 @@
             if (this.cycleTime > 4000) {
                 this.cycleTime %= 4000;
             }
+            if (this.isHovered) {
+                this.material.color.set(0xffffff);
+                return;
+            }
             this.material.color.set(this.cycleTimeToColor());
         }
 
         cycleTimeToColor() {
             if (this.cycleTime < 2000) {
-                return 0x0000ff * this.cycleTime / 2000;
+                return (0x0000ff * this.cycleTime) / 2000;
             } else {
-                return 0x0000ff * (4000 - this.cycleTime) / 2000;
+                return (0x0000ff * (4000 - this.cycleTime)) / 2000;
             }
+        }
+
+        setHoverState(isHovered: boolean) {
+            this.isHovered = isHovered;
         }
     }
 
     onMount(() => {
         const width = window.innerWidth,
             height = window.innerHeight;
+
+        const pointerPos = new THREE.Vector2();
 
         // init: camera, scene, geometries, renderer, and controls
         const camera = new THREE.PerspectiveCamera(70, width / height, 0.01, 100);
@@ -92,15 +104,26 @@
         camera.position.set(0, 0, 3);
         controls.update(); // Must be called after manually updating camera position
 
+        const raycaster = new THREE.Raycaster();
+
         // animation
         let lastFrame = 0;
         function animation(time: number) {
             const dt = time - lastFrame;
             lastFrame = time;
+
+            raycaster.setFromCamera(pointerPos, camera);
+            const intersect = raycaster.intersectObject(colorCube.getMesh());
+            colorCube.setHoverState(!!intersect.length);
+
             colorCube.animate(dt);
             renderer.render(scene, camera);
         }
+
+        // mouse hover
+        window.addEventListener('pointermove', (event) => {
+            pointerPos.x = (event.clientX / width) * 2 - 1;
+            pointerPos.y = (-event.clientY / height) * 2 + 1;
+        });
     });
 </script>
-
-<h1>Three.js Testing</h1>
