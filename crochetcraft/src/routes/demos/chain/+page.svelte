@@ -1,9 +1,13 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import * as THREE from 'three';
+    import { Vector3 } from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
     import '../../../styles/global.css';
+    import { makeMultiBezier } from '$lib/builder/bezier';
+    import { movePointList } from '$lib/builder/normalize';
+    import { vectorListToCode } from '$lib/builder/codegen';
 
     let canvasBinding: Element;
 
@@ -23,26 +27,18 @@
 
     // Chain stitch as three cubic Beziers
     // Fairly innaccurate but has some of the geometry, at least
-    const ChainStitchParts = [
-        new THREE.CubicBezierCurve3(
-            new THREE.Vector3(1.95516, -0.674047, -0.315564),
-            new THREE.Vector3(1.99505, -0.826905, 0.110903),
-            new THREE.Vector3(1.83008, -0.499248, 0.110673),
-            new THREE.Vector3(1.66917, -0.237861, -0.366016),
-        ),
-        new THREE.CubicBezierCurve3(
-            new THREE.Vector3(1.66917, -0.237861, -0.366016),
-            new THREE.Vector3(1.48009, 0.06927, -0.926126),
-            new THREE.Vector3(1.07377, 0.380176, 0.063998),
-            new THREE.Vector3(1.84627, 0.5717, -0.179318),
-        ),
-        new THREE.CubicBezierCurve3(
-            new THREE.Vector3(1.84627, 0.5717, -0.179318),
-            new THREE.Vector3(2.63683, 0.767703, -0.428325),
-            new THREE.Vector3(1.4947, -0.089052, -0.8281),
-            new THREE.Vector3(1.94515, -0.179722, -0.32258),
-        ),
-    ];
+    const ChainStitchParts = makeMultiBezier([
+        new Vector3(0.0, 0.0, 0.0),
+        new Vector3(0.03989, -0.1529, 0.4265),
+        new Vector3(-0.1251, 0.1748, 0.4262),
+        new Vector3(-0.286, 0.4362, -0.05045),
+        new Vector3(-0.4751, 0.7433, -0.6106),
+        new Vector3(-0.8814, 1.054, 0.3796),
+        new Vector3(-0.1089, 1.246, 0.1362),
+        new Vector3(0.6817, 1.442, -0.1128),
+        new Vector3(-0.4605, 0.585, -0.5125),
+        new Vector3(-0.01001, 0.4943, -0.007016),
+    ]);
 
     function makeChainStitch(scene: THREE.Scene, pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0)) {
         ChainStitchParts.map((curve) => {
@@ -68,7 +64,6 @@
         scene.add(light);
         scene.add(new THREE.DirectionalLight(0x404040, 10));
 
-        // Default cube with colour
         for (let i = 0; i < 10; ++i) {
             makeChainStitch(scene, new THREE.Vector3(0, 0.5 * i, 0));
         }
