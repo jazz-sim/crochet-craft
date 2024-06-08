@@ -6,7 +6,14 @@
         route: string;
     };
 
-    const demos: DemoData[] = [
+    const renderDemos: DemoData[] = [
+        {
+            name: 'Cubic Spline (1-dimensional)',
+            route: '/spline',
+        },
+    ];
+
+    const crochetDemos: DemoData[] = [
         {
             name: 'Chain Stitch (ch)',
             route: '/chain',
@@ -16,9 +23,16 @@
 
 <div id="wrapper">
     <h1 id="main-title">Demos</h1>
-    <p>A collection of demonstration crochet patterns.</p>
 
-    {#each demos as demo}
+    <p>A collection of rendering demos.</p>
+    {#each renderDemos as demo}
+        <div>
+            <a href={`/demos${demo.route}`}>{demo.name}</a>
+        </div>
+    {/each}
+
+    <p>A collection of demonstration crochet patterns.</p>
+    {#each crochetDemos as demo}
         <div>
             <a href={`/demos${demo.route}`}>{demo.name}</a>
         </div>
