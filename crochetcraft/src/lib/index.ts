@@ -3,3 +3,4 @@ import './builder/bezier';
 import './builder/normalize';
 import './builder/codegen';
 
+import './geometry/cubicSpline';
