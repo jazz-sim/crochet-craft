@@ -1,0 +1,31 @@
+{
+    "name": "crochet-stitcher",
+    "version": "0.0.1",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc",
+        "test": "jest",
+        "lint": "prettier --check .",
+        "format": "prettier --write ."
+    },
+    "author": "",
+    "description": "",
+    "devDependencies": {
+        "jest": "^29.7.0",
+        "prettier": "^3.3.3",
+        "ts-jest": "^29.2.2",
+        "typescript": "^5.5.3"
+    },
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js"
+        },
+        "./types": {
+            "types": "./dist/types.d.ts",
+            "import": "./dist/types.js"
+        }
+    },
+    "type": "module"
+}
