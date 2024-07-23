@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "outDir": "dist",
+        "lib": ["ES2016"],
+        "sourceMap": true,
+        "strict": true,
+        "declaration": true,
+        "module": "ESNext",
+        "moduleResolution": "Bundler"
+    },
+    "include": ["src/**/*.ts"]
+}
