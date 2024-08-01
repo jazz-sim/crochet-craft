@@ -26,6 +26,5 @@
             "types": "./dist/types.d.ts",
             "import": "./dist/types.js"
         }
-    },
-    "type": "module"
+    }
 }
