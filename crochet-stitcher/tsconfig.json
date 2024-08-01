@@ -5,8 +5,9 @@
         "sourceMap": true,
         "strict": true,
         "declaration": true,
-        "module": "ESNext",
-        "moduleResolution": "Bundler"
+        "module": "CommonJS",
+        "target": "ESNext",
+        "esModuleInterop": true
     },
     "include": ["src/**/*.ts"]
 }
