@@ -1,5 +1,7 @@
+import { createDefaultPreset } from 'ts-jest';
+
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 export default {
-    preset: 'ts-jest',
-    testEnvironment: 'node',
+    ...createDefaultPreset({ tsconfig: './tsconfig.cjs.json' }),
+    moduleNameMapper: { '^(\\.\\.?/.*).js$': '$1' },
 };

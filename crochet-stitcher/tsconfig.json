@@ -1,12 +1,9 @@
 {
     "compilerOptions": {
-        "outDir": "dist",
-        "lib": ["ES2016"],
         "sourceMap": true,
         "strict": true,
-        "declaration": true,
-        "module": "CommonJS",
-        "target": "ESNext",
+        "target": "ES6",
+        "module": "NodeNext",
         "esModuleInterop": true
     },
     "include": ["src/**/*.ts"]
