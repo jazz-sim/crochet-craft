@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc",
+        "build": "rm -rf dist && tsc -b tsconfig.*.json && echo '{\"type\":\"module\"}' > dist/esm/package.json",
         "test": "jest",
         "lint": "prettier --check .",
         "format": "prettier --write ."
@@ -18,13 +18,12 @@
     },
     "exports": {
         "./package.json": "./package.json",
-        ".": {
-            "types": "./dist/index.d.ts",
-            "import": "./dist/index.js"
-        },
-        "./types": {
-            "types": "./dist/types.d.ts",
-            "import": "./dist/types.js"
+        "./*": {
+            "require": "./dist/cjs/*.js",
+            "import": "./dist/esm/*.js",
+            "types": "./dist/types/*.d.ts",
+            "default": "./dist/cjs/*.js"
         }
     }
 }
+
