@@ -2,7 +2,7 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "outDir": "./dist/types",
-        "module": "NodeNext",
+        "removeComments": false,
         "declaration": true,
         "emitDeclarationOnly": true
     }

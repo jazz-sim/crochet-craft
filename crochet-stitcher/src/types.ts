@@ -1,11 +1,11 @@
-/// A point in 3D space.
+/** A point in 3D space. */
 export interface Point {
     x: number;
     y: number;
     z: number;
 }
 
-/// A unit quaternion representing an orientation in 3D space.
+/** A unit quaternion representing an orientation in 3D space. */
 export interface Quaternion {
     a: number;
     b: number;
@@ -38,8 +38,10 @@ export interface ParsedStitch {
 
 export interface LinkedStitch {
     type: StitchType;
-    /// Index of the stitch that this stitch is hooked to. Null for chain
-    /// stitches. Null for stitches that hook onto the magic ring foundation.
+    /**
+     * Index of the stitch that this stitch is hooked to. Null for chain
+     * stitches. Null for stitches that hook onto the magic ring foundation.
+     */
     parent: number | null;
 }
 
