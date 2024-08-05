@@ -1,10 +1,9 @@
 {
     "compilerOptions": {
-        "sourceMap": true,
-        "strict": true,
+        "module": "Node16",
         "target": "ES6",
-        "module": "NodeNext",
-        "esModuleInterop": true
+        "strict": true,
+        "removeComments": true
     },
     "include": ["src/**/*.ts"]
 }
