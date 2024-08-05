@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./dist/types",
+        "module": "NodeNext",
+        "declaration": true,
+        "emitDeclarationOnly": true
+    }
+}

@@ -1,4 +1,4 @@
-export { parse } from './stages/1-parser';
-export { link } from './stages/2-linker';
-export { place } from './stages/3-placer';
-export { elaborate } from './stages/4-elaborator';
+export { parse } from './stages/1-parser.js';
+export { link } from './stages/2-linker.js';
+export { place } from './stages/3-placer.js';
+export { elaborate } from './stages/4-elaborator.js';
