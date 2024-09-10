@@ -5,15 +5,33 @@
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
     import '../../../styles/global.css';
+    import { page } from '$app/stores';
+    import { goto } from '$app/navigation';
 
     let canvasBinding: Element;
 
     let points: Vector3[] = [new Vector3(0, 0, 0)];
     let group = new THREE.Group();
+    let quicklink = '';
     const scene = new THREE.Scene();
     scene.add(group);
 
     onMount(() => {
+        const path = new URLSearchParams(window.location.search).get('p');
+
+        if (path) {
+            try {
+                console.log(decodeURI(path));
+                console.log(JSON.parse(decodeURI(path)));
+
+                points = JSON.parse(decodeURI(path)).map(
+                    (p: { x: number; y: number; z: number }) => new Vector3(p.x, p.y, p.z),
+                );
+            } catch {
+                console.error("Invalid search params, 'points' will just contain the origin.");
+            }
+        }
+
         const width = window.innerWidth > 300 ? window.innerWidth - 250 : window.innerWidth,
             height = window.innerHeight;
 
@@ -22,23 +40,24 @@
 
         const light = new THREE.AmbientLight(0x404040, 10); // soft white light
         scene.add(light);
-        scene.add(new THREE.DirectionalLight(0x404040, 10)); // make spheres look less flat
+        // without directional light, spheres just look like flat circles
+        scene.add(new THREE.DirectionalLight(0x404040, 10));
 
         const renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvasBinding });
         renderer.setSize(width, height);
-        renderer.setAnimationLoop(animation);
 
         const controls = new OrbitControls(camera, renderer.domElement);
         camera.position.set(0, 0, 60);
         controls.update(); // Must be called after manually updating camera position
 
-        // animation
+        // animation loop
         function animation() {
             renderer.render(scene, camera);
         }
+        renderer.setAnimationLoop(animation);
     });
 
-    // Inefficient. On change, kill everything and revive it all.
+    // Inefficient. On change, removes all spheres and then adds them back to the scene
     $: {
         group.clear();
         points.forEach((p) => {
@@ -48,12 +67,17 @@
             group.add(mesh);
         });
         scene.add(group);
+
+        $page.url.searchParams.set('p', encodeURI(JSON.stringify(points)));
+        quicklink = $page.url.toString();
     }
 </script>
 
 <div id="wrapper">
     <canvas bind:this={canvasBinding}></canvas>
     <div id="input-wrapper">
+        <a href={quicklink}>Quick link to this set of points</a>
+        <br />
         <p>
             Enter points below. Coordinates can be freely edited. Add a point using the + cell, and
             delete points using the - cell.
