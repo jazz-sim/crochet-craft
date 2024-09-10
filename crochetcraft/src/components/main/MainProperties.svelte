@@ -1,0 +1,3 @@
+<div>
+	Properties Panel
+</div>
