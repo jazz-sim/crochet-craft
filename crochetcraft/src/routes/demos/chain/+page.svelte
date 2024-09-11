@@ -1,11 +1,8 @@
 <script lang="ts">
     import { makeMultiBezier } from '$lib/builder/bezier';
-    import { onMount } from 'svelte';
+    import ThreeCanvas from '$lib/ThreeCanvas.svelte';
     import * as THREE from 'three';
     import { Vector3 } from 'three';
-    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-    let canvasBinding: Element;
 
     // NURBS curve, Three.js can't really do this one
     /* 
@@ -47,37 +44,13 @@
             scene.add(mesh);
         });
     }
+</script>
 
-    onMount(() => {
-        const width = window.innerWidth,
-            height = window.innerHeight;
-
-        // init: camera, scene, geometries, renderer, and controls
-        const camera = new THREE.PerspectiveCamera(70, width / height, 0.01, 100);
-
-        const scene = new THREE.Scene();
-        const light = new THREE.AmbientLight(0x404040, 10); // soft white light
-        scene.add(light);
-        scene.add(new THREE.DirectionalLight(0x404040, 10));
-
+<ThreeCanvas
+    cameraPosition={new Vector3(0, 0, 3)}
+    init={(scene) => {
         for (let i = 0; i < 10; ++i) {
             makeChainStitch(scene, new THREE.Vector3(0, 0.5 * i, 0));
         }
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true, canvas: canvasBinding });
-        renderer.setSize(width, height);
-        renderer.setAnimationLoop(animation);
-        document.body.appendChild(renderer.domElement);
-
-        const controls = new OrbitControls(camera, renderer.domElement);
-        camera.position.set(0, 0, 3);
-        controls.update(); // Must be called after manually updating camera position
-
-        // animation
-        function animation() {
-            renderer.render(scene, camera);
-        }
-    });
-</script>
-
-<canvas bind:this={canvasBinding}></canvas>
+    }}
+/>
