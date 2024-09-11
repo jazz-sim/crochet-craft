@@ -8,6 +8,10 @@
 
     const renderDemos: DemoData[] = [
         {
+            name: 'Debug sphere list',
+            route: '/debug-sphere',
+        },
+        {
             name: 'Cubic Spline (1-dimensional)',
             route: '/spline',
         },
