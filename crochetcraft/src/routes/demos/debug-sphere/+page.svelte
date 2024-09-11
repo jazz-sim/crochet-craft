@@ -1,12 +1,9 @@
 <script lang="ts">
+    import { page } from '$app/stores';
     import { onMount } from 'svelte';
     import * as THREE from 'three';
     import { Vector3 } from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-    import '../../../styles/global.css';
-    import { page } from '$app/stores';
-    import { goto } from '$app/navigation';
 
     let canvasBinding: Element;
 

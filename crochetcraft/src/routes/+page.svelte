@@ -1,2 +1,5 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<h1>CrochetCraft</h1>
+
+<p>Work in progress!!!</p>
+
+<p>See our <a href="demos">demos</a>.</p>

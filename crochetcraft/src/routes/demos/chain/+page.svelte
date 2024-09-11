@@ -1,13 +1,9 @@
 <script lang="ts">
+    import { makeMultiBezier } from '$lib/builder/bezier';
     import { onMount } from 'svelte';
     import * as THREE from 'three';
     import { Vector3 } from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-    import '../../../styles/global.css';
-    import { makeMultiBezier } from '$lib/builder/bezier';
-    import { movePointList } from '$lib/builder/normalize';
-    import { vectorListToCode } from '$lib/builder/codegen';
 
     let canvasBinding: Element;
 

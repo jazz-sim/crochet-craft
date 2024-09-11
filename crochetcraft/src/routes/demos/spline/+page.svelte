@@ -1,11 +1,9 @@
 <script lang="ts">
+    import { CubicInterpolator } from '$lib/geometry/cubicSpline';
     import { onMount } from 'svelte';
     import * as THREE from 'three';
     import { Vector3 } from 'three';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
-    import '../../../styles/global.css';
-    import { CubicInterpolator } from '$lib/geometry/cubicSpline';
 
     let canvasBinding: Element;
 
