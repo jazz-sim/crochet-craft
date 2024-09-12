@@ -1,6 +1,4 @@
 <script lang="ts">
-    import '../../styles/global.css';
-
     type DemoData = {
         name: string;
         route: string;
