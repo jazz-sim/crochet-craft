@@ -1,7 +1,43 @@
 <script>
-    import Canvas from "../components/canvas/Canvas.svelte";
+    import MainEditor from '../components/main/MainEditor.svelte';
+    import MainToolbar from '../components/main/MainToolbar.svelte';
+    import MainPreview from '../components/main/MainPreview.svelte';
+    import MainProperties from '../components/main/MainProperties.svelte';
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
-<Canvas animate={(last, frame) => {}}/>
+<div id="app">
+    <MainToolbar />
+    <div class="row">
+        <MainEditor />
+        <MainPreview />
+        <MainProperties />
+    </div>
+</div>
+
+<style>
+    :global(*) {
+        box-sizing: border-box;
+    }
+
+    :global(body, html) {
+        height: 100%;
+        width: 100%;
+        min-height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #app {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+
+    .row {
+        display: flex;
+        flex-direction: row;
+        flex: auto;
+    }
+</style>
