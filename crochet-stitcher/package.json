@@ -3,7 +3,7 @@
     "version": "0.0.1",
     "main": "dist/index.js",
     "scripts": {
-        "build": "rm -rf dist && tsc -b tsconfig.*.json && echo '{\"type\":\"module\"}' > dist/esm/package.json",
+        "build": "node build.mjs",
         "test": "jest",
         "lint": "prettier --check .",
         "format": "prettier --write ."
