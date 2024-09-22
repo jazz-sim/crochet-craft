@@ -1,0 +1,18 @@
+documentation:
+    - changed-files:
+          - any-glob-to-any-file:
+                - 'README.md'
+                - 'LICENSE'
+                - 'DEVELOPMENT.md'
+                - '.gitignore'
+                - 'mp3-lit-review/**'
+
+crochetcraft (web app):
+    - changed-files:
+          - any-glob-to-any-file:
+                - 'crochetcraft/**'
+
+crochet-stitcher (library):
+    - changed-files:
+          - any-glob-to-any-file:
+                - 'crochet-stitcher/**'

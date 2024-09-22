@@ -1,0 +1,12 @@
+addReviewers: true
+addAssignees: author
+
+reviewers:
+    - simcard0000
+    - j-tai
+    - owong458
+    - AltheFlyer
+    - dpatki
+    - Carolx715
+
+numberOfReviewers: 2
