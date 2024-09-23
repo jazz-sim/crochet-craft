@@ -24,8 +24,5 @@
             "types": "./dist/types/*.d.ts",
             "default": "./dist/cjs/*.js"
         }
-    },
-    "dependencies": {
-        "crochet-stitcher": "file:"
     }
 }
