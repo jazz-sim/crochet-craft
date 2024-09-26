@@ -4,6 +4,9 @@
         "crochet-stitcher",
         "crochetcraft"
     ],
+    "scripts": {
+        "build": "yarn workspace crochet-stitcher build && yarn workspace crochetcraft build"
+    },
     "devDependencies": {
         "@types/jest": "^29.5.12",
         "@types/node": "^20.14.11"
