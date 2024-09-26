@@ -13,6 +13,5 @@
 
 ### Repository Structure
 
--   [mp3-lit-review](mp3-lit-review): contains the literature review work from SE 390.
 -   [crochet-stitcher](crochet-stitcher): contains the library that processes and renders the crochet pattern.
 -   [crochetcraft](crochetcraft): contains the web frontend for crochet-stitcher.
