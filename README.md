@@ -9,7 +9,7 @@
 🧶3D modelling of crochet designs!
 
 > [!NOTE]
-> Some work from Mini Project 3 (MP3) from SE390 can be found in the `mp3-lit-review` folder.
+> You can view the [literature review](https://drive.google.com/file/d/1i-xJP93g1HtWESavKybHgczw1jFTRnaT/view?usp=sharing) from SE 390's Mini Project 3.
 
 ### Repository Structure
 
