@@ -13,8 +13,8 @@
     "devDependencies": {
         "jest": "^29.7.0",
         "prettier": "^3.3.3",
-        "ts-jest": "^29.2.2",
-        "typescript": "^5.5.3"
+        "ts-jest": "^29.2.5",
+        "typescript": "^5.6.2"
     },
     "exports": {
         "./package.json": "./package.json",
