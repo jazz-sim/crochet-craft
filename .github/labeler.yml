@@ -5,7 +5,6 @@ documentation:
                 - 'LICENSE'
                 - 'DEVELOPMENT.md'
                 - '.gitignore'
-                - 'mp3-lit-review/**'
 
 crochetcraft (web app):
     - changed-files:
