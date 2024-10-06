@@ -1,6 +1,7 @@
 <script lang="ts">
     import { page } from '$app/stores';
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
+    import { placeDebugSpheres } from '$lib/render/debug';
     import { onMount } from 'svelte';
     import * as THREE from 'three';
     import { Vector3 } from 'three';
@@ -32,12 +33,7 @@
     // Inefficient. On change, removes all spheres and then adds them back to the scene
     $: {
         group.clear();
-        points.forEach((p) => {
-            const point = new THREE.SphereGeometry(0.5).translate(p.x, p.y, p.z);
-            const material = new THREE.MeshLambertMaterial();
-            const mesh = new THREE.Mesh(point, material);
-            group.add(mesh);
-        });
+        placeDebugSpheres(points, group);
         scene?.add(group);
 
         $page.url.searchParams.set('p', encodeURI(JSON.stringify(points)));
