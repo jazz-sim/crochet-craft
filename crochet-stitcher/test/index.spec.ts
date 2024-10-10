@@ -11,3 +11,96 @@ test('basic string parse', () => {
     let output : ParsedStitch[] = [{type:StitchType.Chain, repeat:1}, {type:StitchType.Slip, repeat:2}, {type:StitchType.Single, repeat:3}, {type:StitchType.Double, repeat:4}, {type:StitchType.Treble, repeat:5}]
     expect(parsed.stitches).toMatchObject(output)
 })
+
+test("Basic test 1", () => {
+    let testStr = "ch 5, ch 10 10 ch sc 20 20 sc"
+    let parsed = parse(testStr)
+    let output : ParsedStitch[] = [{type:StitchType.Chain, repeat:5}, {type:StitchType.Chain, repeat:10}, {type:StitchType.Chain, repeat:10}, {type:StitchType.Single, repeat:20}, {type:StitchType.Single, repeat:20}]
+    expect(parsed.stitches).toMatchObject(output)
+})
+
+test("repeat test 1", () => {
+    let testStr = "ch 1, * sc 10, ch 1, rep 3 from *" //4x
+    let parsed = parse(testStr)
+    let output : ParsedStitch[] = [
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+    ]
+    expect(parsed.stitches).toMatchObject(output)
+})
+
+test("repeat test 2", () => {
+    let testStr = "ch 1, * sc 10, ch 1, rep 3 more times from *" //4x
+    let parsed = parse(testStr)
+    let output : ParsedStitch[] = [
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+    ]
+    expect(parsed.stitches).toMatchObject(output)
+})
+
+test("repeat test 3", () => {
+    let testStr = "ch 1, 3x (sc 10, ch 1)" //3x
+    let parsed = parse(testStr)
+    let output : ParsedStitch[] = [
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+    ]
+    expect(parsed.stitches).toMatchObject(output)
+})
+
+test("repeat test 4", () => {
+    let testStr = "ch 1, (sc 10, ch 1) x3" // 3x
+    let parsed = parse(testStr)
+    let output : ParsedStitch[] = [
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+    ]
+    expect(parsed.stitches).toMatchObject(output)
+})
+
+test("repeat test 5", () => {
+    let testStr = "ch 1, 3 (sc 10, ch 1)" //3x
+    let parsed = parse(testStr)
+    let output : ParsedStitch[] = [
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+        {type:StitchType.Single, repeat:10}, 
+        {type:StitchType.Chain, repeat:1}, 
+    ]
+    expect(parsed.stitches).toMatchObject(output)
+})
+
+test("test linker meta things", () => {
+    let testStr = "[{ch 5 sc in next ch sp} twice, ch 5, sk next dc, dc in next dc, {ch 1, sk next dc, dc in next dc} 6 times] twice"
+    let parsed = parse(testStr)
+    // let output : ParsedStitch[] = [???] 
+    //expect(parsed.stitches).toMatchObject(output)
+})
