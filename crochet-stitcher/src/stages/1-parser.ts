@@ -1,12 +1,18 @@
-import { count } from 'console';
-import { Foundation, ParsedStitch, Pattern, StitchType } from '../types.js';
+import { Colour, Foundation, ParsedStitch, Pattern, StitchType } from '../types.js';
 
 enum TokenType {
-    Stitch = 'ch', 
+    Single = 'sc', 
+    Double = 'dc', 
+    Slip = 'sl', 
+    Chain = 'ch', 
+    Triple = 'tr', 
+    Increment = "inc",
+    Decrement = "dec",
+    Invert = 'inv',
     Comma = ',',
     LParen = '(',
     RParen = ')',
-    Number = 0, 
+    Number = "number", 
     Colon = ":",
     Asterisk = "*",
     Colour = "white",
@@ -29,7 +35,7 @@ function stringTokenLUT(input: string): ParsedToken {
     input = input.toLowerCase()
     // Things we understand but do not implement
     const notImplementedLUT = new Set<string>([
-        "sp", "hdc"
+        "sp", "hdc", "slst"
     ])
     if (notImplementedLUT.has(input)) {
         throw new TypeError(`${input} is currently not supported!`)
@@ -37,14 +43,58 @@ function stringTokenLUT(input: string): ParsedToken {
 
     // LUT for every valid stitch type
     // Note that this should also include aliases (eg. ch and chain are both in the LUT)
-    // "ch" | ("ss" | "slst" | "sl" "st" | "sc" | "dc" | "hdc")
-    const stitchLUT = new Set<string>([
-        "ch", "ss", "slst", "sl", "st", "sc", "do", "tr", "dc",
-        "chain", "slip", "slipknot",  "single", "double", "triple", "treble",
-        "inc", "increment", "dec", "decrement", "invert", "inv",
+    const chainLUT = new Set<string>([
+        "ch", "chain"
     ])
-    if (stitchLUT.has(input)) {
-        return {type:TokenType.Stitch, value: input}
+    if (chainLUT.has(input)) {
+        return {type:TokenType.Chain, value: input}
+    }
+
+    const singleLUT = new Set<string>([
+        "single", "sc"
+    ])
+    if (singleLUT.has(input)) {
+        return {type:TokenType.Single, value: input}
+    }
+
+    const slipLUT = new Set<string>([
+        "slip", "sl", "slipknot"
+    ])
+    if (slipLUT.has(input)) {
+        return {type:TokenType.Slip, value: input}
+    }
+
+    const doubleLUT = new Set<string>([
+        "double", "do"
+    ])
+    if (doubleLUT.has(input)) {
+        return {type:TokenType.Double, value: input}
+    }
+
+    const tripleLUT = new Set<string>([
+        "triple", "tr", "treble"
+    ])
+    if (tripleLUT.has(input)) {
+        return {type:TokenType.Triple, value: input}
+    }
+
+    const incrementLUT = new Set<string>([
+        "increment", "inc"
+    ])
+    if (incrementLUT.has(input)) {
+        return {type:TokenType.Increment, value: input}
+    }
+    const decrementLUT = new Set<string>([
+        "decrement", "dec"
+    ])
+    if (decrementLUT.has(input)) {
+        return {type:TokenType.Decrement, value: input}
+    }
+    const invertLUT = new Set<string>([
+        "invert", "inv"
+    ])
+    if (invertLUT.has(input)) {
+        return {type:TokenType.Invert, value: input}
     }
 
     //add more colours here as desired
@@ -108,7 +158,10 @@ function stringTokenLUT(input: string): ParsedToken {
         return {type:TokenType.More, value: "more"}
     }
 
-    throw new TypeError(`Unknown string token ${input}!`)
+    // throw new TypeError(`Unknown string token ${input}`)
+    console.warn(`Unknown string token ${input}`)
+    // debug fix CHANGE THIS
+    return {type:TokenType.Colon, value: input}
 }
 
 function tokenizer(input: string): ParsedToken[] {
@@ -130,6 +183,11 @@ function tokenizer(input: string): ParsedToken[] {
                 val = val.substring(1)
                 continue
             }
+            if (val[0] == "[") {
+                output.push({type: TokenType.LParen, value: "{"})
+                val = val.substring(1)
+                continue
+            }
             //strip off trailing colons, rparens, or commas (only type of trailing according to spec)
             if (val.slice(-1) == ")") {
                 endTokens.push({type: TokenType.RParen, value: ")"})
@@ -141,12 +199,17 @@ function tokenizer(input: string): ParsedToken[] {
                 val = val.substring(0, val.length-1)
                 continue
             }
+            if (val.slice(-1) == "]") {
+                endTokens.push({type: TokenType.RParen, value: "}"})
+                val = val.substring(0, val.length-1)
+                continue
+            }
             if (val.slice(-1) == ":") {
                 endTokens.push({type: TokenType.Colon, value: ":"})
                 val = val.substring(0, val.length-1)
                 continue
             }
-            if (val.slice(-1) == ")") {
+            if (val.slice(-1) == ",") {
                 endTokens.push({type: TokenType.Comma, value: ","})
                 val = val.substring(0, val.length-1)
                 continue
@@ -155,7 +218,9 @@ function tokenizer(input: string): ParsedToken[] {
             break
         }
         
-        // Based on the spec we now only have either a string or number as a token
+        // TODO: Split strings here (ch20 is valid technically)
+
+
         // So let's try parsing it as an int
         let numberCandidate = parseInt(val)
         if (Number.isNaN(numberCandidate)) {
@@ -181,11 +246,49 @@ function tokenizer(input: string): ParsedToken[] {
 
 export function parse(input: string): Pattern<ParsedStitch> {
     let tokens = tokenizer(input)
-
+    console.log(tokens)
     // console.log("Completed tokenization")
     let foundation = Foundation.SlipKnot
-    
+    let colour = Colour.White
+
     let stitches : ParsedStitch[] = []
+    let curStitchType = null
+    let curStitchCount = null
+    // parser which ignores repeats
+    for (let i = 0; i < tokens.length; i++) {
+        let token = tokens[i]
+        if (token.type == TokenType.Colour) {
+            colour = Colour[token.value as keyof typeof Colour]
+        }
+        if (token.type == TokenType.Chain) {
+            curStitchType = StitchType.Chain
+        }
+        if (token.type == TokenType.Single) {
+            curStitchType = StitchType.Single
+        }
+        if (token.type == TokenType.Double) {
+            curStitchType = StitchType.Double
+        }
+        if (token.type == TokenType.Slip) {
+            curStitchType = StitchType.Slip
+        }
+        if (token.type == TokenType.Triple) {
+            curStitchType = StitchType.Treble
+        }
+        if (token.type == TokenType.Number) {
+            curStitchCount = token.value as number
+        }
+        if (token.type == TokenType.Comma) {
+            if (curStitchType != null && curStitchCount != null) {
+                stitches.push({type: curStitchType, repeat: curStitchCount, colour: colour})
+            }
+            curStitchCount = null 
+            curStitchType = null
+        }
+    }
+    if (curStitchType != null && curStitchCount != null) {
+        stitches.push({type: curStitchType, repeat: curStitchCount, colour: colour})
+    }
 
     return {foundation, stitches}
 }
