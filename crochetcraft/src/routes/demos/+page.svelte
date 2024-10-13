@@ -29,14 +29,14 @@
     <p>A collection of rendering demos.</p>
     {#each renderDemos as demo}
         <div>
-            <a href={`/demos${demo.route}`}>{demo.name}</a>
+            <a class="anchor" href={`/demos${demo.route}`}>{demo.name}</a>
         </div>
     {/each}
 
     <p>A collection of demonstration crochet patterns.</p>
     {#each crochetDemos as demo}
         <div>
-            <a href={`/demos${demo.route}`}>{demo.name}</a>
+            <a class="anchor" href={`/demos${demo.route}`}>{demo.name}</a>
         </div>
     {/each}
 </div>
