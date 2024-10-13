@@ -130,6 +130,7 @@
 
         <p>Extra button to add a point to the start of the list.</p>
         <button
+            class="btn variant-filled-primary"
             on:click={() => {
                 points = [new Vector3(0, 0, 0), ...points];
             }}>Add point to start</button
