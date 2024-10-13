@@ -12,7 +12,11 @@ const config = {
     theme: {
         extend: {},
     },
-    plugins: [skeleton],
+    plugins: [
+        skeleton({
+            themes: { preset: ['skeleton'] },
+        }),
+    ],
 } satisfies Config;
 
 export default config;
