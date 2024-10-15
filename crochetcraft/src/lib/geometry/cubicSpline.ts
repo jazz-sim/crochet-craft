@@ -1,3 +1,5 @@
+import { Curve, Vector3 } from 'three';
+
 type SplineType = 'CLAMPED' | 'NATURAL' | 'PERIODIC';
 
 /**
@@ -110,5 +112,35 @@ export class CubicInterpolator {
             out[i] = this.interpolate((n / samples) * i);
         }
         return out;
+    }
+}
+
+export class CubicSpline3D extends Curve<Vector3> {
+    xInterpolator: CubicInterpolator;
+    yInterpolator: CubicInterpolator;
+    zInterpolator: CubicInterpolator;
+    n: number;
+
+    constructor(points: Vector3[]) {
+        super();
+        this.xInterpolator = new CubicInterpolator(points.map(p => p.x));
+        this.yInterpolator = new CubicInterpolator(points.map(p => p.y));
+        this.zInterpolator = new CubicInterpolator(points.map(p => p.z));
+        this.n = points.length;
+    }
+
+    override getPoint(t: number, optionalTarget?: Vector3 | undefined): Vector3 {
+        const result = new Vector3(
+            this.xInterpolator.interpolate(t * this.n),
+            this.yInterpolator.interpolate(t * this.n),
+            this.zInterpolator.interpolate(t * this.n)
+        )
+        if (optionalTarget) {
+            optionalTarget.setX(result.x);
+            optionalTarget.setY(result.y);
+            optionalTarget.setZ(result.z);
+            return optionalTarget;
+        }
+        return result;
     }
 }
