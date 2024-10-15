@@ -9,24 +9,18 @@
     import { placeDebugSpheres } from '$lib/render/debug';
     import { vectorListToCode } from '$lib/builder/codegen';
 
-    function enumToKeys(type: object) {
-        return Object.values(type).filter((x) => !isNaN(x as number));
-    }
-
     enum DrawType {
-        Point,
-        Line,
-        Cylinder,
+        Point = 'Point',
+        Line = 'Line',
+        Cylinder = 'Cylinder',
     }
-    const drawTypeOptions = enumToKeys(DrawType);
 
     enum InterpolationMode {
-        Linear,
+        Linear = 'Linear',
         // I have no idea how to implement this one
-        // Bezier,
-        CubicSpline,
+        // Bezier = 'Bezier',
+        CubicSpline = 'CubicSpline',
     }
-    const interpolationOptions = enumToKeys(InterpolationMode);
 
     type EditorSettings = {
         drawType: DrawType;
@@ -147,14 +141,14 @@
         <br /><br />
         <h2>Options</h2>
         <select bind:value={editorSettings.drawType}>
-            {#each drawTypeOptions as drawType}
-                <option value={drawType}>{DrawType[drawType]}</option>
+            {#each Object.values(DrawType) as drawType}
+                <option value={drawType}>{drawType}</option>
             {/each}
         </select>
         <br /><br />
         <select bind:value={editorSettings.interpolationMode}>
-            {#each interpolationOptions as interpolationMode}
-                <option value={interpolationMode}>{InterpolationMode[interpolationMode]}</option>
+            {#each Object.values(InterpolationMode) as interpolationMode}
+                <option value={interpolationMode}>{interpolationMode}</option>
             {/each}
         </select>
         <br /><br />
