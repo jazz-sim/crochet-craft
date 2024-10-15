@@ -21,6 +21,13 @@
             route: '/chain',
         },
     ];
+
+    const uiDemos: DemoData[] = [
+        {
+            name: 'UI Page',
+            route: '/main-ui',
+        },
+    ];
 </script>
 
 <div id="wrapper">
@@ -29,14 +36,21 @@
     <p>A collection of rendering demos.</p>
     {#each renderDemos as demo}
         <div>
-            <a class="anchor" href={`/demos${demo.route}`}>{demo.name}</a>
+            <a href={`/demos${demo.route}`}>{demo.name}</a>
         </div>
     {/each}
 
     <p>A collection of demonstration crochet patterns.</p>
     {#each crochetDemos as demo}
         <div>
-            <a class="anchor" href={`/demos${demo.route}`}>{demo.name}</a>
+            <a href={`/demos${demo.route}`}>{demo.name}</a>
+        </div>
+    {/each}
+
+    <p>Demo of the UI (in progress).</p>
+    {#each uiDemos as demo}
+        <div>
+            <a href={`/demos${demo.route}`}>{demo.name}</a>
         </div>
     {/each}
 </div>
