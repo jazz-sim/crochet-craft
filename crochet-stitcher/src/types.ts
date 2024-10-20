@@ -47,7 +47,7 @@ export interface ParsedStitch {
     type: StitchType;
     repeat: number;
     colour: Colour;
-    // add parentoffset
+    into: StitchType | null;
 }
 
 export interface LinkedStitch {

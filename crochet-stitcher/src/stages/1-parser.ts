@@ -280,14 +280,14 @@ export function parse(input: string): Pattern<ParsedStitch> {
         }
         if (token.type == TokenType.Comma) {
             if (curStitchType != null && curStitchCount != null) {
-                stitches.push({type: curStitchType, repeat: curStitchCount, colour: colour})
+                stitches.push({type: curStitchType, repeat: curStitchCount, colour: colour, into: null})
             }
             curStitchCount = null 
             curStitchType = null
         }
     }
     if (curStitchType != null && curStitchCount != null) {
-        stitches.push({type: curStitchType, repeat: curStitchCount, colour: colour})
+        stitches.push({type: curStitchType, repeat: curStitchCount, colour: colour, into: null})
     }
 
     return {foundation, stitches}
