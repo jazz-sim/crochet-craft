@@ -35,7 +35,7 @@ export enum Colour {
     Green = 'green',
     Blue = 'blue',
     Indigo = 'indigo',
-    Violet = 'violet'
+    Violet = 'violet',
 }
 
 export interface Pattern<S> {
