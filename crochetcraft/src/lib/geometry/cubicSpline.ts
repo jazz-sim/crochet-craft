@@ -123,9 +123,9 @@ export class CubicSpline3D extends Curve<Vector3> {
 
     constructor(points: Vector3[]) {
         super();
-        this.xInterpolator = new CubicInterpolator(points.map(p => p.x));
-        this.yInterpolator = new CubicInterpolator(points.map(p => p.y));
-        this.zInterpolator = new CubicInterpolator(points.map(p => p.z));
+        this.xInterpolator = new CubicInterpolator(points.map((p) => p.x));
+        this.yInterpolator = new CubicInterpolator(points.map((p) => p.y));
+        this.zInterpolator = new CubicInterpolator(points.map((p) => p.z));
         this.n = points.length;
     }
 
@@ -133,8 +133,8 @@ export class CubicSpline3D extends Curve<Vector3> {
         const result = new Vector3(
             this.xInterpolator.interpolate(t * this.n),
             this.yInterpolator.interpolate(t * this.n),
-            this.zInterpolator.interpolate(t * this.n)
-        )
+            this.zInterpolator.interpolate(t * this.n),
+        );
         if (optionalTarget) {
             optionalTarget.setX(result.x);
             optionalTarget.setY(result.y);
