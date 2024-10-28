@@ -1,2 +1,2 @@
-import chainStitch from "./chain.json"
-export { chainStitch }
+import chainStitch from './chain.json';
+export { chainStitch };
