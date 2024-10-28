@@ -50,3 +50,5 @@ export interface PlacedStitch {
     position: Point;
     orientation: Quaternion;
 }
+
+export { StitchModel } from './models/types';
