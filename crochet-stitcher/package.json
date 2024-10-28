@@ -18,6 +18,12 @@
     },
     "exports": {
         "./package.json": "./package.json",
+        ".": {
+            "require": "./dist/cjs/index.js",
+            "import": "./dist/esm/index.js",
+            "types": "./dist/types/types.d.ts",
+            "default": "./dist/esm/index.js"
+        },
         "./*": {
             "require": "./dist/cjs/*.js",
             "import": "./dist/esm/*.js",
