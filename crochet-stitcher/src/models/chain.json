@@ -1,8 +1,6 @@
-import { StitchModel } from './types';
-
-export const chainStitch: StitchModel = {
-    curveType: 'bezier',
-    points: [
+{
+    "curveType": "bezier",
+    "points": [
         [0.0, 0.0, 0.0],
         [0.03989, -0.1529, 0.4265],
         [-0.1251, 0.1748, 0.4262],
@@ -12,6 +10,6 @@ export const chainStitch: StitchModel = {
         [-0.1089, 1.246, 0.1362],
         [0.6817, 1.442, -0.1128],
         [-0.4605, 0.585, -0.5125],
-        [-0.01001, 0.4943, -0.007016],
-    ],
-};
+        [-0.01001, 0.4943, -0.007016]
+    ]
+}

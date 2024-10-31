@@ -2,5 +2,3 @@ export { parse } from './stages/1-parser.js';
 export { link } from './stages/2-linker.js';
 export { place } from './stages/3-placer.js';
 export { elaborate } from './stages/4-elaborator.js';
-
-export * as models from './models/index.js';
