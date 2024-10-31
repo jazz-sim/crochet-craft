@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { models } from 'crochet-stitcher';
-    import { arrayToVector3List } from '$lib/geometry/vectorHelper';
     import { makeMultiBezier } from '$lib/builder/bezier';
+    import { arrayToVector3List } from '$lib/geometry/vectorHelper';
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
+    import StitchModel from 'crochet-stitcher/models';
     import * as THREE from 'three';
     import { Vector3 } from 'three';
 
@@ -22,7 +22,7 @@
 
     // Chain stitch as three cubic Beziers
     // Fairly innaccurate but has some of the geometry, at least
-    const ChainStitchParts = makeMultiBezier(arrayToVector3List(models.chainStitch.points));
+    const ChainStitchParts = makeMultiBezier(arrayToVector3List(StitchModel.CHAIN.points));
     function makeChainStitch(scene: THREE.Scene, pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0)) {
         ChainStitchParts.map((curve) => {
             const geometry = new THREE.TubeGeometry(curve, 50, 0.1, 10);
