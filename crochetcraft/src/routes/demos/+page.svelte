@@ -13,6 +13,10 @@
             name: 'Cubic Spline (1-dimensional)',
             route: '/spline',
         },
+        {
+            name: '2D Shears',
+            route: '/shear',
+        },
     ];
 
     const crochetDemos: DemoData[] = [
