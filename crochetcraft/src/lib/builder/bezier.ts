@@ -26,7 +26,6 @@ export function makeMultiBezier(points: Vector3[]) {
     const curves: CubicBezierCurve3[] = [];
     for (let i = 0; i < points.length - 1; i += 3) {
         curves.push(new CubicBezierCurve3(points[i], points[i + 1], points[i + 2], points[i + 3]));
-        console.log(curves);
     }
     return curves;
 }
