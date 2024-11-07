@@ -310,31 +310,29 @@
     <ThreeCanvas bind:scene />
 
     <div id="input-wrapper">
-        Demonstrations
-        <select bind:value={selectedSample}>
+        <a class="anchor" href={`/demos`}>📺 Back To Demos</a>
+        <br /><br />
+        <p><i>Demonstrations:</i></p>
+        <select class="select" bind:value={selectedSample}>
             {#each sampleNames as sampleStr}
                 <option value={sampleStr}>{sampleStr}</option>
             {/each}
         </select>
         <br />
-        Number of Iterations
-        <input type="number" bind:value={iterations} />
+        <p><i>Number of Iterations:</i></p>
+        <input class="input" type="number" bind:value={iterations} />
         <br />
-
-        Iteration Number
-        <input type="number" bind:value={iterNumber} max={iterations} />
+        <p><i>Iteration Number:</i></p>
+        <input class="input" type="number" bind:value={iterNumber} max={iterations} />
         <br />
-
-        Timestep
-        <input type="number" bind:value={timeStep} />
+        <p><i>Timestep:</i></p>
+        <input class="input" type="number" bind:value={timeStep} />
         <br />
-
-        Show links between stitches
-        <input type="checkbox" bind:checked={showLinks} />
+        <p><i>Show links between stitches:</i></p>
+        <input class="input" type="checkbox" bind:checked={showLinks} />
         <br />
-
-        Show stitch paths through time
-        <input type="checkbox" bind:checked={showPaths} />
+        <p><i>Show stitch paths through time:</i></p>
+        <input class="input" type="checkbox" bind:checked={showPaths} />
     </div>
 </div>
 
@@ -345,7 +343,10 @@
 
     #input-wrapper {
         padding: 0.5em;
-        width: 250px;
+        min-width: 350px;
         flex: 0 0;
+        max-height: 100vh;
+        overflow-y: scroll;
+        scroll-behavior: auto;
     }
 </style>
