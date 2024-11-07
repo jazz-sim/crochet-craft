@@ -46,12 +46,15 @@
     <ThreeCanvas bind:scene />
 
     <div id="input-wrapper">
-        <a href={quicklink}>Quick link to this set of points</a>
+        <a class="anchor" href={`/demos`}>📺 Back To Demos</a>
         <br />
+        <a class="anchor" href={quicklink}>🔗 Link to point set</a>
+        <br /><br />
         <p>
             Enter points below. Coordinates can be freely edited. Add a point using the + cell, and
             delete points using the - cell.
         </p>
+        <br />
         <PointsTable bind:points />
     </div>
 </div>

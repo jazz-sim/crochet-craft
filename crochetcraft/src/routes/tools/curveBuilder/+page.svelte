@@ -137,42 +137,49 @@
     <ThreeCanvas bind:scene />
 
     <div id="input-wrapper">
-        <a href={quicklink}>Quick link to this set of points</a>
+        <a class="anchor" href={`/tools`}>🛠️ Back To Tools</a>
+        <br />
+        <a class="anchor" href={quicklink}>🔗 Link to point set</a>
         <br /><br />
-        <h2>Options</h2>
-        <select bind:value={editorSettings.drawType}>
+        <b>Options:</b>
+        <br />
+        <p><i>Item type:</i></p>
+        <select class="select" bind:value={editorSettings.drawType}>
             {#each Object.values(DrawType) as drawType}
                 <option value={drawType}>{drawType}</option>
             {/each}
         </select>
-        <br /><br />
-        <select bind:value={editorSettings.interpolationMode}>
+        <br />
+        <p><i>Function type:</i></p>
+        <select class="select" bind:value={editorSettings.interpolationMode}>
             {#each Object.values(InterpolationMode) as interpolationMode}
                 <option value={interpolationMode}>{interpolationMode}</option>
             {/each}
         </select>
-        <br /><br />
+        <br />
         <label>
-            Interpolation Count
-            <input type="number" bind:value={editorSettings.interpolationSamples} />
+            <i>Interpolation Count:</i>
+            <br />
+            <input class="input" type="number" bind:value={editorSettings.interpolationSamples} />
         </label>
-        <br /><br />
         <label>
-            Duplicates
-            <input type="number" bind:value={editorSettings.duplicates} />
+            <i>Duplicates:</i>
+            <br />
+            <input class="input" type="number" bind:value={editorSettings.duplicates} />
         </label>
-        <br /><br />
+        <br />
         <button
-            class="btn variant-filled-primary"
+            class="variant-filled-primary btn"
             on:click={() => {
                 console.log(points);
-            }}>Print points to console.</button
+            }}>Print: points to console</button
         >
+        <br /><br />
         <button
-            class="btn variant-filled-primary"
+            class="variant-filled-primary btn"
             on:click={() => {
                 console.log(vectorListToCode(points));
-            }}>Print builder code to console.</button
+            }}>Print: builder code to console</button
         >
         <br /><br />
         <PointsTable bind:points />
@@ -188,5 +195,8 @@
         padding: 0.5em;
         min-width: 350px;
         flex: 0 0;
+        max-height: 100vh;
+        overflow-y: scroll;
+        scroll-behavior: auto;
     }
 </style>
