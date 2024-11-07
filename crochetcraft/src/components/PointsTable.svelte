@@ -18,6 +18,7 @@
                 <tr>
                     <td>
                         <input
+                            class="input"
                             type="number"
                             value={point.x}
                             on:change={(e) => {
@@ -31,6 +32,7 @@
                     </td>
                     <td>
                         <input
+                            class="input"
                             type="number"
                             value={point.y}
                             on:change={(e) => {
@@ -44,6 +46,7 @@
                     </td>
                     <td>
                         <input
+                            class="input"
                             type="number"
                             value={point.z}
                             on:change={(e) => {
@@ -77,10 +80,9 @@
             {/each}
         </tbody>
     </table>
-
-    <p>Extra button to add a point to the start of the list.</p>
+    <br />
     <button
-        class="btn variant-filled-primary"
+        class="variant-filled-primary btn"
         on:click={() => {
             points = [new Vector3(0, 0, 0), ...points];
         }}>Add point to start</button
