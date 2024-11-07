@@ -13,6 +13,10 @@
             name: 'Cubic Spline (1-dimensional)',
             route: '/spline',
         },
+        {
+            name: 'Iterative Forces',
+            route: '/forces',
+        },
     ];
 
     const crochetDemos: DemoData[] = [
