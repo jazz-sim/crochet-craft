@@ -37,7 +37,7 @@ export function lex(input: string): Token[] {
     while (true) {
         const match = regex.exec(input);
         if (!match) break;
-        const value = match[1];
+        const value = match[1].toLowerCase();
 
         if (KEYWORD_LUT[value]) {
             tokens.push({ type: 'keyword', value: KEYWORD_LUT[value] });
