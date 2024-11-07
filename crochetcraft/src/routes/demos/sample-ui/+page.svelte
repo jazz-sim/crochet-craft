@@ -5,13 +5,11 @@
     import Properties from '$components/main-ui/Properties.svelte';
 </script>
 
-<div id="app">
+<div id="sample-ui-div">
     <Toolbar />
-    <div class="row">
-        <Editor />
-        <Preview />
-        <Properties />
-    </div>
+    <Editor />
+    <Preview />
+    <Properties />
 </div>
 
 <style>
@@ -25,17 +23,12 @@
         margin: 0;
         padding: 0;
     }
-    #app {
+    #sample-ui-div {
         height: 100%;
         width: 100%;
         display: flex;
         flex-direction: column;
         position: relative;
         border-top: solid;
-    }
-    .row {
-        display: flex;
-        flex-direction: row;
-        flex: auto;
     }
 </style>
