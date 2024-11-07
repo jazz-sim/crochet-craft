@@ -17,6 +17,10 @@
             name: 'Sample UI',
             route: '/sample-ui',
         },
+        {
+            name: 'Iterative Forces',
+            route: '/forces',
+        },
     ];
 
     const crochetDemos: DemoData[] = [
