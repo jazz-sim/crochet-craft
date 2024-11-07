@@ -13,6 +13,10 @@
             name: 'Cubic Spline (1-dimensional)',
             route: '/spline',
         },
+        {
+            name: 'Sample UI',
+            route: '/sample-ui',
+        },
     ];
 
     const crochetDemos: DemoData[] = [
@@ -24,25 +28,34 @@
 </script>
 
 <div id="wrapper">
-    <h1 id="main-title">Demos</h1>
+    <h3 class="h3" id="main-title">Demos</h3>
 
-    <p>A collection of rendering demos.</p>
-    {#each renderDemos as demo}
-        <div>
-            <a class="anchor" href={`/demos${demo.route}`}>{demo.name}</a>
-        </div>
-    {/each}
+    <p>A collection of rendering demos:</p>
+    <ul class="list-disc">
+        {#each renderDemos as demo}
+            <li><a class="anchor" href={`/demos${demo.route}`}>{demo.name}</a></li>
+        {/each}
+    </ul>
 
-    <p>A collection of demonstration crochet patterns.</p>
-    {#each crochetDemos as demo}
-        <div>
-            <a class="anchor" href={`/demos${demo.route}`}>{demo.name}</a>
-        </div>
-    {/each}
+    <p>A collection of demonstration crochet patterns:</p>
+    <ul class="list-disc">
+        {#each crochetDemos as demo}
+            <li><a class="anchor" href={`/demos${demo.route}`}>{demo.name}</a></li>
+        {/each}
+    </ul>
+
+    <p>Return back to the home page:</p>
+    <a class="anchor" href={`/`}>← Go Home</a>
 </div>
 
 <style>
     #wrapper {
         margin: 1em 2em;
+    }
+    ul {
+        padding: 20px;
+    }
+    h3 {
+        padding-bottom: 20px;
     }
 </style>
