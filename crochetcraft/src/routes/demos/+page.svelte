@@ -26,8 +26,12 @@
             route: '/forces',
         },
         {
-            name: '3D Shear',
+            name: '3D Shear (Inefficient)',
             route: '/shear3d',
+        },
+        {
+            name: 'Efficient Rendering - 3D Shear',
+            route: '/efficient-shear3d',
         },
     ];
 
