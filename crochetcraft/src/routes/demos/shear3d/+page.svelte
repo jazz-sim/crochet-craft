@@ -36,9 +36,9 @@
     // at unit distances apart from each other
     // in a 20x20 grid centered on the origin.
     const basePoints: Vector3[] = [];
-    for (let z = -10; z <= 10; ++z) {
-        for (let y = -10; y <= 10; ++y) {
-            for (let x = -10; x <= 10; ++x) {
+    for (let z = -7; z <= 7; ++z) {
+        for (let y = -7; y <= 7; ++y) {
+            for (let x = -7; x <= 7; ++x) {
                 basePoints.push(new Vector3(x, y, z));
             }
         }
@@ -50,8 +50,7 @@
             return basePoints.map((p) => transform(mat2, p));
         } else if (displayMode == 2) {
             // Do a cursed linear interpolation between the two shear matrices.
-            // I have some intuition on why we interpolate based on y for the x coordinate and vice versa but
-            // I lack the functions to explain this.
+            // I also have no proof of correctness for this.
             // The (variable + 10)/20 scales the interpolation value t to [0, 1]
                 // this makes sense if variable is from [-10, 10]
 

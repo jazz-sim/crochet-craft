@@ -21,6 +21,10 @@
             name: 'Iterative Forces',
             route: '/forces',
         },
+        {
+            name: '3D Shear',
+            route: '/shear3d',
+        },
     ];
 
     const crochetDemos: DemoData[] = [
