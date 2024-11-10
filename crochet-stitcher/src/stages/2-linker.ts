@@ -1,4 +1,3 @@
-import { off } from 'process';
 import { LinkedStitch, ParsedStitch, Pattern, StitchType } from '../types.js';
 
 interface LinkedStitchIntermediate {
