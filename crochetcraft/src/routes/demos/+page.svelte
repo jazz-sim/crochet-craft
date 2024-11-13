@@ -14,6 +14,10 @@
             route: '/spline',
         },
         {
+            name: '2D Shears',
+            route: '/shear',
+        },
+        {
             name: 'Sample UI',
             route: '/sample-ui',
         },
