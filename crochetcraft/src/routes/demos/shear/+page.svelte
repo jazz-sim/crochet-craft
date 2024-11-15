@@ -116,8 +116,11 @@
     />
 
     <div id="input-wrapper">
-        Display mode input - 0 to only use mat1, 1 to only use mat2, and 2 to interpolate between
-        the two.
+        <a class="anchor" href={`/demos`}>📺 Back To Demos</a>
+        <br /><br />
+        <p><i>Demonstrations:</i></p>
+        Display mode input - 0 to only use mat1, 1 to only use mat2, and 2 to interpolate between the
+        two.
         <br />
         <input type="number" bind:value={displayMode} />
         <br />
