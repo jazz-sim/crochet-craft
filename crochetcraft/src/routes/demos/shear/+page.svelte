@@ -118,11 +118,12 @@
     <div id="input-wrapper">
         <a class="anchor" href={`/demos`}>📺 Back To Demos</a>
         <br /><br />
-        <p><i>Demonstrations:</i></p>
-        Display mode input - 0 to only use mat1, 1 to only use mat2, and 2 to interpolate between the
-        two.
+        <p>
+            Display mode input - 0 to only use mat1, 1 to only use mat2, and 2 to interpolate
+            between the two.
+        </p>
         <br />
-        <input type="number" bind:value={displayMode} />
+        <input class="input" type="number" bind:value={displayMode} />
         <br />
         <br />
         mat1
@@ -130,10 +131,10 @@
         <table>
             <tr>
                 <td>{mat1.xx}</td>
-                <td><input type="number" bind:value={mat1.xy} /></td>
+                <td><input class="input" type="number" bind:value={mat1.xy} /></td>
             </tr>
             <tr>
-                <td><input type="number" bind:value={mat1.yx} /></td>
+                <td><input class="input" type="number" bind:value={mat1.yx} /></td>
                 <td>{mat1.yy}</td>
             </tr>
         </table>
@@ -144,10 +145,10 @@
         <table>
             <tr>
                 <td>{mat2.xx}</td>
-                <td><input type="number" bind:value={mat2.xy} /></td>
+                <td><input class="input" type="number" bind:value={mat2.xy} /></td>
             </tr>
             <tr>
-                <td><input type="number" bind:value={mat2.yx} /></td>
+                <td><input class="input" type="number" bind:value={mat2.yx} /></td>
                 <td>{mat2.yy}</td>
             </tr>
         </table>
