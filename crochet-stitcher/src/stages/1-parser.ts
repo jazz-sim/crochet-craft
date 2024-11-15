@@ -1,53 +1,205 @@
-import { Colour, Foundation, ParsedStitch, Pattern, StitchType } from '../types.js';
-import { Keyword, lex } from './1-parser/lexer.js';
+import { Foundation, ParsedStitch, Pattern, StitchType } from '../types.js';
+import { Keyword, lex, Token } from './1-parser/lexer.js';
 
 export function parse(input: string): Pattern<ParsedStitch> {
-    const tokens = lex(input);
-    console.log(tokens);
-    let foundation = Foundation.SlipKnot;
-    let colour = Colour.White;
+    const pattern: Pattern<ParsedStitch> = {
+        foundation: Foundation.SlipKnot,
+        stitches: [],
+    };
 
-    let stitches: ParsedStitch[] = [];
-    let curStitchType = null;
-    let curStitchCount = null;
-    // parser which ignores repeats
-    for (let i = 0; i < tokens.length; i++) {
-        let token = tokens[i];
-        if (token.type === 'color') {
-            colour = Colour[token.value as keyof typeof Colour];
-        } else if (token.type === 'keyword') {
-            if (token.value === Keyword.Chain) {
-                curStitchType = StitchType.Chain;
-            } else if (token.value === Keyword.Single) {
-                curStitchType = StitchType.Single;
-            } else if (token.value === Keyword.Double) {
-                curStitchType = StitchType.Double;
-            } else if (token.value === Keyword.Slip) {
-                curStitchType = StitchType.Slip;
-            } else if (token.value === Keyword.Treble) {
-                curStitchType = StitchType.Treble;
+    let currentColour = 'white';
+
+    for (const line of input.split(/[\r\n]+/).map((ln) => ln.trim())) {
+        if (line.startsWith('#')) continue;
+        const tokens = lex(line);
+        if (!tokens.length) continue;
+        let i = 0; // index of current token
+
+        // Row number?
+        if (tokens[i]?.type === 'number' && tokens[i + 1]?.value === '.') {
+            i += 2;
+        }
+
+        try {
+            // Foundation stitch?
+            if (tokens[i]?.value === Keyword.MagicRing) {
+                pattern.foundation = Foundation.MagicRing;
+                i += 1;
+                if (tokens[i]?.value !== ',') throw 'Expected ,';
+                i += 1;
             }
-        } else if (token.type === 'number') {
-            curStitchCount = token.value;
-        } else if (token.type === 'symbol') {
-            if (token.value === ',') {
-                if (curStitchType != null && curStitchCount != null) {
-                    stitches.push({
-                        type: curStitchType,
-                        repeat: curStitchCount,
-                        colour: colour,
-                        into: null,
-                    });
+
+            pattern.stitches.push(...parseInstructions());
+            if (i !== tokens.length) throw 'Syntax error';
+        } catch (error) {
+            throw `Parse error: ${error} (near "${tokens[i]?.value ?? 'end of line'}")`;
+        }
+
+        /** Parses one or more instructions. O(n) */
+        function parseInstructions(): ParsedStitch[] {
+            const stitches: ParsedStitch[] = [];
+            while (true) {
+                // Colour?
+                if (tokens[i]?.type === 'color') {
+                    currentColour = tokens[i]?.value as string;
+                    i += 1;
+                    // Colon?
+                    if (tokens[i]?.value !== ':') {
+                        throw 'Expected :';
+                    }
+                    i += 1;
+                    continue;
                 }
-                curStitchCount = null;
-                curStitchType = null;
+
+                // Repeat from?
+                if (tokens[i]?.value === Keyword.Repeat) {
+                    break; // Let the caller handle this
+                }
+
+                // Instruction?
+                stitches.push(...parseInstruction());
+                // Comma?
+                if (tokens[i]?.value !== ',') {
+                    break; // No more instructions found
+                }
+                i += 1;
             }
+            return stitches;
+        }
+
+        /** Parses an instruction. O(n) */
+        function parseInstruction(): ParsedStitch[] {
+            // Stitch?
+            const stitch = parseStitches();
+            if (stitch) return [stitch];
+            // Repeat?
+            return parseRepeat();
+        }
+
+        /** Parses a repeat. O(n). */
+        function parseRepeat(): ParsedStitch[] {
+            let stitches: ParsedStitch[];
+            let count: number | null;
+
+            // Asterisk-style repeat?
+            if (tokens[i]?.value === '*') {
+                i += 1;
+                stitches = parseInstructions();
+                // Repeat?
+                if (tokens[i]?.value !== Keyword.Repeat) throw 'Expected "repeat" or a stitch';
+                i += 1;
+                // Count?
+                count = parseCount(0);
+                // From?
+                if (tokens[i]?.value === Keyword.From) i += 1;
+                // Star?
+                if (tokens[i]?.value !== '*') throw 'Expected *';
+                i += 1;
+                // Count?
+                count ??= parseCount(0);
+                if (count === null) throw 'Expected count'; // rep from * with no repeat... error
+                count += 1; // 'more' is implied for asterisk-style repeat
+            } else {
+                // Number before repeat?
+                count = parseCount();
+                // Left bracket?
+                if (!(['(', '[', '{'] as (string | number)[]).includes(tokens[i]?.value)) {
+                    throw 'Expected (, [, {, or a stitch type';
+                }
+                i += 1;
+                // Instructions?
+                stitches = parseInstructions();
+                // Right bracket?
+                if (!([')', ']', '}'] as (string | number)[]).includes(tokens[i]?.value)) {
+                    throw 'Expected ), ], or }';
+                }
+                i += 1;
+                // Number after repeat?
+                count ??= parseCount();
+                if (count === null) return stitches; // bracketed with no repeat... just accept it
+            }
+
+            // Okay, now just repeat the stitches that many times.
+            const repeatedStitches: ParsedStitch[] = [];
+            for (let j = 0; j < count; ++j) {
+                repeatedStitches.push(...stitches);
+            }
+            return repeatedStitches;
+        }
+
+        /** Tries to parse a stitch with an optional count. O(1). */
+        function parseStitches(): ParsedStitch | null {
+            const start = i;
+
+            // Number before stitch type?
+            let count = parseCount();
+            // Stitch type
+            const stitch = parseStitch();
+            if (!stitch) {
+                i = start; // oopsies, couldn't parse a stitch
+                // We are backtracking here, but it's okay, since parseCount()
+                // and parseStitch() both consume O(1) tokens.
+                return null;
+            }
+            // Number after stitch type?
+            count ??= parseCount();
+
+            return {
+                type: stitch,
+                into: null,
+                repeat: count ?? 1,
+                colour: currentColour,
+            };
+        }
+
+        /** Tries to parse a stitch type. O(1). */
+        function parseStitch(): StitchType | null {
+            const stitchType = {
+                [Keyword.Chain]: StitchType.Chain,
+                [Keyword.Slip]: StitchType.Slip,
+                [Keyword.Single]: StitchType.Single,
+                [Keyword.Double]: StitchType.Double,
+                [Keyword.Treble]: StitchType.Treble,
+            }[tokens[i]?.value];
+            if (!stitchType) return null;
+            i += 1;
+            // Skip the word 'st' after the stitch type (e.g., 'sl st' =>
+            // [Keyword.Slip, Keyword.Stitch] and we need to ignore the
+            // latter)
+            if (tokens[i]?.value === Keyword.Stitch) i += 1;
+            return stitchType;
+        }
+
+        /** Tries to parse a count. O(1). */
+        function parseCount(moreValue = 1): number | null {
+            const start = i;
+            // 'Times' or 'x'?
+            if (tokens[i]?.value === Keyword.Times) i += 1;
+            // Count?
+            let count: number;
+            if (tokens[i]?.type === 'number') {
+                count = tokens[i].value as number;
+            } else if (tokens[i]?.value === Keyword.Twice) {
+                count = 2;
+            } else if (tokens[i]?.value === Keyword.Thrice) {
+                count = 3;
+            } else {
+                i = start;
+                return null;
+            }
+            i += 1;
+            // Accept "3x times" which is [3, Keyword.Times, Keyword.Times]
+            if (tokens[i]?.value === Keyword.Times) i += 1;
+            if (tokens[i]?.value === Keyword.Times) i += 1;
+            // More?
+            if (tokens[i]?.value === Keyword.More) {
+                count += moreValue;
+                i += 1;
+            }
+            if (tokens[i]?.value === Keyword.Times) i += 1;
+            return count;
         }
     }
 
-    if (curStitchType !== null && curStitchCount !== null) {
-        stitches.push({ type: curStitchType, repeat: curStitchCount, colour: colour, into: null });
-    }
-
-    return { foundation, stitches };
+    return pattern;
 }
