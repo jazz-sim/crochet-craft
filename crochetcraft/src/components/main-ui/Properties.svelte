@@ -9,30 +9,26 @@
         <h4 class="h4">Properties</h4>
     </div>
     <div slot="panel-elements">
-        <p>Stitch Laxity:</p>
+        <p>Stitch Laxity: {stitchLaxityValue}</p>
         <div class="no-background input-group input-group-divider grid-cols-[auto_1fr_auto]">
-            <div class="input-group-shim">{stitchLaxityValue}%</div>
             <input
                 bind:value={stitchLaxityValue}
                 id="stitchLaxitySlider"
                 type="range"
                 min="0"
-                max="100"
+                step="0.01"
+                max="1.5"
             />
         </div>
         <p>Stitch Hooksize:</p>
         <div class="no-background input-group input-group-divider grid-cols-[auto_1fr_auto]">
             <input type="text" placeholder="Numerical stitch hooksize" />
-            <select>
-                <option>Units</option>
-            </select>
+            <div class="input-group-shim">mm</div>
         </div>
         <p>Stitch Thickness:</p>
         <div class="no-background input-group input-group-divider grid-cols-[auto_1fr_auto]">
             <input type="text" placeholder="Numerical stitch thickness" />
-            <select>
-                <option>Units</option>
-            </select>
+            <div class="input-group-shim">mm</div>
         </div>
         <p>Stitch Colour:</p>
         <input type="color" value="#ff0000" />
@@ -43,8 +39,5 @@
     .no-background {
         background: none;
         background-color: none;
-    }
-    input[type='range'] {
-        width: 100px;
     }
 </style>
