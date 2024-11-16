@@ -38,6 +38,7 @@ export function parse(input: string): Pattern<ParsedStitch> {
             // Instructions?
             if (i < tokens.length) {
                 pattern.stitches.push(...parseInstructions());
+                checkStitchLimit(pattern.stitches.length);
             }
             if (i !== tokens.length) throw 'Syntax error';
         } catch (error) {
@@ -73,6 +74,7 @@ export function parse(input: string): Pattern<ParsedStitch> {
 
                 // Instruction?
                 stitches.push(...parseInstruction());
+                checkStitchLimit(stitches.length);
                 // Comma?
                 if (tokens[i]?.value !== ',') {
                     break; // No more instructions found
@@ -85,8 +87,8 @@ export function parse(input: string): Pattern<ParsedStitch> {
         /** Parses an instruction. O(n) */
         function parseInstruction(): ParsedStitch[] {
             // Stitch?
-            const stitch = parseStitches();
-            if (stitch) return [stitch];
+            const stitches = parseStitches();
+            if (stitches) return stitches;
             // Repeat?
             return parseRepeat();
         }
@@ -135,15 +137,11 @@ export function parse(input: string): Pattern<ParsedStitch> {
             }
 
             // Okay, now just repeat the stitches that many times.
-            const repeatedStitches: ParsedStitch[] = [];
-            for (let j = 0; j < count; ++j) {
-                repeatedStitches.push(...stitches);
-            }
-            return repeatedStitches;
+            return repeat(stitches, count);
         }
 
         /** Tries to parse a stitch with an optional count. O(1). */
-        function parseStitches(): ParsedStitch | null {
+        function parseStitches(): ParsedStitch[] | null {
             const start = i;
 
             // Number before stitch type?
@@ -159,30 +157,49 @@ export function parse(input: string): Pattern<ParsedStitch> {
             // Number after stitch type?
             count ??= parseCount();
 
-            return {
-                type: stitch,
-                into: null,
-                repeat: count ?? 1,
-                colour: currentColour,
-            };
+            return repeat(stitch, count ?? 1);
         }
 
         /** Tries to parse a stitch type. O(1). */
-        function parseStitch(): StitchType | null {
-            const stitchType = {
+        function parseStitch(): ParsedStitch[] | null {
+            const start = i;
+            // Invisible?
+            if (tokens[i]?.value === Keyword.Invisible) i += 1;
+            // Stitch type?
+            let stitchType = {
                 [Keyword.Chain]: StitchType.Chain,
                 [Keyword.Slip]: StitchType.Slip,
                 [Keyword.Single]: StitchType.Single,
                 [Keyword.Double]: StitchType.Double,
                 [Keyword.Treble]: StitchType.Treble,
             }[tokens[i]?.value];
-            if (!stitchType) return null;
-            i += 1;
-            // Skip the word 'st' after the stitch type (e.g., 'sl st' =>
-            // [Keyword.Slip, Keyword.Stitch] and we need to ignore the
-            // latter)
+            if (stitchType) i += 1;
+            // Stitch?
             if (tokens[i]?.value === Keyword.Stitch) i += 1;
-            return stitchType;
+            // Increase/decrease?
+            if (tokens[i]?.value === Keyword.Increase) {
+                i += 1;
+                const stitch = {
+                    type: stitchType ?? StitchType.Single,
+                    colour: currentColour,
+                    into: null,
+                };
+                return [
+                    { ...stitch, parentOffset: 0 },
+                    { ...stitch, parentOffset: -1 },
+                ];
+            } else if (tokens[i]?.value === Keyword.Decrease) {
+                i += 1;
+                stitchType = StitchType.InvisibleDecrease;
+            }
+            // Stitch?
+            if (tokens[i]?.value === Keyword.Stitch) i += 1;
+
+            if (!stitchType) {
+                i = start;
+                return null;
+            }
+            return [{ type: stitchType, colour: currentColour, into: null, parentOffset: 0 }];
         }
 
         /** Tries to parse a count. O(1). */
@@ -194,6 +211,7 @@ export function parse(input: string): Pattern<ParsedStitch> {
             let count: number;
             if (tokens[i]?.type === 'number') {
                 count = tokens[i].value as number;
+                if (count === 0) throw 'Count cannot be zero';
             } else if (tokens[i]?.value === Keyword.Twice) {
                 count = 2;
             } else if (tokens[i]?.value === Keyword.Thrice) {
@@ -218,3 +236,30 @@ export function parse(input: string): Pattern<ParsedStitch> {
 
     return pattern;
 }
+
+/** Returns an array containing the input elements repeated `count` times. */
+function repeat<T>(array: T[], count: number): T[] {
+    // special case for performance
+    if (count === 1) return array;
+
+    // try to catch this early
+    checkStitchLimit(array.length * count);
+
+    const result: T[] = [];
+    const accumulator = array;
+    while (true) {
+        if (count & 1) result.push(...accumulator);
+        count >>= 1;
+        if (!count) break;
+        accumulator.push(...accumulator);
+    }
+    return result;
+}
+
+function checkStitchLimit(count: number) {
+    if (count > MAX_STITCHES) {
+        throw `Stitch limit of ${MAX_STITCHES} exceeded`;
+    }
+}
+
+const MAX_STITCHES = 20_000;

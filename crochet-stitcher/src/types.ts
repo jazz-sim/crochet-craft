@@ -24,6 +24,7 @@ export enum StitchType {
     Single = 'Single',
     Double = 'Double',
     Treble = 'Treble',
+    InvisibleDecrease = 'InvisibleDecrease',
 }
 
 export interface Pattern<S> {
@@ -33,9 +34,9 @@ export interface Pattern<S> {
 
 export interface ParsedStitch {
     type: StitchType;
-    repeat: number;
     colour: string;
     into: StitchType | null;
+    parentOffset: number;
 }
 
 export interface LinkedStitch {

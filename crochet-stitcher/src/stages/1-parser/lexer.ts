@@ -11,6 +11,7 @@ export enum Keyword {
     HalfDouble = 'HalfDouble',
     Treble = 'Treble',
     Increase = 'Increase',
+    Invisible = 'Invisible',
     Decrease = 'Decrease',
     // Into-clauses:
     Into = 'Into',
@@ -72,6 +73,7 @@ const KEYWORD_NAMES: Record<Keyword, string[]> = {
     [Keyword.HalfDouble]: ['hdc'],
     [Keyword.Treble]: ['treble', 'triple', 'tr', 'tc'],
     [Keyword.Increase]: ['increase', 'inc'],
+    [Keyword.Invisible]: ['invisible', 'inv'],
     [Keyword.Decrease]: ['decrease', 'dec'],
     [Keyword.Into]: ['into', 'in'],
     [Keyword.Next]: ['next'],
