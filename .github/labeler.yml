@@ -1,17 +1,39 @@
-documentation:
+ui:
     - changed-files:
           - any-glob-to-any-file:
-                - 'README.md'
-                - 'LICENSE'
-                - 'DEVELOPMENT.md'
-                - '.gitignore'
 
-crochetcraft (web app):
+research:
     - changed-files:
           - any-glob-to-any-file:
-                - 'crochetcraft/**'
 
-crochet-stitcher (library):
+rendering:
     - changed-files:
           - any-glob-to-any-file:
-                - 'crochet-stitcher/**'
+
+modelling:
+    - changed-files:
+          - any-glob-to-any-file:
+
+housekeeping:
+    - changed-files:
+          - any-glob-to-any-file:
+
+group:
+    - changed-files:
+          - any-glob-to-any-file:
+
+parser:
+    - changed-files:
+          - any-glob-to-any-file:
+
+linker:
+    - changed-files:
+          - any-glob-to-any-file:
+
+placer:
+    - changed-files:
+          - any-glob-to-any-file:
+
+elaborator:
+    - changed-files:
+          - any-glob-to-any-file:
