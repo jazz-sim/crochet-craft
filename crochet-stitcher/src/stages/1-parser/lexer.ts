@@ -30,23 +30,30 @@ export type Token =
     | { type: 'symbol'; value: string }
     | { type: 'number'; value: number };
 
-export function lex(input: string): Token[] {
-    const tokens: Token[] = [];
+export interface Location {
+    line: number;
+    column: number;
+    length: number;
+}
 
-    const regex = /\s*([A-Za-z_]+|\d+|\S)/g;
+export function lex(input: string, line = 0): (Token & Location)[] {
+    const tokens: (Token & Location)[] = [];
+
+    const regex = /[A-Za-z_]+|\d+|\S/g;
     while (true) {
         const match = regex.exec(input);
         if (!match) break;
-        const value = match[1].toLowerCase();
+        const value = match[0].toLowerCase();
+        const loc = { line, column: match.index, length: match[0].length };
 
         if (KEYWORD_LUT[value]) {
-            tokens.push({ type: 'keyword', value: KEYWORD_LUT[value] });
+            tokens.push({ ...loc, type: 'keyword', value: KEYWORD_LUT[value] });
         } else if (COLOR_LUT.has(value)) {
-            tokens.push({ type: 'color', value });
+            tokens.push({ ...loc, type: 'color', value });
         } else if (/^\d+$/.test(value)) {
-            tokens.push({ type: 'number', value: parseInt(value) });
+            tokens.push({ ...loc, type: 'number', value: parseInt(value) });
         } else if (/^\W$/.test(value)) {
-            tokens.push({ type: 'symbol', value });
+            tokens.push({ ...loc, type: 'symbol', value });
         } else {
             throw Error(`Unrecognized token '${value}'`);
         }

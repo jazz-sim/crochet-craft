@@ -1,11 +1,7 @@
 import { parse } from '../src/stages/1-parser.js';
-import { ParsedStitch, StitchType } from '../src/types.js';
+import { StitchType } from '../src/types.js';
+import { st } from './parser.js';
 import { mc, slkt } from './util.js';
-
-/** A shortcut to create a parsed stitch. */
-export function st(type: StitchType, repeat = 1, colour = 'white'): ParsedStitch {
-    return { type, repeat, colour, into: null };
-}
 
 describe('simple tests', () => {
     test('single stitch', () => {

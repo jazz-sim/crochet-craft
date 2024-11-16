@@ -1,5 +1,5 @@
 import { Foundation, ParsedStitch, Pattern, StitchType } from '../types.js';
-import { Keyword, lex, Token } from './1-parser/lexer.js';
+import { Keyword, lex } from './1-parser/lexer.js';
 
 export function parse(input: string): Pattern<ParsedStitch> {
     const pattern: Pattern<ParsedStitch> = {
@@ -9,10 +9,13 @@ export function parse(input: string): Pattern<ParsedStitch> {
 
     let currentColour = 'white';
 
-    for (const line of input.split(/[\r\n]+/).map((ln) => ln.trim())) {
-        if (line.startsWith('#')) continue;
-        const tokens = lex(line);
-        if (!tokens.length) continue;
+    const lines = input.split(/\r?\n/);
+    for (let lineIndex = 0; lineIndex < lines.length; ++lineIndex) {
+        const line = lines[lineIndex];
+        const lineNum = lineIndex + 1;
+        if (line.trimStart().startsWith('#')) continue;
+
+        const tokens = lex(line, lineNum);
         let i = 0; // index of current token
 
         // Row number?
@@ -25,14 +28,26 @@ export function parse(input: string): Pattern<ParsedStitch> {
             if (tokens[i]?.value === Keyword.MagicRing) {
                 pattern.foundation = Foundation.MagicRing;
                 i += 1;
-                if (tokens[i]?.value !== ',') throw 'Expected ,';
-                i += 1;
+                // Optional comma after MR
+                if (tokens[i]) {
+                    if (tokens[i].value !== ',') throw 'Expected ,';
+                    i += 1;
+                }
             }
 
-            pattern.stitches.push(...parseInstructions());
+            // Instructions?
+            if (i < tokens.length) {
+                pattern.stitches.push(...parseInstructions());
+            }
             if (i !== tokens.length) throw 'Syntax error';
         } catch (error) {
-            throw `Parse error: ${error} (near "${tokens[i]?.value ?? 'end of line'}")`;
+            const spaces = tokens[i]?.column ?? line.length;
+            const carets = tokens[i]?.length || 1;
+            throw Error(
+                `Parse error on line ${lineNum}: ${error}\n` +
+                    `\t${line}\n` +
+                    `\t${' '.repeat(spaces)}${'^'.repeat(carets)}`,
+            );
         }
 
         /** Parses one or more instructions. O(n) */
