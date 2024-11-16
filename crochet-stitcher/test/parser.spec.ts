@@ -41,6 +41,57 @@ describe('simple tests', () => {
     test('initial row number', () => {
         expect(parse('1. 2 tr')).toEqual(slkt(st(StitchType.Treble, 2)));
     });
+
+    test('colour', () => {
+        expect(parse('ch 2, Red: ch 2')).toEqual(
+            slkt(st(StitchType.Chain, 2), st(StitchType.Chain, 2, 0, 'red')),
+        );
+    });
+});
+
+describe('increases and decreases', () => {
+    test('sc increase', () => {
+        expect(parse('sc inc')).toEqual(
+            slkt(st(StitchType.Single, 1, 0), st(StitchType.Single, 1, -1)),
+        );
+    });
+
+    test('increase with implicit sc', () => {
+        expect(parse('inc')).toEqual(
+            slkt(st(StitchType.Single, 1, 0), st(StitchType.Single, 1, -1)),
+        );
+    });
+
+    test('increase with non-sc stitch', () => {
+        expect(parse('dc inc')).toEqual(
+            slkt(st(StitchType.Double, 1, 0), st(StitchType.Double, 1, -1)),
+        );
+    });
+
+    test('repeated increase', () => {
+        expect(parse('inc 3')).toEqual(
+            slkt(
+                st(StitchType.Single, 1, 0),
+                st(StitchType.Single, 1, -1),
+                st(StitchType.Single, 1, 0),
+                st(StitchType.Single, 1, -1),
+                st(StitchType.Single, 1, 0),
+                st(StitchType.Single, 1, -1),
+            ),
+        );
+    });
+
+    test('decrease', () => {
+        expect(parse('dec')).toEqual(slkt(st(StitchType.InvisibleDecrease)));
+    });
+
+    test('decrease with invisible keyword', () => {
+        expect(parse('inv dec')).toEqual(slkt(st(StitchType.InvisibleDecrease)));
+    });
+
+    test('repeated decrease', () => {
+        expect(parse('3 dec')).toEqual(slkt(st(StitchType.InvisibleDecrease, 3)));
+    });
 });
 
 describe('repeats', () => {
