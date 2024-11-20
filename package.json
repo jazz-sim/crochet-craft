@@ -5,7 +5,8 @@
         "crochetcraft"
     ],
     "scripts": {
-        "build": "yarn workspace crochet-stitcher build && yarn workspace crochetcraft build"
+        "build": "yarn workspace crochet-stitcher build && yarn workspace crochetcraft build",
+        "watch": "yarn workspace crochet-stitcher watch"
     },
     "devDependencies": {
         "@types/jest": "^29.5.13",
