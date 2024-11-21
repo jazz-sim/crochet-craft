@@ -1,4 +1,4 @@
-import { StitchType, ParsedStitch } from '../src/types.js';
+import { ParsedStitch, StitchType } from '../src/types.js';
 
 /** A shortcut to create a repeated parsed stitch. */
 export function st(

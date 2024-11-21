@@ -1,7 +1,10 @@
 import { parse } from '../src/stages/1-parser.js';
-import { StitchType } from '../src/types.js';
+import { ParsedInstruction, StitchType } from '../src/types.js';
 import { st } from './parser.js';
-import { mc, slkt } from './util.js';
+import { mc as rawMc, slkt as rawSlkt } from './util.js';
+
+const mc = rawMc<ParsedInstruction>;
+const slkt = rawSlkt<ParsedInstruction>;
 
 describe('simple tests', () => {
     test('single stitch', () => {
@@ -35,7 +38,7 @@ describe('simple tests', () => {
     });
 
     test('magic circle foundation', () => {
-        expect(parse('mc, 3sc')).toEqual(mc(st(StitchType.Single, 3)));
+        expect(parse('mc, 3sc')).toEqual(mc(st(StitchType.Single, 3), 'eor'));
     });
 
     test('initial row number', () => {
@@ -45,6 +48,12 @@ describe('simple tests', () => {
     test('colour', () => {
         expect(parse('ch 2, Red: ch 2')).toEqual(
             slkt(st(StitchType.Chain, 2), st(StitchType.Chain, 2, 0, 'red')),
+        );
+    });
+
+    test('turns', () => {
+        expect(parse('ch 2, turn, ch 2')).toEqual(
+            slkt(st(StitchType.Chain, 2), 'turn', st(StitchType.Chain, 2)),
         );
     });
 });
