@@ -9,7 +9,7 @@ await mkdir('dist/esm', { recursive: true });
 await writeFile('dist/esm/package.json', JSON.stringify({ type: 'module' }));
 
 const args = argv;
-args.shift(); // remove argv[0]
+args.splice(0, 2); // remove argv[0] and argv[1]
 
 // Build the TypeScript
 console.log('Running build...');
