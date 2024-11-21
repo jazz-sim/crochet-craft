@@ -2,12 +2,17 @@ ui:
     - changed-files:
           - any-glob-to-any-file:
                 - any-glob-to-any-file:
-                      ['crochetcraft/src/**/*', 'crochetcraft/static/**', 'crochetcraft/tests/**']
-                - all-globs-to-all-files: ['!crochetcraft/src/lib/*', '!crochetcraft/src/routes/*']
+                      - 'crochetcraft/src/**/*'
+                      - 'crochetcraft/static/**'
+                      - 'crochetcraft/tests/**'
+                - all-globs-to-all-files:
+                      - '!crochetcraft/src/lib/*'
+                      - '!crochetcraft/src/routes/*'
 research:
     - changed-files:
           - any-glob-to-any-file:
-                ['crochetcraft/src/routes/demos/**', 'crochetcraft/src/routes/tools/**']
+                - 'crochetcraft/src/routes/demos/**'
+                - 'crochetcraft/src/routes/tools/**'
 
 rendering:
     - changed-files:
@@ -16,58 +21,51 @@ rendering:
 modelling:
     - changed-files:
           - any-glob-to-any-file:
-                [
-                    'crochet-stitcher/src/models/**',
-                    'crochet-stitcher/src/index.ts',
-                    'crochet-stitcher/src/models.ts',
-                    'crochet-stitcher/src/types.ts',
-                ]
+                - 'crochet-stitcher/src/models/**'
+                - 'crochet-stitcher/src/index.ts'
+                - 'crochet-stitcher/src/models.ts'
+                - 'crochet-stitcher/src/types.ts'
 
 housekeeping:
     - changed-files:
           - any-glob-to-any-file:
-                [
-                    '.github/**',
-                    '.vscode/**',
-                    '.yarn/releases/**',
-                    '.gitignore',
-                    '.npmrc',
-                    '.prettierrc.cjs',
-                    '.yarnrc.yml',
-                    'DEVELOPMENT.md',
-                    'README.md',
-                    'package.json',
-                    'yarn.lock',
-                    'crochetcraft/.eslintignore',
-                    'crochetcraft/.eslintrc.cjs',
-                    'crochetcraft/.gitignore',
-                    'crochetcraft/.npmrc',
-                    'crochetcraft/.prettierignore',
-                    'crochetcraft/.prettierrc.cjs',
-                    'crochetcraft/package.json',
-                    'crochetcraft/playwright.config.ts',
-                    'crochetcraft/postcss.config.js',
-                    'crochetcraft/svelte.config.js',
-                    'crochetcraft/tailwind.config.ts',
-                    'crochetcraft/tsconfig.json',
-                    'crochetcraft/vite.config.ts',
-                    'crochet-stitcher/.gitignore',
-                    'crochet-stitcher/build.mjs',
-                    'crochet-stitcher/jest.config.mjs',
-                    'crochet-stitcher/package.json',
-                    'crochet-stitcher/tsconfig.cjs.json',
-                    'crochet-stitcher/tsconfig.esm.json',
-                    'crochet-stitcher/tsconfig.json',
-                    'crochet-stitcher/tsconfig.types.json',
-                ]
-
+                - '.github/**'
+                - '.vscode/**'
+                - '.yarn/releases/**'
+                - '.gitignore'
+                - '.npmrc'
+                - '.prettierrc.cjs'
+                - '.yarnrc.yml'
+                - 'DEVELOPMENT.md'
+                - 'README.md'
+                - 'package.json'
+                - 'yarn.lock'
+                - 'crochetcraft/.eslintignore'
+                - 'crochetcraft/.eslintrc.cjs'
+                - 'crochetcraft/.gitignore'
+                - 'crochetcraft/.npmrc'
+                - 'crochetcraft/.prettierignore'
+                - 'crochetcraft/.prettierrc.cjs'
+                - 'crochetcraft/package.json'
+                - 'crochetcraft/playwright.config.ts'
+                - 'crochetcraft/postcss.config.js'
+                - 'crochetcraft/svelte.config.js'
+                - 'crochetcraft/tailwind.config.ts'
+                - 'crochetcraft/tsconfig.json'
+                - 'crochetcraft/vite.config.ts'
+                - 'crochet-stitcher/.gitignore'
+                - 'crochet-stitcher/build.mjs'
+                - 'crochet-stitcher/jest.config.mjs'
+                - 'crochet-stitcher/package.json'
+                - 'crochet-stitcher/tsconfig.cjs.json'
+                - 'crochet-stitcher/tsconfig.esm.json'
+                - 'crochet-stitcher/tsconfig.json'
+                - 'crochet-stitcher/tsconfig.types.json'
 parser:
     - changed-files:
           - any-glob-to-any-file:
-                [
-                    'crochet-stitcher/src/stages/1-parser/**',
-                    'crochet-stitcher/src/stages/1-parser.ts',
-                ]
+                - 'crochet-stitcher/src/stages/1-parser/**'
+                - 'crochet-stitcher/src/stages/1-parser.ts'
 
 linker:
     - changed-files:
