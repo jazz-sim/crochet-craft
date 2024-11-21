@@ -9,8 +9,8 @@
         "watch": "yarn workspace crochet-stitcher watch"
     },
     "devDependencies": {
-        "@types/jest": "^29.5.13",
-        "@types/node": "^20.16.10"
+        "@types/jest": "^29.5.14",
+        "@types/node": "^22.9.1"
     },
     "packageManager": "yarn@4.5.0"
 }
