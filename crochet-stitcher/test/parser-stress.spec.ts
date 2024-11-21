@@ -1,19 +1,16 @@
 import { parse } from '../src/stages/1-parser.js';
-import { StitchType } from '../src/types';
+import { ParsedInstruction, StitchType } from '../src/types';
 import { st } from './parser.js';
-import { mc, slkt } from './util.js';
+import { mc as rawMc, slkt as rawSlkt } from './util.js';
+
+const mc = rawMc<ParsedInstruction>;
+const slkt = rawSlkt<ParsedInstruction>;
 
 test('heart', () => {
     expect(
         parse(`
 # Credit: Hooked by Robin - https://www.hookedbyrobin.com/blog/crochet-tiny-heart
-MR
-Ch 2, 3 TR
-3 DC, Ch 1
-1 TR, Ch 1
-3 DC
-3 TR, Ch 2
-Sl st, Ch 1`),
+MR, Ch 2, 3 TR, 3 DC, Ch 1, 1 TR, Ch 1, 3 DC, 3 TR, Ch 2, Sl st, Ch 1`),
     ).toEqual(
         mc(
             st(StitchType.Chain, 2),
@@ -27,6 +24,7 @@ Sl st, Ch 1`),
             st(StitchType.Chain, 2),
             st(StitchType.Slip),
             st(StitchType.Chain, 1),
+            'eor',
         ),
     );
 });

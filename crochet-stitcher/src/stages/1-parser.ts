@@ -1,8 +1,8 @@
-import { Foundation, ParsedStitch, Pattern, StitchType } from '../types.js';
+import { Foundation, ParsedInstruction, ParsedStitch, Pattern, StitchType } from '../types.js';
 import { Keyword, lex } from './1-parser/lexer.js';
 
-export function parse(input: string): Pattern<ParsedStitch> {
-    const pattern: Pattern<ParsedStitch> = {
+export function parse(input: string): Pattern<ParsedInstruction> {
+    const pattern: Pattern<ParsedInstruction> = {
         foundation: Foundation.SlipKnot,
         stitches: [],
     };
@@ -38,6 +38,10 @@ export function parse(input: string): Pattern<ParsedStitch> {
             // Instructions?
             if (i < tokens.length) {
                 pattern.stitches.push(...parseInstructions());
+                if (pattern.foundation === Foundation.MagicRing) {
+                    // Add end-of-row marker only for magic ring patterns
+                    pattern.stitches.push('eor');
+                }
                 checkStitchLimit(pattern.stitches.length);
             }
             if (i !== tokens.length) throw 'Syntax error';
@@ -52,8 +56,8 @@ export function parse(input: string): Pattern<ParsedStitch> {
         }
 
         /** Parses one or more instructions. O(n) */
-        function parseInstructions(): ParsedStitch[] {
-            const stitches: ParsedStitch[] = [];
+        function parseInstructions(): ParsedInstruction[] {
+            const stitches: ParsedInstruction[] = [];
             while (true) {
                 // Colour?
                 if (tokens[i]?.type === 'color') {
@@ -85,7 +89,12 @@ export function parse(input: string): Pattern<ParsedStitch> {
         }
 
         /** Parses an instruction. O(n) */
-        function parseInstruction(): ParsedStitch[] {
+        function parseInstruction(): ParsedInstruction[] {
+            // Turn?
+            if (tokens[i]?.value === Keyword.Turn) {
+                i += 1;
+                return ['turn'];
+            }
             // Stitch?
             const stitches = parseStitches();
             if (stitches) return stitches;
@@ -94,8 +103,8 @@ export function parse(input: string): Pattern<ParsedStitch> {
         }
 
         /** Parses a repeat. O(n). */
-        function parseRepeat(): ParsedStitch[] {
-            let stitches: ParsedStitch[];
+        function parseRepeat(): ParsedInstruction[] {
+            let stitches: ParsedInstruction[];
             let count: number | null;
 
             // Asterisk-style repeat?

@@ -39,6 +39,10 @@ export interface ParsedStitch {
     parentOffset: number;
 }
 
+/// An instruction output from the parser can be a stitch, a turn, or an
+/// end-of-row marker.
+export type ParsedInstruction = ParsedStitch | 'turn' | 'eor';
+
 export interface LinkedStitch {
     type: StitchType;
     /**
