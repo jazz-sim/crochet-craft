@@ -1,15 +1,21 @@
-import { exec } from 'child_process';
-import { writeFile, rm } from 'fs/promises';
+import { execFile } from 'child_process';
+import { writeFile, rm, mkdir } from 'fs/promises';
+import { argv } from 'process';
 import { promisify } from 'util';
 
-// Delete dist files
+// Delete dist files and write package.json for ESM build
 await rm('dist', { recursive: true, force: true });
+await mkdir('dist/esm', { recursive: true });
+await writeFile('dist/esm/package.json', JSON.stringify({ type: 'module' }));
+
+const args = argv;
+args.shift(); // remove argv[0]
 
 // Build the TypeScript
-for (const kind of ['cjs', 'esm', 'types']) {
-    console.log(`Building ${kind}...`);
-    await promisify(exec)(`tsc -b tsconfig.${kind}.json`);
-}
-
-// Write package.json for ESM build
-await writeFile('dist/esm/package.json', JSON.stringify({ type: 'module' }));
+console.log('Running build...');
+await Promise.all(
+    ['cjs', 'esm', 'types'].map(async (kind) => {
+        await promisify(execFile)('tsc', ['-b', `tsconfig.${kind}.json`, ...args]);
+    }),
+);
+console.log('Done!');
