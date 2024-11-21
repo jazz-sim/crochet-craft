@@ -13,7 +13,8 @@ export enum Keyword {
     Increase = 'Increase',
     Invisible = 'Invisible',
     Decrease = 'Decrease',
-    // Into-clauses:
+    // Other commands:
+    Turn = 'Turn',
     Into = 'Into',
     Next = 'Next',
     // Repeating:
@@ -75,6 +76,7 @@ const KEYWORD_NAMES: Record<Keyword, string[]> = {
     [Keyword.Increase]: ['increase', 'inc'],
     [Keyword.Invisible]: ['invisible', 'inv'],
     [Keyword.Decrease]: ['decrease', 'dec'],
+    [Keyword.Turn]: ['turn'],
     [Keyword.Into]: ['into', 'in'],
     [Keyword.Next]: ['next'],
     [Keyword.Repeat]: ['repeat', 'rep'],
