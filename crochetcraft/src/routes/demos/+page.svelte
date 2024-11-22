@@ -37,8 +37,8 @@
 
     const crochetDemos: DemoData[] = [
         {
-            name: 'Chain Stitch (ch)',
-            route: '/chain',
+            name: 'Stitch Models',
+            route: '/models',
         },
     ];
 </script>
