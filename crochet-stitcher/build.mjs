@@ -1,9 +1,10 @@
 import { execFile } from 'child_process';
 import { writeFile, rm, mkdir } from 'fs/promises';
 import { argv } from 'process';
+import { fileURLToPath } from 'url';
 import { promisify } from 'util';
 
-const TSC = new URL(import.meta.resolve('typescript/bin/tsc')).pathname;
+const TSC = fileURLToPath(import.meta.resolve('typescript/bin/tsc'));
 console.log(`TypeScript compiler is ${TSC}`);
 
 // Delete dist files and write package.json for ESM build
