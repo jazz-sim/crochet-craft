@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import * as Three from 'three';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
@@ -16,6 +16,11 @@
      * The Three.js Scene object. Bind this prop if you want to use it.
      */
     export let scene: Three.Scene = new Three.Scene();
+
+    /**
+     * The Three.js Renderer object. Bind this prop if you want to use it.
+     */
+    let renderer: Three.WebGLRenderer;
 
     /** The initial position of the camera. */
     export let cameraPosition: Three.Vector3 = new Three.Vector3(0, 0, 60);
@@ -35,7 +40,7 @@
 
         init(scene);
 
-        const renderer = new Three.WebGLRenderer({
+        renderer = new Three.WebGLRenderer({
             antialias: true,
             canvas,
         });
@@ -49,6 +54,37 @@
         function animation() {
             renderer.render(scene, camera);
         }
+    });
+
+    /**
+     * Clean up the material and textures of a Three.js object.
+     */
+    const cleanMaterial = (material: any) => {
+      // dispose textures
+      for (const key of Object.keys(material)) {
+        const value = material[key]
+        if (value && typeof value.dispose === 'function') {
+          value.dispose()
+        }
+      }
+      material.dispose()
+    }
+    /**
+     * Clean up the scene when the component is destroyed.
+     */
+    onDestroy(() => {
+        scene.traverse((obj) => {
+            if (obj instanceof Three.Mesh) {
+                obj.geometry.dispose();
+                if (obj.material.isMaterial) { // a single material
+                    cleanMaterial(obj.material);
+                } else { // an array of materials
+                    for (const material of obj.material) cleanMaterial(material);
+                }
+            }
+        });
+        renderer.dispose()
+        scene.clear()
     });
 </script>
 
