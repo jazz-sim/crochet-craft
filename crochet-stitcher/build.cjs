@@ -1,7 +1,6 @@
-const { execFile } = require('child_process');
+const { fork } = require('child_process');
 const { writeFile, rm, mkdir } = require('fs/promises');
 const { argv } = require('process');
-const { promisify } = require('util');
 
 // This entire file is written in CommonJS instead of ESM so that we can use
 // require.resolve. Although ESM has an equivalent (import.meta.resolve), that
@@ -25,9 +24,23 @@ async function main() {
     // Build the TypeScript
     console.log('Running TypeScript compiler...');
     await Promise.all(
-        ['cjs', 'esm', 'types'].map(async (kind) => {
-            await promisify(execFile)(TSC, ['-b', `tsconfig.${kind}.json`, ...args]);
-        }),
+        ['cjs', 'esm', 'types'].map(
+            (kind) =>
+                new Promise((resolve, reject) => {
+                    const child = fork(TSC, ['-b', `tsconfig.${kind}.json`, ...args], {
+                        stdio: 'inherit',
+                    });
+                    child.on('exit', (code, signal) => {
+                        if (code === 0) {
+                            resolve();
+                        } else if (code !== null) {
+                            reject(`compiling ${kind} failed, exit code ${code}`);
+                        } else {
+                            reject(`compiling ${kind} failed, signal ${signal}`);
+                        }
+                    });
+                }),
+        ),
     );
     console.log('Done!');
 }
