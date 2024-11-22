@@ -34,14 +34,12 @@ export function efficientPlaceDebugSpheres(points: Vector3[], parent: Object3D):
 
 	const matrix = new THREE.Matrix4();
 
-	const dummy = new THREE.Object3D();
 	points.forEach((point, index) => {
 		matrix.setPosition(point.x, point.y, point.z);
 		instancedMesh.setMatrixAt(index, matrix);
 	});
 
 	parent.add(instancedMesh);
-	console.log("success");
 	return instancedMesh;
 }
 
