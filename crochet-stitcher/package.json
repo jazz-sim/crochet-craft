@@ -3,8 +3,8 @@
     "version": "0.0.1",
     "main": "dist/index.js",
     "scripts": {
-        "build": "node build.mjs",
-        "watch": "node build.mjs -w",
+        "build": "node build.cjs",
+        "watch": "node build.cjs -w",
         "test": "jest",
         "lint": "prettier --check .",
         "format": "prettier --write ."
