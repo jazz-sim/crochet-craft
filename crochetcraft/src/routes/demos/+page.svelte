@@ -26,7 +26,7 @@
             route: '/forces',
         },
         {
-            name: '3D Shear (Inefficient)',
+            name: '3D Shear (Inefficient - click at your own risk)',
             route: '/shear3d',
         },
         {
