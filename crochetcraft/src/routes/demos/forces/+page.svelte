@@ -2,7 +2,7 @@
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
     import * as THREE from 'three';
     import { Vector3 } from 'three';
-    import { evaluateForce } from 'crochet-stitcher';
+    import { evaluateForces } from 'crochet-stitcher';
 
     // Scene objects
     let scene: THREE.Scene;
@@ -234,33 +234,15 @@
 
         if (iterations >= 0 && iterNumber >= 0) {
             for (let i = 1; i <= iterations; ++i) {
+                const lastSteps = pointEvolutions.map((pList) => pList[i - 1]);
+                const nextStep = evaluateForces(
+                    lastSteps,
+                    currentSample.links,
+                    currentSample.radii,
+                    timeStep,
+                );
                 for (let p = 0; p < currentSample.points.length; ++p) {
-                    const lastPoint = pointEvolutions[p][i - 1];
-                    let netForce = new Vector3(0, 0, 0);
-
-                    // For each stitch connected to this one, apply a force on it based on where the other stitches are
-                    currentSample.links[p].forEach((link) => {
-                        const other = pointEvolutions[link][i - 1];
-                        let fk = evaluateForce(
-                            {
-                                x: other.x - lastPoint.x,
-                                y: other.y - lastPoint.y,
-                                z: other.z - lastPoint.z,
-                            },
-                            currentSample.radii[p],
-                            currentSample.radii[link],
-                        );
-                        netForce.add(new Vector3(fk.x, fk.y, fk.z));
-                    });
-                    console.log(netForce, 'a');
-                    netForce.multiplyScalar(timeStep);
-                    console.log(netForce, 'b');
-                    const nextVec = new Vector3(
-                        lastPoint.x + netForce.x,
-                        lastPoint.y + netForce.y,
-                        lastPoint.z + netForce.z,
-                    );
-                    pointEvolutions[p].push(nextVec);
+                    pointEvolutions[p].push(nextStep[p]);
                 }
             }
         }
