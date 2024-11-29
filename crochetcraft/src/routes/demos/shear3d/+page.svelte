@@ -137,42 +137,46 @@
         mat1
         <br />
         <table>
-            <tr>
-                <td>{mat1[0][0]}</td>
-                <td><input class="input" type="number" bind:value={mat1[0][1]} /></td>
-                <td><input class="input" type="number" bind:value={mat1[0][2]} /></td>
-            </tr>
-            <tr>
-                <td><input class="input" type="number" bind:value={mat1[1][0]} /></td>
-                <td>{mat1[1][1]}</td>
-                <td><input class="input" type="number" bind:value={mat1[1][2]} /></td>
-            </tr>
-            <tr>
-                <td><input class="input" type="number" bind:value={mat1[2][0]} /></td>
-                <td><input class="input" type="number" bind:value={mat1[2][1]} /></td>
-                <td>{mat1[2][2]}</td>
-            </tr>
+            <tbody>
+                <tr>
+                    <td>{mat1[0][0]}</td>
+                    <td><input class="input" type="number" bind:value={mat1[0][1]} /></td>
+                    <td><input class="input" type="number" bind:value={mat1[0][2]} /></td>
+                </tr>
+                <tr>
+                    <td><input class="input" type="number" bind:value={mat1[1][0]} /></td>
+                    <td>{mat1[1][1]}</td>
+                    <td><input class="input" type="number" bind:value={mat1[1][2]} /></td>
+                </tr>
+                <tr>
+                    <td><input class="input" type="number" bind:value={mat1[2][0]} /></td>
+                    <td><input class="input" type="number" bind:value={mat1[2][1]} /></td>
+                    <td>{mat1[2][2]}</td>
+                </tr>
+            </tbody>
         </table>
         <br />
         <br />
         mat2
         <br />
         <table>
-            <tr style="width: 200px;">
-                <td>{mat2[0][0]}</td>
-                <td><input class="input" type="number" bind:value={mat2[0][1]} /></td>
-                <td><input class="input" type="number" bind:value={mat2[0][2]} /></td>
-            </tr>
-            <tr>
-                <td><input class="input" type="number" bind:value={mat2[1][0]} /></td>
-                <td>{mat2[1][1]}</td>
-                <td><input class="input" type="number" bind:value={mat2[1][2]} /></td>
-            </tr>
-            <tr>
-                <td><input class="input" type="number" bind:value={mat2[2][0]} /></td>
-                <td><input class="input" type="number" bind:value={mat2[2][1]} /></td>
-                <td>{mat2[2][2]}</td>
-            </tr>
+            <tbody>
+                <tr style="width: 200px;">
+                    <td>{mat2[0][0]}</td>
+                    <td><input class="input" type="number" bind:value={mat2[0][1]} /></td>
+                    <td><input class="input" type="number" bind:value={mat2[0][2]} /></td>
+                </tr>
+                <tr>
+                    <td><input class="input" type="number" bind:value={mat2[1][0]} /></td>
+                    <td>{mat2[1][1]}</td>
+                    <td><input class="input" type="number" bind:value={mat2[1][2]} /></td>
+                </tr>
+                <tr>
+                    <td><input class="input" type="number" bind:value={mat2[2][0]} /></td>
+                    <td><input class="input" type="number" bind:value={mat2[2][1]} /></td>
+                    <td>{mat2[2][2]}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </div>
