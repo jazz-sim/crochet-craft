@@ -1,5 +1,9 @@
 <script lang="ts">
-    import { efficientPlaceDebugSpheres, placeDebugSpheres, updateDebugSpheres } from '$lib/render/debug';
+    import {
+        efficientPlaceDebugSpheres,
+        placeDebugSpheres,
+        updateDebugSpheres,
+    } from '$lib/render/debug';
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
     import * as THREE from 'three';
     import { Vector3 } from 'three';
@@ -9,8 +13,16 @@
     let scene: THREE.Scene;
 
     let group: THREE.Group = new THREE.Group();
-    let mat1 = [[1, 0, 0], [0, 1, 0], [0, 0, 1]] as Mat3;
-    let mat2 = [[1, 0, 0], [0, 1, 0], [0, 0, 1]] as Mat3;
+    let mat1 = [
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+    ] as Mat3;
+    let mat2 = [
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 1],
+    ] as Mat3;
     let displayMode: number = 0;
 
     // This just does a matrix-vector product, but ignores the z dimension entirely.
@@ -55,7 +67,7 @@
             // Do a cursed linear interpolation between the two shear matrices.
             // I also have no proof of correctness for this.
             // The (variable + 10)/20 scales the interpolation value t to [0, 1]
-                // this makes sense if variable is from [-10, 10]
+            // this makes sense if variable is from [-10, 10]
 
             // since points are placed from [-20, 20] in both dimensions.
             return basePoints.map(
@@ -91,7 +103,7 @@
                         new Vector3(-30, 0, 0),
                         new Vector3(30, 0, 0),
                     ]),
-                    new THREE.LineBasicMaterial({color: 0xff0000}),
+                    new THREE.LineBasicMaterial({ color: 0xff0000 }),
                 ),
             );
             // Create y axis in xy plane
@@ -101,7 +113,7 @@
                         new Vector3(0, -30, 0),
                         new Vector3(0, 30, 0),
                     ]),
-                    new THREE.LineBasicMaterial({color: 0x00ff00}),
+                    new THREE.LineBasicMaterial({ color: 0x00ff00 }),
                 ),
             );
             // Create z axis in xy plane
@@ -111,7 +123,7 @@
                         new Vector3(0, 0, -30),
                         new Vector3(0, 0, 30),
                     ]),
-                    new THREE.LineBasicMaterial({color: 0x0000ff}),
+                    new THREE.LineBasicMaterial({ color: 0x0000ff }),
                 ),
             );
         }}
@@ -119,8 +131,8 @@
 
     <div id="input-wrapper">
         <p>Efficient rendering of 3d shear with 40,000 points</p>
-        Display mode input - 0 to only use mat1, 1 to only use mat2, and 2 to interpolate between
-        the two.
+        Display mode input - 0 to only use mat1, 1 to only use mat2, and 2 to interpolate between the
+        two.
         <br />
         <input type="number" bind:value={displayMode} />
         <br />
@@ -128,42 +140,46 @@
         mat1
         <br />
         <table>
-            <tr>
-                <td>{mat1[0][0]}</td>
-                <td><input type="number" bind:value={mat1[0][1]} /></td>
-                <td><input type="number" bind:value={mat1[0][2]} /></td>
-            </tr>
-            <tr>
-                <td><input type="number" bind:value={mat1[1][0]} /></td>
-                <td>{mat1[1][1]}</td>
-                <td><input type="number" bind:value={mat1[1][2]} /></td>
-            </tr>
-            <tr>
-                <td><input type="number" bind:value={mat1[2][0]} /></td>
-                <td><input type="number" bind:value={mat1[2][1]} /></td>
-                <td>{mat1[2][2]}</td>
-            </tr>
+            <tbody>
+                <tr>
+                    <td>{mat1[0][0]}</td>
+                    <td><input type="number" bind:value={mat1[0][1]} /></td>
+                    <td><input type="number" bind:value={mat1[0][2]} /></td>
+                </tr>
+                <tr>
+                    <td><input type="number" bind:value={mat1[1][0]} /></td>
+                    <td>{mat1[1][1]}</td>
+                    <td><input type="number" bind:value={mat1[1][2]} /></td>
+                </tr>
+                <tr>
+                    <td><input type="number" bind:value={mat1[2][0]} /></td>
+                    <td><input type="number" bind:value={mat1[2][1]} /></td>
+                    <td>{mat1[2][2]}</td>
+                </tr>
+            </tbody>
         </table>
         <br />
         <br />
         mat2
         <br />
         <table>
-            <tr style="width: 200px;">
-                <td>{mat2[0][0]}</td>
-                <td><input type="number" bind:value={mat2[0][1]} /></td>
-                <td><input type="number" bind:value={mat2[0][2]} /></td>
-            </tr>
-            <tr>
-                <td><input type="number" bind:value={mat2[1][0]} /></td>
-                <td>{mat2[1][1]}</td>
-                <td><input type="number" bind:value={mat2[1][2]} /></td>
-            </tr>
-            <tr>
-                <td><input type="number" bind:value={mat2[2][0]} /></td>
-                <td><input type="number" bind:value={mat2[2][1]} /></td>
-                <td>{mat2[2][2]}</td>
-            </tr>
+            <tbody>
+                <tr style="width: 200px;">
+                    <td>{mat2[0][0]}</td>
+                    <td><input type="number" bind:value={mat2[0][1]} /></td>
+                    <td><input type="number" bind:value={mat2[0][2]} /></td>
+                </tr>
+                <tr>
+                    <td><input type="number" bind:value={mat2[1][0]} /></td>
+                    <td>{mat2[1][1]}</td>
+                    <td><input type="number" bind:value={mat2[1][2]} /></td>
+                </tr>
+                <tr>
+                    <td><input type="number" bind:value={mat2[2][0]} /></td>
+                    <td><input type="number" bind:value={mat2[2][1]} /></td>
+                    <td>{mat2[2][2]}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </div>
