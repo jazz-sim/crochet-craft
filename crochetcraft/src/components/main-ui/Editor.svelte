@@ -1,5 +1,7 @@
 <script lang="ts">
+    import { uploadTextContent, generalTextContent } from './stores';
     import Panel from '$components/option-panel/Panel.svelte';
+    let editorTextArea: HTMLTextAreaElement;
     type AddStitchButtonData = {
         name: string;
         hovertext: string;
@@ -107,6 +109,21 @@
             disabled: true,
         },
     ];
+    function setLocalInput(e: any) {
+        console.log('Did this run???');
+        console.log(e.target.textContent);
+        uploadTextContent.set(e.target.textContent);
+        console.log($uploadTextContent);
+    }
+    uploadTextContent.subscribe((value) => {
+        console.log('In here...');
+        if (editorTextArea) {
+            console.log('In here????');
+            editorTextArea.textContent = value;
+            console.log(value);
+            console.log(editorTextArea.textContent);
+        }
+    });
 </script>
 
 <Panel --left="1vw">
@@ -115,9 +132,12 @@
     </div>
     <div slot="panel-elements">
         <textarea
+            id="editor_textarea"
             class="textarea rounded-lg p-1"
             rows="4"
             placeholder="Begin by entering your crochet pattern here!"
+            on:input={setLocalInput}
+            bind:this={editorTextArea}
         />
         <br />
         <p>Add Stitches / Instructions:</p>

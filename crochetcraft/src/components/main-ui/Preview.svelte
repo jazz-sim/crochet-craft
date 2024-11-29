@@ -8,7 +8,7 @@
 
 <style>
     #preview {
-        background-color: gray;
+        background-color: black;
         flex: auto;
     }
 </style>

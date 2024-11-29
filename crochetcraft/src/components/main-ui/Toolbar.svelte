@@ -1,10 +1,54 @@
 <script lang="ts">
+    import { uploadTextContent, generalTextContent, previewCanvasScene } from './stores';
+    import { get } from 'svelte/store';
     import { AppBar } from '@skeletonlabs/skeleton';
-    function download(type: String) {
-        if (type == 'pattern-text') {
-            // Get pattern text from Editor?
-        } else if (type == '3d-object') {
+    import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
+
+    interface HTMLInputEvent extends Event {
+        target: HTMLInputElement & EventTarget;
+    }
+    async function setUpReader(file: File) {
+        let uploadReader = new FileReader();
+        uploadReader.addEventListener(
+            'load',
+            () => {
+                let input = uploadReader.result as string;
+                uploadTextContent.set(input);
+            },
+            false,
+        );
+        uploadReader.readAsText(file);
+    }
+
+    function upload(e: Event) {
+        const fileEvent = e as HTMLInputEvent;
+        let files: any = fileEvent.target.files;
+        if (files) {
+            let inputFile = files[0];
+            setUpReader(inputFile);
         }
+    }
+    let localTextContent = '';
+    generalTextContent.subscribe((value) => {
+        localTextContent = value;
+    });
+    function download(type: String) {
+        let blob = new Blob([localTextContent], { type: 'text/plain' });
+        let filename = 'pattern.txt';
+        if (type == '3d-object') {
+            const exporter = new OBJExporter();
+            const data = exporter.parse(get(previewCanvasScene));
+            blob = new Blob([data]);
+            filename = 'pattern.obj';
+        }
+        const url = URL.createObjectURL(blob);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
     }
 </script>
 
@@ -14,7 +58,7 @@
         <label for="file-upload" class="custom-file-upload variant-filled-surface btn rounded-lg">
             Upload Pattern Text
         </label>
-        <input id="file-upload" type="file" />
+        <input id="file-upload" type="file" accept=".txt" on:change={(e) => upload(e)} />
         <button
             class="variant-filled-surface btn rounded-lg"
             on:click={() => download('pattern-text')}>Download Pattern Text</button
