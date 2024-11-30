@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { uploadTextContent, generalTextContent, previewCanvasScene } from './stores';
+    import { textContent, previewCanvasScene } from './stores';
     import { get } from 'svelte/store';
     import { AppBar } from '@skeletonlabs/skeleton';
     import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
@@ -13,7 +13,7 @@
             'load',
             () => {
                 let input = uploadReader.result as string;
-                uploadTextContent.set(input);
+                textContent.set(input);
             },
             false,
         );
@@ -28,12 +28,8 @@
             setUpReader(inputFile);
         }
     }
-    let localTextContent = '';
-    generalTextContent.subscribe((value) => {
-        localTextContent = value;
-    });
     function download(type: String) {
-        let blob = new Blob([localTextContent], { type: 'text/plain' });
+        let blob = new Blob([$textContent], { type: 'text/plain' });
         let filename = 'pattern.txt';
         if (type == '3d-object') {
             const exporter = new OBJExporter();
