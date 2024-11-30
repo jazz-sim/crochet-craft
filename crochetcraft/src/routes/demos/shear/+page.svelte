@@ -129,28 +129,32 @@
         mat1
         <br />
         <table>
-            <tr>
-                <td>{mat1.xx}</td>
-                <td><input class="input" type="number" bind:value={mat1.xy} /></td>
-            </tr>
-            <tr>
-                <td><input class="input" type="number" bind:value={mat1.yx} /></td>
-                <td>{mat1.yy}</td>
-            </tr>
+            <tbody>
+                <tr>
+                    <td>{mat1.xx}</td>
+                    <td><input class="input" type="number" bind:value={mat1.xy} /></td>
+                </tr>
+                <tr>
+                    <td><input class="input" type="number" bind:value={mat1.yx} /></td>
+                    <td>{mat1.yy}</td>
+                </tr>
+            </tbody>
         </table>
         <br />
         <br />
         mat2
         <br />
         <table>
-            <tr>
-                <td>{mat2.xx}</td>
-                <td><input class="input" type="number" bind:value={mat2.xy} /></td>
-            </tr>
-            <tr>
-                <td><input class="input" type="number" bind:value={mat2.yx} /></td>
-                <td>{mat2.yy}</td>
-            </tr>
+            <tbody>
+                <tr>
+                    <td>{mat2.xx}</td>
+                    <td><input class="input" type="number" bind:value={mat2.xy} /></td>
+                </tr>
+                <tr>
+                    <td><input class="input" type="number" bind:value={mat2.yx} /></td>
+                    <td>{mat2.yy}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </div>
