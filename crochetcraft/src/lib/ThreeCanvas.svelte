@@ -60,15 +60,15 @@
      * Clean up the material and textures of a Three.js object.
      */
     const cleanMaterial = (material: any) => {
-      // dispose textures
-      for (const key of Object.keys(material)) {
-        const value = material[key]
-        if (value && typeof value.dispose === 'function') {
-          value.dispose()
+        // dispose textures
+        for (const key of Object.keys(material)) {
+            const value = material[key];
+            if (value && typeof value.dispose === 'function') {
+                value.dispose();
+            }
         }
-      }
-      material.dispose()
-    }
+        material.dispose();
+    };
     /**
      * Clean up the scene when the component is destroyed.
      */
@@ -76,15 +76,17 @@
         scene.traverse((obj) => {
             if (obj instanceof Three.Mesh) {
                 obj.geometry.dispose();
-                if (obj.material.isMaterial) { // a single material
+                if (obj.material.isMaterial) {
+                    // a single material
                     cleanMaterial(obj.material);
-                } else { // an array of materials
+                } else {
+                    // an array of materials
                     for (const material of obj.material) cleanMaterial(material);
                 }
             }
         });
-        renderer.dispose()
-        scene.clear()
+        renderer?.dispose();
+        scene.clear();
     });
 </script>
 
