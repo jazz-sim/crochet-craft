@@ -1,6 +1,5 @@
 <script lang="ts">
     import { textContent, previewCanvasScene } from './stores';
-    import { get } from 'svelte/store';
     import { AppBar } from '@skeletonlabs/skeleton';
     import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
 
@@ -33,7 +32,7 @@
         let filename = 'pattern.txt';
         if (type == '3d-object') {
             const exporter = new OBJExporter();
-            const data = exporter.parse(get(previewCanvasScene));
+            const data = exporter.parse($previewCanvasScene);
             blob = new Blob([data]);
             filename = 'pattern.obj';
         }

@@ -30,7 +30,7 @@
 
 <ThreeCanvas
     cameraPosition={new THREE.Vector3(0, 0, 10)}
-    init={(scene) => {
+    init={(scene: THREE.Scene) => {
         previewCanvasScene.set(scene);
         for (let i = 0; i < 10; ++i) {
             makeChainStitch(scene, new THREE.Vector3(0, 0.5 * i, 0));

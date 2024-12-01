@@ -1014,6 +1014,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@neodrag/svelte@npm:^2.0.6":
+  version: 2.0.6
+  resolution: "@neodrag/svelte@npm:2.0.6"
+  checksum: 10c0/4c1fb8a2d8da82664471effab1a0fe213905c6ad78f301144a25009b0140595ff2124e2f3e6e942d21db92f48034000c7195368a0ac137eb8fcce95f70d50e80
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -2426,6 +2433,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "crochetcraft@workspace:crochetcraft"
   dependencies:
+    "@neodrag/svelte": "npm:^2.0.6"
     "@playwright/test": "npm:^1.49.0"
     "@skeletonlabs/skeleton": "npm:^2.10.3"
     "@skeletonlabs/tw-plugin": "npm:^0.4.0"
@@ -5482,6 +5490,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@neodrag/svelte": "npm:^2.0.6"
     "@types/jest": "npm:^29.5.14"
     "@types/node": "npm:^22.10.1"
   languageName: unknown
