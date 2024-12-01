@@ -1,6 +1,7 @@
 <script lang="ts">
-    import { textContent } from './stores';
+    import { textContent, textContentError, nextStitchColourValue } from './stores';
     import Panel from '$components/option-panel/Panel.svelte';
+    import { parse } from 'crochet-stitcher';
     type AddStitchButtonData = {
         name: string;
         hovertext: string;
@@ -108,6 +109,25 @@
             disabled: true,
         },
     ];
+    function sendToParser() {
+        try {
+            parse($textContent);
+            textContentError.set({
+                errorText: $textContent.length > 0 ? '✅ Valid pattern.' : '',
+                errorValue: false,
+            });
+        } catch (error) {
+            textContentError.set({
+                errorText: '❌ ' + error + '.',
+                errorValue: true,
+            });
+        }
+    }
+    function appendStitch(e: any) {
+        let stitchText = e.target.textContent as string;
+        textContent.update((currentText: string) => currentText + ' ' + stitchText);
+        sendToParser();
+    }
 </script>
 
 <Panel --left="1vw">
@@ -121,7 +141,12 @@
             rows="4"
             placeholder="Begin by entering your crochet pattern here!"
             bind:value={$textContent}
-        />
+            on:input={sendToParser}
+            on:change={sendToParser}
+        ></textarea>
+        <p class={$textContentError.errorValue ? 'text-error-500' : 'text-success-500'}>
+            {$textContentError.errorText}
+        </p>
         <br />
         <p>Add Stitches / Instructions:</p>
         <div id="add-stitch-buttons" class="flex flex-wrap gap-1">
@@ -134,13 +159,15 @@
                     )}
                     title={stitch.hovertext}
                     disabled={stitch.disabled}
+                    on:click={appendStitch}
                 >
                     {stitch.name}
                 </button>
             {/each}
         </div>
+        <br />
         <p>Next Stitch Colour:</p>
-        <input type="color" value="#ff0000" />
+        <input type="color" class="rounded-lg" bind:value={$nextStitchColourValue} />
     </div>
 </Panel>
 
