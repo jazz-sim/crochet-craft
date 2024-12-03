@@ -1,11 +1,13 @@
 <script lang="ts">
     import { textContent, previewCanvasScene } from './stores';
-    import { AppBar } from '@skeletonlabs/skeleton';
+    import { AppBar, LightSwitch, getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
     import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
 
+    const modalStore = getModalStore();
     interface HTMLInputEvent extends Event {
         target: HTMLInputElement & EventTarget;
     }
+    // Reading uploaded file:
     async function setUpReader(file: File) {
         let uploadReader = new FileReader();
         uploadReader.addEventListener(
@@ -18,7 +20,6 @@
         );
         uploadReader.readAsText(file);
     }
-
     function upload(e: Event) {
         const fileEvent = e as HTMLInputEvent;
         let files: any = fileEvent.target.files;
@@ -27,6 +28,7 @@
             setUpReader(inputFile);
         }
     }
+    // Downloading pattern:
     function download(type: String) {
         let blob = new Blob([$textContent], { type: 'text/plain' });
         let filename = 'pattern.txt';
@@ -45,11 +47,29 @@
         link.click();
         link.remove();
     }
+    // Triggering "about" modal:
+    const modal: ModalSettings = {
+        type: 'alert',
+        title: '<div class="flex justify-center items-center"><img src="/cc-logo-new-1-purple.png" width="65%" alt="CrochetCraft logo." /></div>',
+        body: '<div class="flex justify-center items-center"><p>CrochetCraft is a Final Year Design Project (FYDP).</p></div>',
+        buttonTextCancel: 'Close',
+    };
+    function showAboutModal() {
+        modalStore.trigger(modal);
+    }
 </script>
 
-<AppBar gridColumns="grid-cols-3" slotDefault="place-self-center" slotTrail="place-content-end">
+<AppBar
+    gridColumns="grid-cols-[auto_1fr_auto]"
+    slotDefault="place-self-center"
+    slotLead="place-content-start space-x-4"
+    slotTrail="place-content-end"
+>
     <svelte:fragment slot="lead">
-        <img src="/cc-logo-new-2-purple.png" width="50" height="50" alt="CrochetCraft logo." />
+        <button class="btn-icon !bg-transparent" on:click={showAboutModal}>
+            <img src="/cc-logo-new-2-purple.png" width="50" height="50" alt="CrochetCraft logo." />
+        </button>
+
         <label for="file-upload" class="custom-file-upload variant-filled-surface btn rounded-lg">
             Upload Pattern Text
         </label>
@@ -63,7 +83,8 @@
         >
     </svelte:fragment>
     <svelte:fragment slot="trail">
-        <a class="anchor" href={`/demos`}>📺 Back To Demos</a>
+        <a class="anchor" href={`/`}>← Go Home</a>
+        <LightSwitch rounded="rounded-lg" />
     </svelte:fragment>
 </AppBar>
 

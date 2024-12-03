@@ -1,4 +1,5 @@
 <script lang="ts">
+    // FIRST - RENDER AFTER PIPELINE IS DONE
     import { makeMultiBezier } from '$lib/builder/bezier';
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
     import * as THREE from 'three';
@@ -29,6 +30,7 @@
 </script>
 
 <ThreeCanvas
+    --height="100%"
     cameraPosition={new THREE.Vector3(0, 0, 10)}
     init={(scene: THREE.Scene) => {
         previewCanvasScene.set(scene);
