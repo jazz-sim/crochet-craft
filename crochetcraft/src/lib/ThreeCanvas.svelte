@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
+    import { selected3DObject } from '../components/main-ui/stores';
     import * as Three from 'three';
     import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
     import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
@@ -28,6 +29,9 @@
     /** The initial position of the camera. */
     export let cameraPosition: Three.Vector3 = new Three.Vector3(0, 0, 60);
 
+    /** For toggling whether to have hover and select bloom + emission effect: */
+    export let toggleBloom = false;
+
     onMount(() => {
         console.assert(canvas);
         // const width = window.innerWidth;
@@ -55,56 +59,73 @@
         camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
         controls.update(); // Must be called after manually updating camera position
 
-        // CREATE BLOOM EFFECT:
-        const raycaster = new Three.Raycaster();
-        const mouse = new Three.Vector2();
-        let bloomPass = new UnrealBloomPass(
-            new Three.Vector2(wrapper.clientWidth, wrapper.clientHeight),
-            0.25,
-            0.25,
-            2,
-        );
-        bloomPass.renderToScreen = true;
-        const composer = new EffectComposer(renderer);
-        composer.addPass(new RenderPass(scene, camera));
-        composer.addPass(bloomPass);
+        let raycaster: Three.Raycaster;
+        let mouse: Three.Vector2;
+        let composer: EffectComposer;
 
-        let previousIntersectedObject = null as null | Three.Mesh;
-        function checkIntersection(e: MouseEvent) {
-            // get mouse coords:
-            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
-            // Get intersection list:
-            const intersects = raycaster.intersectObjects(scene.children);
-            let sameIntersection = false;
-            let currentIntersectedObject = null as null | Three.Mesh;
-            // finding the current intersected mesh:
-            for (let i = 0; i < intersects.length; i++) {
-                if (intersects[i].object.type == 'Mesh') {
-                    currentIntersectedObject = intersects[i].object as Three.Mesh;
-                    if (currentIntersectedObject == previousIntersectedObject) {
-                        sameIntersection = true;
+        // CREATE BLOOM EFFECT:
+        // Assumes: selected 3D objects are meshes, where the material is Lambert Material.
+        if (toggleBloom) {
+            raycaster = new Three.Raycaster();
+            mouse = new Three.Vector2();
+            let bloomPass = new UnrealBloomPass(
+                new Three.Vector2(wrapper.clientWidth, wrapper.clientHeight),
+                0.25,
+                0.25,
+                2,
+            );
+            bloomPass.renderToScreen = true;
+            composer = new EffectComposer(renderer);
+            composer.addPass(new RenderPass(scene, camera));
+            composer.addPass(bloomPass);
+
+            let previousIntersectedObject = null as null | Three.Mesh;
+            function checkIntersection(e: MouseEvent, type: String) {
+                // get mouse coords:
+                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                // Get intersection list:
+                const intersects = raycaster.intersectObjects(scene.children);
+                let sameIntersection = false;
+                let currentIntersectedObject = null as null | Three.Mesh;
+                // finding the current intersected mesh:
+                for (let i = 0; i < intersects.length; i++) {
+                    if (intersects[i].object.type == 'Mesh') {
+                        currentIntersectedObject = intersects[i].object as Three.Mesh;
+                        if (currentIntersectedObject == previousIntersectedObject) {
+                            sameIntersection = true;
+                        }
+                        break;
                     }
-                    break;
+                }
+                if (type == 'move') {
+                    // If there is no intersection conflict, highlight, else remove hightlight:
+                    if (!sameIntersection) {
+                        if (previousIntersectedObject) {
+                            let previousMaterial =
+                                previousIntersectedObject.material as Three.MeshLambertMaterial;
+                            previousMaterial.emissiveIntensity = 0;
+                        }
+                        if (currentIntersectedObject) {
+                            let currentMaterial =
+                                currentIntersectedObject.material as Three.MeshLambertMaterial;
+                            currentMaterial.emissiveIntensity = 10;
+                        }
+                        previousIntersectedObject = currentIntersectedObject;
+                    }
+                } else {
+                    if (currentIntersectedObject) {
+                        selected3DObject.set(currentIntersectedObject);
+                    } else {
+                        selected3DObject.set(null);
+                    }
                 }
             }
-            // If there is no intersection conflict, highlight, else remove hightlight:
-            if (!sameIntersection) {
-                if (previousIntersectedObject) {
-                    let previousMaterial =
-                        previousIntersectedObject.material as Three.MeshLambertMaterial;
-                    previousMaterial.emissiveIntensity = 0;
-                }
-                if (currentIntersectedObject) {
-                    let currentMaterial =
-                        currentIntersectedObject.material as Three.MeshLambertMaterial;
-                    currentMaterial.emissiveIntensity = 10;
-                }
-                previousIntersectedObject = currentIntersectedObject;
-            }
+
+            window.addEventListener('pointermove', (e: MouseEvent) => checkIntersection(e, 'move'));
+            window.addEventListener('click', (e: MouseEvent) => checkIntersection(e, 'click'));
         }
 
-        window.addEventListener('pointermove', checkIntersection);
         window.addEventListener(
             'resize',
             () => {
@@ -117,8 +138,12 @@
         );
 
         function animation() {
-            raycaster.setFromCamera(mouse, camera);
-            composer.render();
+            if (toggleBloom) {
+                raycaster.setFromCamera(mouse, camera);
+                composer.render();
+            } else {
+                renderer.render(scene, camera);
+            }
         }
     });
 
