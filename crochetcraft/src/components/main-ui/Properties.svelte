@@ -1,6 +1,7 @@
 <script lang="ts">
     import Panel from '$components/option-panel/Panel.svelte';
-    import { showPropertiesPanel } from './stores';
+    import { nextStitchColourValue, selected3DObject } from './stores';
+    import { Material, MeshLambertMaterial } from 'three';
     // Initializing variables:
     let stitchLaxityValue = 0;
     let stitchLaxityRegex = '(0|1)(.[0-9]{1,2})?';
@@ -34,7 +35,7 @@
     }
 </script>
 
-<Panel --left="calc(99vw - 400px)" --display={$showPropertiesPanel ? 'unset' : 'none'}>
+<Panel --left="calc(99vw - 400px)" --display={$selected3DObject !== null ? 'unset' : 'none'}>
     <div slot="panel-title">
         <h4 class="h4">Properties</h4>
     </div>
@@ -106,7 +107,17 @@
         </div>
         <br />
         <p>Stitch Colour:</p>
-        <input type="color" class="rounded-lg" value="#ff0000" />
+        {#if $selected3DObject !== null}
+            <input
+                type="color"
+                class="rounded-lg"
+                value={$selected3DObject !== null
+                    ? '#'.concat(
+                          ($selected3DObject.material as MeshLambertMaterial).color.getHexString(),
+                      )
+                    : $nextStitchColourValue}
+            />
+        {/if}
     </div>
 </Panel>
 

@@ -24,7 +24,6 @@
             material.color = new THREE.Color().setHex(Math.random() * 0xffffff); // TO-DO: Have a default stitch colour.
             material.emissive = material.color; // TO-DO: Should set up emissive when generating 3D crochet pattern.
             const mesh = new THREE.Mesh(geometry, material);
-
             mesh.translateX(pos.x);
             mesh.translateY(pos.y);
             mesh.translateZ(pos.z);
@@ -35,6 +34,7 @@
 
 <ThreeCanvas
     --height="100%"
+    toggleBloom={true}
     cameraPosition={new THREE.Vector3(0, 0, 10)}
     init={(scene: THREE.Scene) => {
         previewCanvasScene.set(scene);

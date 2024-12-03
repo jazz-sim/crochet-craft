@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { Scene } from 'three';
+import { Scene, Mesh } from 'three';
 
 export const textContent = writable('');
 export const textContentError = writable({
@@ -8,4 +8,4 @@ export const textContentError = writable({
 });
 export const nextStitchColourValue = writable('#d281fb');
 export const previewCanvasScene = writable(new Scene());
-export const showPropertiesPanel = writable(false);
+export const selected3DObject = writable(null as null | Mesh);
