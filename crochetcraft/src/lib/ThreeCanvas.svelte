@@ -1,6 +1,9 @@
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
     import * as Three from 'three';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
     let wrapper: HTMLDivElement;
@@ -31,15 +34,15 @@
         // const height = window.innerHeight;
         const width = wrapper.clientWidth;
         const height = wrapper.clientHeight;
-
         const camera = new Three.PerspectiveCamera(70, width / height, 0.01, 100);
 
+        // SET UP SCENE:
         scene.add(new Three.AmbientLight(0x404040, 10)); // soft white light
         // without directional light, spheres just look like flat circles
         scene.add(new Three.DirectionalLight(0x404040, 10));
-
         init(scene);
 
+        // SET UP RENDERER:
         renderer = new Three.WebGLRenderer({
             antialias: true,
             canvas,
@@ -47,14 +50,62 @@
         renderer.setSize(width, height);
         renderer.setAnimationLoop(animation);
 
+        // FIX UP CAMERA:
         const controls = new OrbitControls(camera, renderer.domElement);
         camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
         controls.update(); // Must be called after manually updating camera position
 
-        function animation() {
-            renderer.render(scene, camera);
+        // CREATE BLOOM EFFECT:
+        const raycaster = new Three.Raycaster();
+        const mouse = new Three.Vector2();
+        let bloomPass = new UnrealBloomPass(
+            new Three.Vector2(wrapper.clientWidth, wrapper.clientHeight),
+            0.25,
+            0.25,
+            2,
+        );
+        bloomPass.renderToScreen = true;
+        const composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        composer.addPass(bloomPass);
+
+        let previousIntersectedObject = null as null | Three.Mesh;
+        function checkIntersection(e: MouseEvent) {
+            // get mouse coords:
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            // Get intersection list:
+            const intersects = raycaster.intersectObjects(scene.children);
+            let sameIntersection = false;
+            let currentIntersectedObject = null as null | Three.Mesh;
+            // finding the current intersected mesh:
+            for (let i = 0; i < intersects.length; i++) {
+                if (intersects[i].object.type == 'Mesh') {
+                    currentIntersectedObject = intersects[i].object as Three.Mesh;
+                    if (currentIntersectedObject == previousIntersectedObject) {
+                        sameIntersection = true;
+                    }
+                    break;
+                }
+            }
+            // If there is no intersection conflict, highlight, else remove hightlight:
+            if (!sameIntersection) {
+                if (previousIntersectedObject) {
+                    let previousMaterial =
+                        previousIntersectedObject.material as Three.MeshLambertMaterial;
+                    previousMaterial.emissiveIntensity = 0;
+                }
+                if (currentIntersectedObject) {
+                    let currentMaterial =
+                        currentIntersectedObject.material as Three.MeshLambertMaterial;
+                    currentMaterial.emissiveIntensity = 10;
+                }
+                previousIntersectedObject = currentIntersectedObject;
+            }
         }
-        addEventListener(
+
+        window.addEventListener('pointermove', checkIntersection);
+        window.addEventListener(
             'resize',
             () => {
                 camera.aspect = wrapper.clientWidth / wrapper.clientHeight;
@@ -64,6 +115,11 @@
             },
             false,
         );
+
+        function animation() {
+            raycaster.setFromCamera(mouse, camera);
+            composer.render();
+        }
     });
 
     /**

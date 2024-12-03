@@ -20,7 +20,11 @@
         ChainStitchParts.map((curve) => {
             const geometry = new THREE.TubeGeometry(curve, 50, 0.1, 10);
             const material = new THREE.MeshLambertMaterial();
+            material.side = THREE.DoubleSide; // This has to be double-sided for effective intersection checking.
+            material.color = new THREE.Color().setHex(Math.random() * 0xffffff); // TO-DO: Have a default stitch colour.
+            material.emissive = material.color; // TO-DO: Should set up emissive when generating 3D crochet pattern.
             const mesh = new THREE.Mesh(geometry, material);
+
             mesh.translateX(pos.x);
             mesh.translateY(pos.y);
             mesh.translateZ(pos.z);
