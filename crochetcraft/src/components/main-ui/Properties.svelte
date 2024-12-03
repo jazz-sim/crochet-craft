@@ -33,6 +33,14 @@
             selectedTextInput.setCustomValidity('');
         }
     }
+    // Changing stitch colour:
+    function updateStitchColour(e: any) {
+        if ($selected3DObject) {
+            ($selected3DObject.material as MeshLambertMaterial).color.setHex(
+                parseInt(e.target?.value.replace('#', '0x')),
+            );
+        }
+    }
 </script>
 
 <Panel --left="calc(99vw - 400px)" --display={$selected3DObject !== null ? 'unset' : 'none'}>
@@ -116,6 +124,7 @@
                           ($selected3DObject.material as MeshLambertMaterial).color.getHexString(),
                       )
                     : $nextStitchColourValue}
+                on:change={updateStitchColour}
             />
         {/if}
     </div>

@@ -122,8 +122,10 @@
                 }
             }
 
-            window.addEventListener('pointermove', (e: MouseEvent) => checkIntersection(e, 'move'));
-            window.addEventListener('click', (e: MouseEvent) => checkIntersection(e, 'click'));
+            wrapper.addEventListener('pointermove', (e: MouseEvent) =>
+                checkIntersection(e, 'move'),
+            );
+            wrapper.addEventListener('click', (e: MouseEvent) => checkIntersection(e, 'click'));
         }
 
         window.addEventListener(
