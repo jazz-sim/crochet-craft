@@ -54,6 +54,16 @@
         function animation() {
             renderer.render(scene, camera);
         }
+        addEventListener(
+            'resize',
+            () => {
+                camera.aspect = wrapper.clientWidth / wrapper.clientHeight;
+                camera.updateProjectionMatrix();
+
+                renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+            },
+            false,
+        );
     });
 
     /**
@@ -97,7 +107,7 @@
 <style>
     div {
         width: 100%;
-        height: 100dvh;
+        height: var(--height, 100dvh);
     }
 
     canvas {
