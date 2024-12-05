@@ -1,5 +1,5 @@
 <script lang="ts">
-    // FIRST - RENDER AFTER PIPELINE IS DONE
+    // TO-DO: RENDER AFTER PIPELINE IS DONE (see comments)
     import { makeMultiBezier } from '$lib/builder/bezier';
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
     import * as THREE from 'three';
@@ -19,8 +19,9 @@
     function makeChainStitch(scene: THREE.Scene, pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0)) {
         ChainStitchParts.map((curve) => {
             const geometry = new THREE.TubeGeometry(curve, 50, 0.1, 10);
+            // NOTE: May need to close TubeGeometries so that the stitch looks better...
             const material = new THREE.MeshLambertMaterial();
-            material.side = THREE.DoubleSide; // This has to be double-sided for effective intersection checking.
+            material.side = THREE.DoubleSide; // NOTE: The side value of the material has to be double-sided for effective intersection checking.
             material.color = new THREE.Color().setHex(Math.random() * 0xffffff); // TO-DO: Have a default stitch colour.
             material.emissive = material.color; // TO-DO: Should set up emissive when generating 3D crochet pattern.
             const mesh = new THREE.Mesh(geometry, material);

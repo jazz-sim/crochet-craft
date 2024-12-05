@@ -167,11 +167,19 @@
         </div>
         <br />
         <p>Next Stitch Colour:</p>
-        <input type="color" class="rounded-lg" bind:value={$nextStitchColourValue} />
+        <input
+            id="EditorColorInput"
+            type="color"
+            class="rounded-lg"
+            bind:value={$nextStitchColourValue}
+        />
     </div>
 </Panel>
 
 <style>
+    #EditorColorInput {
+        cursor: pointer;
+    }
     button {
         display: block;
         margin-bottom: 10px;

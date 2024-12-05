@@ -64,7 +64,7 @@
         let composer: EffectComposer;
 
         // CREATE BLOOM EFFECT:
-        // Assumes: selected 3D objects are meshes, where the material is Lambert Material.
+        // Assumes: toggleBloom is positive and selected 3D objects are meshes, where the material is Lambert Material.
         if (toggleBloom) {
             raycaster = new Three.Raycaster();
             mouse = new Three.Vector2();
@@ -101,6 +101,7 @@
                 if (type == 'move') {
                     // If there is no intersection conflict, highlight, else remove hightlight:
                     if (!sameIntersection) {
+                        wrapper.style.cursor = 'pointer';
                         if (previousIntersectedObject) {
                             let previousMaterial =
                                 previousIntersectedObject.material as Three.MeshLambertMaterial;
