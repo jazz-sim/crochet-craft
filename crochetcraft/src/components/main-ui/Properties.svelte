@@ -117,6 +117,7 @@
         <p>Stitch Colour:</p>
         {#if $selected3DObject !== null}
             <input
+                id="propertiesColorInput"
                 type="color"
                 class="rounded-lg"
                 value={$selected3DObject !== null
@@ -131,6 +132,9 @@
 </Panel>
 
 <style>
+    #propertiesColorInput {
+        cursor: pointer;
+    }
     input:invalid {
         border: red solid 3px;
     }
