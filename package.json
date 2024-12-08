@@ -12,5 +12,8 @@
         "@types/jest": "^29.5.14",
         "@types/node": "^22.10.1"
     },
-    "packageManager": "yarn@4.5.0"
+    "packageManager": "yarn@4.5.0",
+    "dependencies": {
+        "@neodrag/svelte": "^2.0.6"
+    }
 }

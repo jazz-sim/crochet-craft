@@ -1,3 +1,8 @@
+<script lang="ts">
+    import '../../app.css';
+    import '../../styles/global.css';
+</script>
+
 <div id="DemoPageBox">
     <img
         src="/cc-logo-new-1-purple.png"
@@ -8,7 +13,8 @@
     <h1 class="h1">Welcome to CrochetCraft.</h1>
     <p>
         Check out out <a class="anchor" href="demos">demos</a> or
-        <a class="anchor" href="tools">tools</a>.
+        <a class="anchor" href="tools">tools</a>...or the
+        <a class="anchor" href="main-ui">main UI</a>.
     </p>
 </div>
 

@@ -43,5 +43,8 @@
         "vite": "^6.0.1",
         "vitest": "^2.1.6"
     },
-    "type": "module"
+    "type": "module",
+    "dependencies": {
+        "@neodrag/svelte": "^2.0.6"
+    }
 }
