@@ -14,13 +14,8 @@
             disabled: false,
         },
         {
-            name: 'ss',
+            name: 'sl st',
             hovertext: 'slip stitch',
-            disabled: false,
-        },
-        {
-            name: 'st',
-            hovertext: 'stitch',
             disabled: false,
         },
         {
@@ -36,7 +31,7 @@
         {
             name: 'hdc',
             hovertext: 'half double crochet',
-            disabled: false,
+            disabled: true,
         },
         {
             name: 'tc',
@@ -125,7 +120,11 @@
     }
     function appendStitch(e: any) {
         let stitchText = e.target.textContent as string;
-        textContent.update((currentText: string) => currentText + ' ' + stitchText);
+        if (/^$|\n$/.test($textContent)) {
+            $textContent += stitchText;
+        } else {
+            $textContent += ', ' + stitchText;
+        }
         sendToParser();
     }
 </script>
@@ -144,9 +143,10 @@
             on:input={sendToParser}
             on:change={sendToParser}
         ></textarea>
-        <p class={$textContentError.errorValue ? 'text-error-500' : 'text-success-500'}>
-            {$textContentError.errorText}
-        </p>
+        <pre
+            class:text-error-500={$textContentError.errorValue}
+            class:text-success-500={!$textContentError.errorValue}
+            class="whitespace-break-spaces">{$textContentError.errorText}</pre>
         <br />
         <p>Add Stitches / Instructions:</p>
         <div id="add-stitch-buttons" class="flex flex-wrap gap-1">
