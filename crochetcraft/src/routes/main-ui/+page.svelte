@@ -1,15 +1,21 @@
 <script lang="ts">
+    import '../../app.css';
+    import '../../styles/global.css';
     import Editor from '$components/main-ui/Editor.svelte';
     import Toolbar from '$components/main-ui/Toolbar.svelte';
-    import Preview from '$components/main-ui/Preview.svelte';
+    import Canvas from '$components/canvas/Canvas.svelte';
     import Properties from '$components/main-ui/Properties.svelte';
+
+    let toolbar: Toolbar;
 </script>
 
-<div id="sample-ui-div">
-    <Toolbar />
-    <Editor />
-    <Preview />
-    <Properties />
+<div id="container-div">
+    <Toolbar bind:this={toolbar} />
+    <div id="render-div">
+        <Canvas />
+        <Editor />
+        <Properties />
+    </div>
 </div>
 
 <style>
@@ -23,12 +29,15 @@
         margin: 0;
         padding: 0;
     }
-    #sample-ui-div {
-        height: 100%;
-        width: 100%;
+    #container-div {
         display: flex;
-        flex-direction: column;
+        flex-flow: column;
+        height: 100%;
+        max-height: 100%;
+    }
+    #render-div {
         position: relative;
-        border-top: solid;
+        flex: 1;
+        min-height: 0;
     }
 </style>

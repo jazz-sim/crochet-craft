@@ -1,6 +1,10 @@
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
+    import { selected3DObject } from '../components/main-ui/stores';
     import * as Three from 'three';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
     let wrapper: HTMLDivElement;
@@ -25,21 +29,24 @@
     /** The initial position of the camera. */
     export let cameraPosition: Three.Vector3 = new Three.Vector3(0, 0, 60);
 
+    /** For toggling whether to have hover and select bloom + emission effect: */
+    export let toggleBloom = false;
+
     onMount(() => {
         console.assert(canvas);
         // const width = window.innerWidth;
         // const height = window.innerHeight;
         const width = wrapper.clientWidth;
         const height = wrapper.clientHeight;
-
         const camera = new Three.PerspectiveCamera(70, width / height, 0.01, 100);
 
+        // SET UP SCENE:
         scene.add(new Three.AmbientLight(0x404040, 10)); // soft white light
         // without directional light, spheres just look like flat circles
         scene.add(new Three.DirectionalLight(0x404040, 10));
-
         init(scene);
 
+        // SET UP RENDERER:
         renderer = new Three.WebGLRenderer({
             antialias: true,
             canvas,
@@ -47,12 +54,99 @@
         renderer.setSize(width, height);
         renderer.setAnimationLoop(animation);
 
+        // FIX UP CAMERA:
         const controls = new OrbitControls(camera, renderer.domElement);
         camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
         controls.update(); // Must be called after manually updating camera position
 
+        let raycaster: Three.Raycaster;
+        let mouse: Three.Vector2;
+        let composer: EffectComposer;
+
+        // CREATE BLOOM EFFECT:
+        // Assumes: toggleBloom is positive and selected 3D objects are meshes, where the material is Lambert Material.
+        if (toggleBloom) {
+            raycaster = new Three.Raycaster();
+            mouse = new Three.Vector2();
+            let bloomPass = new UnrealBloomPass(
+                new Three.Vector2(wrapper.clientWidth, wrapper.clientHeight),
+                0.25,
+                0.25,
+                2,
+            );
+            bloomPass.renderToScreen = true;
+            composer = new EffectComposer(renderer);
+            composer.addPass(new RenderPass(scene, camera));
+            composer.addPass(bloomPass);
+
+            let previousIntersectedObject = null as null | Three.Mesh;
+            function checkIntersection(e: MouseEvent, type: String) {
+                // get mouse coords:
+                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                // Get intersection list:
+                const intersects = raycaster.intersectObjects(scene.children);
+                let sameIntersection = false;
+                let currentIntersectedObject = null as null | Three.Mesh;
+                // finding the current intersected mesh:
+                for (let i = 0; i < intersects.length; i++) {
+                    if (intersects[i].object.type == 'Mesh') {
+                        currentIntersectedObject = intersects[i].object as Three.Mesh;
+                        if (currentIntersectedObject == previousIntersectedObject) {
+                            sameIntersection = true;
+                        }
+                        break;
+                    }
+                }
+                if (type == 'move') {
+                    // If there is no intersection conflict, highlight, else remove hightlight:
+                    if (!sameIntersection) {
+                        wrapper.style.cursor = 'pointer';
+                        if (previousIntersectedObject) {
+                            let previousMaterial =
+                                previousIntersectedObject.material as Three.MeshLambertMaterial;
+                            previousMaterial.emissiveIntensity = 0;
+                        }
+                        if (currentIntersectedObject) {
+                            let currentMaterial =
+                                currentIntersectedObject.material as Three.MeshLambertMaterial;
+                            currentMaterial.emissiveIntensity = 10;
+                        }
+                        previousIntersectedObject = currentIntersectedObject;
+                    }
+                } else {
+                    if (currentIntersectedObject) {
+                        selected3DObject.set(currentIntersectedObject);
+                    } else {
+                        selected3DObject.set(null);
+                    }
+                }
+            }
+
+            wrapper.addEventListener('pointermove', (e: MouseEvent) =>
+                checkIntersection(e, 'move'),
+            );
+            wrapper.addEventListener('click', (e: MouseEvent) => checkIntersection(e, 'click'));
+        }
+
+        window.addEventListener(
+            'resize',
+            () => {
+                camera.aspect = wrapper.clientWidth / wrapper.clientHeight;
+                camera.updateProjectionMatrix();
+
+                renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+            },
+            false,
+        );
+
         function animation() {
-            renderer.render(scene, camera);
+            if (toggleBloom) {
+                raycaster.setFromCamera(mouse, camera);
+                composer.render();
+            } else {
+                renderer.render(scene, camera);
+            }
         }
     });
 
@@ -97,7 +191,7 @@
 <style>
     div {
         width: 100%;
-        height: 100dvh;
+        height: var(--height, 100dvh);
     }
 
     canvas {
