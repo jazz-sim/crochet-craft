@@ -70,3 +70,9 @@ describe('syntax errors', () => {
         expect(() => parse('2')).toThrow();
     });
 });
+
+describe('semantic errors', () => {
+    test('invalid row number range', () => {
+        expect(() => parse('4-3. 2 tr')).toThrow(/row.*range/i);
+    });
+});
