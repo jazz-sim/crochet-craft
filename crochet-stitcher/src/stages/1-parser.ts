@@ -18,10 +18,8 @@ export function parse(input: string): Pattern<ParsedInstruction> {
         const tokens = lex(line, lineNum);
         let i = 0; // index of current token
 
-        // Row number?
-        if (tokens[i]?.type === 'number' && tokens[i + 1]?.value === '.') {
-            i += 2;
-        }
+        const [rowStart, rowEnd] = parseRowNumber() ?? [0, 0];
+        const rowRepetitions = Math.max(1, rowEnd - rowStart + 1);
 
         try {
             // Foundation stitch?
@@ -37,11 +35,12 @@ export function parse(input: string): Pattern<ParsedInstruction> {
 
             // Instructions?
             if (i < tokens.length) {
-                pattern.stitches.push(...parseInstructions());
+                const rowInstructions = parseInstructions();
                 if (pattern.foundation === Foundation.MagicRing) {
                     // Add end-of-row marker only for magic ring patterns
-                    pattern.stitches.push('eor');
+                    rowInstructions.push('eor');
                 }
+                pattern.stitches.push(...repeat(rowInstructions, rowRepetitions));
                 checkStitchLimit(pattern.stitches.length);
             }
             if (i !== tokens.length) throw 'Syntax error';
@@ -53,6 +52,37 @@ export function parse(input: string): Pattern<ParsedInstruction> {
                     `\t${line}\n` +
                     `\t${' '.repeat(spaces)}${'^'.repeat(carets)}`,
             );
+        }
+
+        /** Parses the row number, returning the number of row repetitions. O(1) */
+        function parseRowNumber(): [number, number] | null {
+            const start = i;
+
+            // Start row number?
+            if (tokens[i]?.type !== 'number') return null;
+            const startValue = tokens[i].value as number;
+            let endValue = startValue;
+            i += 1;
+
+            // End row number?
+            if (tokens[i]?.value === '-') {
+                i += 1;
+                if (tokens[i]?.type !== 'number') {
+                    i = start;
+                    return null;
+                }
+                endValue = tokens[i].value as number;
+                i += 1;
+            }
+            if (startValue > endValue) throw 'Invalid row number range';
+
+            if (tokens[i]?.value !== '.') {
+                i = start;
+                return null;
+            }
+            i += 1;
+
+            return [startValue, endValue];
         }
 
         /** Parses one or more instructions. O(n) */
