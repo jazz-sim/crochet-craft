@@ -54,7 +54,7 @@ export function parse(input: string): Pattern<ParsedInstruction> {
             );
         }
 
-        /** Parses the row number, returning the number of row repetitions. O(1) */
+        /** Parses the row number. O(1) */
         function parseRowNumber(): [number, number] | null {
             const start = i;
 
