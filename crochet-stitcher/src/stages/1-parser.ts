@@ -18,7 +18,7 @@ export function parse(input: string): Pattern<ParsedInstruction> {
         const tokens = lex(line, lineNum);
         let i = 0; // index of current token
 
-        const [rowStart, rowEnd] = parseRowNumber() ?? [0, 0];
+        const [rowStart, rowEnd] = parseRowRange() ?? [0, 0];
         const rowRepetitions = Math.max(1, rowEnd - rowStart + 1);
 
         try {
@@ -54,8 +54,8 @@ export function parse(input: string): Pattern<ParsedInstruction> {
             );
         }
 
-        /** Parses the row number. O(1) */
-        function parseRowNumber(): [number, number] | null {
+        /** Parses the row number or range. O(1) */
+        function parseRowRange(): [number, number] | null {
             const start = i;
 
             // Start row number?
