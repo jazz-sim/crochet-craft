@@ -1,0 +1,154 @@
+%!xelatex
+\documentclass[main.tex]{subfiles}
+\begin{document}
+
+\chapter{Conventions}\label{chp:conventions}
+
+\section{User Assumptions}
+
+You, the user of \CC, are assumed to understand American crochet terminology, and be competent in the basic usage of the device that is running \CC.
+
+\section{Computer System Assumptions}\label{sec:csassumptions}
+
+\CC{} runs in a browser, so it is assumed that you are using a browser that is up-to-date, and has not been tampered with. It is assumed that you are using a device with a keyboard and mouse. If you wish to use any features of the computer filesystem, it is assumed that there is sufficient space for these features.
+
+\section{Notational Conventions}
+
+The following text conventions are used in this manual:
+
+\begin{itemize}
+\item Libertine is used for normal text.
+\item \emph{Libertine italicized} is used for emphasis and new terms in normal text.
+\item \textbf{Libertine bolded} is used for emphasis in figures and tables.
+% \item Libertine in gray is used for section titles. For example, the title of the ``Conventions'' section is in Heading 3.
+\item \io{Noto Sans} is used for program names and user interface input/output.
+\item \ui{Noto Sans italicized} is used for widget names.
+\item \Verb`Bitstream Vera Sans Mono` is used for \IR{} contents.
+\item \emph{\Verb`Bitstream Vera Sans Mono italicized`} is used for variables of \IR{} syntax.
+\end{itemize}
+
+\section{Terms}\label{sec:terms}
+
+Listing~\ref{lst:grammar} details the basic grammar used for parsing the input from the \PTI. The available crochet terms and meanings are listed in table~\ref{tbl:keywords}.
+
+\begin{listing}[htbp]
+    \centering
+    \begin{minted}{text}
+    instructions := (instruction "," | color)* instruction
+    instruction := stitches | repeat
+
+    color := color_name ":"
+    color_name := "white" | "black" | "gray" | "red" | ...
+
+    stitches := (stitch | stitch count | count stitch) into_clause?
+    stitch := "ch" | ("ss" | "slst" | "sl" "st" | "sc" | "dc" | "hdc") "inc"? | "inv"? "dec"
+
+    into_clause := ("in" | "into") into_spec
+    into_spec := stitch | "sp"
+
+    repeat := "(" instructions ")" (count | "twice")
+        | count "(" instructions ")"
+        | "*" instructions "," ("rep" | "repeat") "from"? "*" count?
+
+    count := <integer> "x"? "more"? ("time" | "times")?
+    \end{minted}
+    \caption{The pattern grammar understood by \CC.}
+    \label{lst:grammar}
+\end{listing}
+
+\begin{table}[htbp]
+    \centering
+    \begin{tblr}{c|c}
+        \textbf{Keyword} & \textbf{Meaning} \\
+        \hline
+        \emph{ch / chain} & chain \\
+        \emph{ss / slst / sl / slip} & slip stitch \\
+        \emph{st / stitch} & stitch \\
+        \emph{sc / single} & single crochet \\
+        \emph{dc / double} & double crochet \\
+        \emph{hdc} & half double crochet \\
+        \emph{tr / tc / triple / treble} & treble crochet \\
+        \emph{inc / increase} & increase \\
+        \emph{inv} & invisible \\
+        \emph{dec / decrease} & decrease \\
+        \emph{sp} & space \\
+        \emph{mr / mc} & magic ring \\
+        \emph{in / into} & into \\
+        \emph{next} & next \\
+        \emph{from} & from \\
+        \emph{two / twice} & twice \\
+        \emph{three / thrice} & thrice \\
+        \emph{x / time / times} & times \\
+        \emph{more} & more \\
+        \emph{rep / repeat} & repeat \\
+    \end{tblr}
+    \caption{The keywords and their meanings, as recognized by \CC.}
+    \label{tbl:keywords}
+\end{table}
+
+The following terms are used throughout the manual:
+
+\begin{itemize}
+\item \CC{} - the name of the web application / program.
+\item \emph{user} - the person who uses \CC, addressed by ``you''. 
+\item \emph{crochet} - this refers to the ``process of creating textiles by using a crochet hook to interlock loops of yarn, thread, or strands of other materials''.
+\item \emph{yarn} - this refers to ``a long continuous length of interlocked fibres, used in sewing, crocheting, knitting, weaving, embroidery, ropemaking, and the production of textiles''.
+\item \emph{pattern text} - this refers to a set of textual instructions that detail how to create a crochet project. 
+\item \emph{stitch} - a simple, indivisible knot built on top of previous stitches, used to build patterns. See Figure 2 for a list of acceptable stitches.
+\item \emph{foundation} - this is the initial loop used to start a pattern. See the table above for a list of acceptable foundations.
+\item \RM{} - this refers to the 3D object created and shown based on the inputted pattern text.
+\item \CRW{} - this refers to the area of the screen used for displaying the \RM.
+\item \emph{hook} - ``A crochet hook, or crochet needle, is an implement used to make loops in thread or yarn and to interlock them into crochet stitches''.
+\item \emph{attribute} - a characteristic of a stitch, where the characteristics are:
+    \begin{itemize}\compact
+        \item colour - the pigmentation of the stitch
+        \item thickness - the diameter of the yarn that constitutes the stitch
+        \item laxity - the looseness of the stitch. In other words, the spacing between stitches
+        \item hook size - used to determine the scale of the render model
+    \end{itemize}
+\item \IR{} - refers to \CC{} code responsible for drawing the \RM{} in the \CRW.
+\item \emph{session} - an invocation of \CC.
+\item \PatSidebar{} - this refers to the user interface widget on the left side of the \CRW, which contains the \PTI, the \ASBs, and the \NCSB. The \PatSidebar{} is used for causing input to the IR. The content changes in the \PatSidebar{} affect the \RM{} and the \CRW.
+\item \PTI{} - this refers to the text box which holds your input pattern text.
+\item \ASBs{} - this refers to the set of buttons below of the \PTI{} where each button corresponds to a different type of stitch that is supported by the grammar.
+\item \NCSB{} - this refers to the button below the \ASBs{} which opens up a colour picker to set the colour for the next added stitch.
+\item \PropSidebar{} - this refers to the user interface widget on the right side of the \CRW, which contains the \YCP, \YTS, \SLS, and the \HSS. This sidebar causes input to the \IR. The content changes in the \PropSidebar{} affect the \RM{} and the \CRW. The content changes in the \PropSidebar{} will update the \PTI{} in the \PatSidebar{}.
+\item \YCP{} - this refers to the button on the \PropSidebar{} which opens up a colour picker to set the colour for the selected stitch on the \RM.
+\item \YTS{} - this refers to the input box on the \PropSidebar{} that changes the thickness of the yarn for the selected stitch on the \RM.
+\item \SLS{} - this refers to the slider on the \PropSidebar{} that changes the laxity of the selected stitch on the \RM.
+\item \HSS{} - this refers to the input box on the \PropSidebar{} that changes the hook size of the selected stitch on the \RM.
+\item \MenuBar{} - this refers to the user interface component at the top of the \CRW, which contains the \UB, \DB, and \EB.
+\item \UB{} - this refers to the button in the \MenuBar{} that when pressed allows you to select a text file from your local device such that the contents of that text file populate the \PTI.
+\item \DB{} - this refers to the button in the \MenuBar{} that when pressed allows you to download your pattern text with some metadata as a text file to your local device.
+\item \EB{} - this refers to the button in the \MenuBar{} that when pressed allows you to download your \RM{} as a .OBJ file to your local device.
+\item \emph{OBJ} - ``a geometry definition file format first developed by Wavefront Technologies for its Advanced Visualizer animation package''.
+\item \ScLayout{} - made up of a \MenuBar, \PatSidebar, \PropSidebar, \CRW, and potentially a \RM, if there is a valid pattern text to render.
+\item \emph{left mouse click} (LMC) - a left mouse click. 
+\item \emph{right mouse click} (RMC) - a right mouse click.
+\item \emph{What You See Is What You Get} (WYSIWYG) - this refers to ``software that allows content to be edited in a form that resembles its appearance when printed or displayed as a finished product''.
+\item \emph{device} - this refers to whatever \CC{} is currently running on, inclusive of hardware and operating system.
+\item \emph{amigurumi} - this refers to the ``Japanese art of knitting or crocheting small, stuffed yarn creatures''.
+\end{itemize}
+
+\section{Other Abbreviations}
+
+\begin{itemize}
+\item \emph{GUI} - Graphical User Interface
+\end{itemize}
+
+\section{Basic User Interface Goals}
+
+\CC{} aims to be a friendly GUI for crochet amateurs and enthusiasts. Not much crochet modelling software exists, and most of this software does not provide fast and accessible rendering. The main appeal of \CC{} is from the benefits of WYSIWYG and the ability to view the \RM{} from any angle. Some other basic goals for the GUI of \CC{} are:
+
+\begin{itemize}
+\item Specifying the attributes of a stitch can be done from within the \PTI, before rendering, as well as after rendering.
+\item There is no need to confirm the end of a \PTI.
+\item It is easy for you to minimize, open, and move sidebars such that the \RM{} on the \CRW{} is easily visible.
+\item It is simple for you to import your crochet pattern text into the \PTI, and it is simple for you to export a 3D object of the \RM{} in OBJ format.
+\end{itemize}
+
+\section{Organization of this Manual}
+
+The remainder of this manual is organized primarily on use cases. The \nameref{chp:use} chapter describes the basic use cases, including the possible GUI interactions in depth. After the \nameref{chp:use} chapter, the \nameref{chp:troubleshooting} chapter describes what you should do if you encounter common errors as well as how to use \CC{} effectively. Lastly, the \nameref{chp:limitations} chapter describes the restrictions on the current version of \CC.
+
+\end{document}

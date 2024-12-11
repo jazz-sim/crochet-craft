@@ -1,0 +1,69 @@
+%!xelatex
+\RequirePackage[l2tabu, orthodox]{nag} % https://tex.stackexchange.com/a/589
+\documentclass[letterpaper,12pt]{report}
+
+\usepackage[20241211]{jtai}
+\jtaisetup{
+    title = CrochetCraft User Manual,
+    author = {
+        Simran Thind \\
+        Jasmine Tai \\
+        Carol Xu \\
+        Dhananjay Patki \\
+        Allen Liu \\
+        Osman Wong
+    },
+    font = libertine,
+    mono font = bera,
+    modules = {},
+    packages = {fancyhdr, minted, parskip, siunitx, subfiles},
+}
+
+\setsansfont{Noto Sans}[Scale=MatchUppercase]
+
+\pagestyle{fancy}
+\fancyhead[L]{CrochetCraft User Manual}
+\fancyhead[R]{\rightmark}
+\fancyfoot[C]{\thepage}
+
+\newcommand{\io}[1]{\textsf{#1}}
+\newcommand{\ui}[1]{\textsf{\emph{#1}}}
+
+\newcommand{\IR}{internal representation}
+\newcommand{\CC}{\io{CrochetCraft}}
+\newcommand{\RM}{\ui{Rendered Model}}
+\newcommand{\CRW}{\ui{Crochet Rendering Window}}
+\newcommand{\PatSidebar}{\ui{Pattern Sidebar}}
+\newcommand{\PTI}{\ui{Pattern Text Input}}
+\newcommand{\ASB}{\ui{Add Stitch Button}}
+\newcommand{\ASBs}{\ui{Add Stitch Buttons}}
+\newcommand{\NCSB}{\ui{Next Colour Stitch Button}}
+\newcommand{\PropSidebar}{\ui{Properties Sidebar}}
+\newcommand{\YCP}{\ui{Yarn Colour Picker}}
+\newcommand{\YTS}{\ui{Yarn Thickness Selector}}
+\newcommand{\SLS}{\ui{Stitch Laxity Selector}}
+\newcommand{\HSS}{\ui{Hook Size Selector}}
+\newcommand{\MenuBar}{\ui{Menu Bar}}
+\newcommand{\UB}{\ui{Upload Button}}
+\newcommand{\DB}{\ui{Download Button}}
+\newcommand{\EB}{\ui{Export Button}}
+\newcommand{\ScLayout}{\ui{Screen Layout}}
+
+\newcommand{\Solution}[1]{\begin{itemize}\item[$\to$]#1\end{itemize}}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+%\newpage
+%\listoffigures
+%\listoftables
+\newpage
+
+\subfile{introduction.tex}
+\subfile{conventions.tex}
+\subfile{use-cases.tex}
+\subfile{troubleshooting-tips.tex}
+\subfile{limitations.tex}
+
+\end{document}
