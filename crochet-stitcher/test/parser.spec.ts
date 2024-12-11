@@ -45,6 +45,10 @@ describe('simple tests', () => {
         expect(parse('1. 2 tr')).toEqual(slkt(st(StitchType.Treble, 2)));
     });
 
+    test('initial row number range', () => {
+        expect(parse('3-7. 2 tr')).toEqual(slkt(st(StitchType.Treble, 10)));
+    });
+
     test('colour', () => {
         expect(parse('ch 2, Red: ch 2')).toEqual(
             slkt(st(StitchType.Chain, 2), st(StitchType.Chain, 2, 0, 'red')),
