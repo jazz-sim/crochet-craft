@@ -8,15 +8,15 @@ The use cases of \CC{} are classified by the section of the GUI your initial int
 
 \section{Crochet Pattern Entry}
 
-Crochet patterns may be entered in two ways - using the \PTI{} or the \ASB.
+Crochet patterns may be entered\index{pattern!entry} in two ways - using the \PTI{} or the \ASB.
 
-You may enter the pattern text in the \PTI:
+You may enter the pattern text in the \PTI*:
 \begin{enumerate}
 \item Any text may be typed into the \PTI, but only text that satisfies the grammar shall be considered valid.
 \item If the resulting text within the \PTI{} is considered to be a valid pattern, the \CRW{} will update to display a new \RM{} corresponding to the updated pattern text. 
 \end{enumerate}
 
-You may consider alternative methods of direct text entry into the \PTI:
+You may consider alternative methods of direct text entry into the \PTI*:
 \begin{itemize}
 \item You may copy or paste text into the \PTI. This is done using the copy or past shortcuts of the underlying device.
 \item You may use speech-to-text to input the pattern text into the \PTI{} box.
@@ -25,7 +25,7 @@ Regardless of the method of text entry, the \CRW{} will update to display a new 
 
 % In the case that the resultant text in the \PTI{} is invalid, the \CRW{} will not update, and will continue to display the same \RM{} corresponding to the last valid pattern text.
 
-You may add one stitch to the end of a pattern using one of the \ASBs. Each \ASB{} is labelled with the stitch that it will add to the \RM, and each button corresponds to a different stitch. 
+You may add one stitch to the end of a pattern using one of the \ASBs*. Each \ASB{} is labelled with the stitch that it will add to the \RM, and each button corresponds to a different stitch. 
 
 \begin{enumerate}
 \item You press the appropriate \ASB. For example, to add a chain stitch, press the button labelled \ui{ch}.
@@ -35,39 +35,39 @@ You may add one stitch to the end of a pattern using one of the \ASBs. Each \ASB
 
 As an alternative to traditional text input, you may press any of the \ASB{} multiple times to add multiple stitches. After each button press, the \PTI{} will update, and if the pattern text is still valid, the \CRW{} will update too.
 
-In the case that the resultant text in the \PTI{} is invalid, the \CRW{} will not update, and will continue to display the same \RM{} corresponding to the last valid pattern text.
+In the case that the resultant text in the \PTI{} is invalid\index{pattern!invalid}, the \CRW{} will not update, and will continue to display the same \RM{} corresponding to the last valid pattern text.
 
 \section{Viewing Crochet Pattern}
 
-You may view the \RM{} in the \CRW. Typically, no additional input is required to view the \RM; the \RM{} will be readily displayed on the screen under normal usage in the absence of your input.
+You may view the \RM* in the \CRW. Typically, no additional input is required to view the \RM; the \RM{} will be readily displayed on the screen under normal usage in the absence of your input.
 
 You may interact with the \CRW{} using your mouse and keyboard to change the perspective that the \RM{} is viewed from.
 
-Panning the camera:
+Panning the camera:\index{camera!panning}
 \begin{enumerate}
 \item You may pan the camera by holding Shift and LMC and moving your mouse in a direction over the \CRW.
 \item The \CRW's perspective will shift in the direction that the mouse moves in.
 \end{enumerate}
 
-Rotating the camera:
+Rotating the camera:\index{camera!rotating}
 \begin{enumerate}
 \item You may rotate the camera by holding LMC and moving your mouse in a direction.
-\item The \CRW's perspective will rotate around the centre of the \RM{} along the direction the mouse moves in
+\item The \CRW's perspective will rotate around the centre of the \RM{} along the direction the mouse moves in.
 \end{enumerate}
 
-Zooming the camera:
+Zooming the camera:\index{camera!zooming}
 \begin{enumerate}
 \item You may zoom the camera in or out by scrolling the mouse wheel up or down. 
-\item The \CRW's perspective will zoom in or out, depending on the scrolling action taken. Scrolling down zooms the camera out, and scrolling up zooms the camera in.
+\item The \CRW's perspective will zoom in or out depending on the scroll direction. Scrolling down zooms the camera out, and scrolling up zooms the camera in.
 \end{enumerate}
 
 In the case that the \RM{} is no longer visible in the \CRW{} after the viewing perspective is changed, the \CC{} system shall take no further action; \CC{} does not interfere with your changes to the viewing perspective. Even if the \RM{} is not visible within the \CRW, it shall update the \RM{} with every change to the pattern text. It is recommended, but not necessary that you pan, zoom, or rotate the camera so the \RM{} is visible again.
 
 \section{Interacting with the \RM}\label{sec:interactrm}
 
-You may interact with the \RM{} using your mouse to either hover or select the individual stitches of the \RM.
+You may interact with the \RM*\index{rendered model!interaction} using your mouse to either hover or select the individual stitches of the \RM.
 
-Hovering:
+Hovering:\index{rendered model!hovering}
 \begin{enumerate}
 \item You may hover over an individual stitch by moving the mouse pointer so it is over one of the stitches within the \RM.
 \item The \CRW{} will update, so the stitch that is under the mouse pointer will be displayed with an outline around it.
@@ -77,68 +77,70 @@ If the mouse pointer is over empty space, and there is no stitch under the point
 
 If, for some reason, the stitches in the \RM{} are the same colour as the background, and the mouse pointer moves over a stitch that is the same colour as the background, that stitch will still be highlighted.
 
-Selecting:
+Selecting:\index{rendered model!selecting}
 \begin{enumerate}
 \item First, a stitch in the \RM{} must be hovered over. 
 \item You may then do a LMC to select the hovered stitch. 
 \end{enumerate}
 
-In any use case involving a selected stitch, the stitch involved in Step 2 shall be the one that is affected. For example, interactions with the \PropSidebar{} will affect the stitch that was selected in Step 2.
+In any use case involving a selected stitch, the stitch involved in Step 2 shall be the one that is affected. For example, interactions with the \PropSidebar* will affect the stitch that was selected in Step 2.
 
 If a long press is performed, the hovered stitch will only be selected if the mouse pointer still lies on top of the stitch in the \RM{} when the LMC is released.
 
 If no stitch is being hovered over, but an LMC is performed within the \CRW, \CC{} shall either:
-Do nothing, if there is no selected stitch.
-Deselect the selected stitch, if there is a selected stitch.
+\begin{itemize}
+\item Do nothing, if there is no selected stitch.
+\item Deselect the selected stitch, if there is a selected stitch.
+\end{itemize}
 
 \section{Modifying Crochet Stitches}
 
-After a stitch has been selected, as described in the \nameref{sec:interactrm} section, the \PropSidebar{} will display several attributes belonging to the stitch. By changing these attributes, you can change the stitch's colour, thickness, hook size, and laxity.
+After a stitch has been selected, as described in the \nameref{sec:interactrm} section, the \PropSidebar* will display several attributes belonging to the stitch. By changing these attributes, you can change the stitch's colour, thickness, hook size, and laxity.
 
-Changing the colour of a stitch:
+Changing the \term*{colour} of a stitch:
 \begin{enumerate}
-\item After selecting the desired stitch, LMC the \YCP.
+\item After selecting the desired stitch, LMC the \YCP*.
 \item In the resulting dialog, select the desired colour. The dialog may vary depending on your device's operating system or web browser.
 \end{enumerate}
 
-Changing the thickness of a stitch:
+Changing the \term*{thickness} of a stitch:
 \begin{enumerate}
-\item After selecting the desired stitch, LMC and drag on the \YTS. Drag toward the left to make the stitch thinner, and drag toward the right to make it thicker. Once the stitch has the desired thickness, release the LMC.
+\item After selecting the desired stitch, LMC and drag on the \YTS*. Drag toward the left to make the stitch thinner, and drag toward the right to make it thicker. Once the stitch has the desired thickness, release the LMC.
 \end{enumerate}
 
-Changing the hook size of a stitch:
+Changing the \term*{hook size} of a stitch:
 \begin{enumerate}
-\item After selecting the desired stitch, LMC and drag on the \HSS. Drag toward the left to make the hook size smaller, and drag toward the right to make it larger. Once the stitch has the desired hook size, release the LMC.
+\item After selecting the desired stitch, LMC and drag on the \HSS*. Drag toward the left to make the hook size smaller, and drag toward the right to make it larger. Once the stitch has the desired hook size, release the LMC.
 \end{enumerate}
 
-Changing the laxity of a stitch:
+Changing the \term*{laxity} of a stitch:
 \begin{enumerate}
-\item After selecting the desired stitch, LMC and drag on the \SLS. Drag toward the left to decrease the laxity, and drag toward the right to increase it. Once the stitch has the desired laxity, release the LMC.
+\item After selecting the desired stitch, LMC and drag on the \SLS*. Drag toward the left to decrease the laxity, and drag toward the right to increase it. Once the stitch has the desired laxity, release the LMC.
 \end{enumerate}
 
 \section{Loading and Saving Crochet Patterns}
 
 You can save your crochet pattern into a file on your device and load it later. This allows you to resume your work at a later time or share your work with others.
 
-Saving your crochet pattern:
+Saving your crochet pattern:\index{pattern!saving}
 \begin{enumerate}
-\item LMC the \DB{} in the \MenuBar.
+\item LMC the \DB* in the \MenuBar*.
 \item The current contents of the \PTI{} will be saved as a file onto your device. Depending on your device's operating system or web browser, the file may be saved in a standard location, or you may be prompted for a location to save the file.
 \end{enumerate}
 
-Loading a saved crochet pattern:
+Loading a saved crochet pattern:\index{pattern!loading}
 \begin{enumerate}
-\item LMC the \UB{} in the \MenuBar.
+\item LMC the \UB* in the \MenuBar*.
 \item In the dialog box, select the file which was previously saved with the \ui{Download} function. The dialog box may vary depending on your device's operating system or web browser.
 \end{enumerate}
 In the case that the selected file is not a valid file that was previously saved with the \ui{Download} function, the error \io{File format not recognized} will appear, and the file will not be loaded.
 
 You can export the rendered pattern as a 3D model file, which can be opened in third-party applications.
 
-Exporting your crochet pattern:
+Exporting your crochet pattern:\index{pattern!exporting}
 \begin{enumerate}
-\item Once the \CRW{} displays the desired 3D model, LMC the \EB{} in the \MenuBar.
-\item The 3D model currently displayed in the \CRW{} will be saved as a file onto your device in OBJ format. Depending on your device's operating system or web browser, the file may be saved in a standard location, or you may be prompted for a location to save the file. The file can be opened in a variety of third-party software that supports loading files in OBJ format. Please consult the user manual for the third-party software to ensure it is capable of loading such files.
+\item Once the \CRW{} displays the desired 3D model, LMC the \EB* in the \MenuBar*.
+\item The 3D model currently displayed in the \CRW{} will be saved as a file onto your device in \Term*{OBJ} format. Depending on your device's operating system or web browser, the file may be saved in a standard location, or you may be prompted for a location to save the file. The file can be opened in a variety of third-party software that supports loading files in OBJ format. Please consult the user manual for the third-party software to ensure it is capable of loading such files.
 \end{enumerate}
 
 \end{document}
