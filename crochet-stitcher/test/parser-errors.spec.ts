@@ -69,4 +69,18 @@ describe('syntax errors', () => {
     test('missing stitch type', () => {
         expect(() => parse('2')).toThrow();
     });
+
+    test('missing start number in row range', () => {
+        expect(() => parse('-2. 3 ch')).toThrow();
+    });
+
+    test('missing end number in row range', () => {
+        expect(() => parse('1-. 3 ch')).toThrow();
+    });
+});
+
+describe('semantic errors', () => {
+    test('invalid row number range', () => {
+        expect(() => parse('4-3. 2 tr')).toThrow(/row.*range/i);
+    });
 });
