@@ -1,0 +1,82 @@
+%!xelatex
+\RequirePackage[l2tabu, orthodox]{nag} % https://tex.stackexchange.com/a/589
+\documentclass[letterpaper,12pt]{report}
+
+\usepackage[20241211]{jtai}
+\jtaisetup{
+    title = CrochetCraft User Manual,
+    author = {
+        Simran Thind \\
+        Jasmine Tai \\
+        Carol Xu \\
+        Dhananjay Patki \\
+        Allen Liu \\
+        Osman Wong
+    },
+    font = libertine,
+    mono font = bera,
+    modules = {term},
+    packages = {fancyhdr, imakeidx, minted, parskip, siunitx, subfiles},
+}
+
+\setsansfont{Noto Sans}[Scale=MatchUppercase]
+
+\pagestyle{fancy}
+\fancyhead[L]{CrochetCraft User Manual}
+\fancyhead[R]{\rightmark}
+\fancyfoot[C]{\thepage}
+
+\newcommand{\io}[1]{\textsf{#1}}
+\newcommand{\ui}[1]{\textsf{\emph{#1}}}
+
+\NewDocumentCommand{\NewTerm}{mmooo}{
+    \NewDocumentCommand{#1}{s}{%
+        \IfBooleanT{##1}{%
+            \IfValueT{#3}{\index{#3}}%
+            \IfValueT{#4}{\index{#4}}%
+            \IfValueT{#5}{\index{#5}}%
+        }%
+        #2%
+    }
+}
+
+\NewTerm{\IR}{internal representation}[internal representation]
+\NewTerm{\CC}{\io{CrochetCraft}}[CrochetCraft]
+\NewTerm{\RM}{\ui{Rendered Model}}[rendered model]
+\NewTerm{\CRW}{\ui{Crochet Rendering Window}}[crochet rendering window]
+\NewTerm{\PatSidebar}{\ui{Pattern Sidebar}}[sidebar!pattern][pattern!sidebar]
+\NewTerm{\PTI}{\ui{Pattern Text Input}}[pattern!text input]
+\NewTerm{\ASB}{\ui{Add Stitch Button}}[button!add stitch]
+\NewTerm{\ASBs}{\ui{Add Stitch Buttons}}[button!add stitch]
+\NewTerm{\NCSB}{\ui{Next Colour Stitch Button}}[button!next colour stitch]
+\NewTerm{\PropSidebar}{\ui{Properties Sidebar}}[sidebar!properties]
+\NewTerm{\YCP}{\ui{Yarn Colour Picker}}[yarn colour picker]
+\NewTerm{\YTS}{\ui{Yarn Thickness Selector}}[selector!yarn thickness]
+\NewTerm{\SLS}{\ui{Stitch Laxity Selector}}[selector!stitch laxity]
+\NewTerm{\HSS}{\ui{Hook Size Selector}}[selector!hook size]
+\NewTerm{\MenuBar}{\ui{Menu Bar}}[menu bar]
+\NewTerm{\UB}{\ui{Upload Button}}[button!upload]
+\NewTerm{\DB}{\ui{Download Button}}[button!download]
+\NewTerm{\EB}{\ui{Export Button}}[button!export]
+\NewTerm{\ScLayout}{\ui{Screen Layout}}[screen layout]
+
+\newcommand{\Solution}[1]{\begin{itemize}\item[$\to$]#1\end{itemize}}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+%\newpage
+%\listoffigures
+%\listoftables
+\newpage
+
+\subfile{introduction.tex}
+\subfile{conventions.tex}
+\subfile{use-cases.tex}
+\subfile{troubleshooting-tips.tex}
+\subfile{limitations.tex}
+
+\printindex
+
+\end{document}
