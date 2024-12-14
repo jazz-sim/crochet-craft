@@ -24,3 +24,17 @@ test('keywords adjacent to numbers', () => {
         { line: 0, column: 11, length: 1, type: 'keyword', value: Keyword.Times },
     ]);
 });
+
+test('color', () => {
+    expect(lex('#AbCdeF')).toEqual<(Token & Location)[]>([
+        { line: 0, column: 0, length: 7, type: 'color', value: '#abcdef' },
+    ]);
+});
+
+test('invalid color', () => {
+    expect(lex('#dec dec')).toEqual<(Token & Location)[]>([
+        { line: 0, column: 0, length: 1, type: 'symbol', value: '#' },
+        { line: 0, column: 1, length: 3, type: 'keyword', value: Keyword.Decrease },
+        { line: 0, column: 5, length: 3, type: 'keyword', value: Keyword.Decrease },
+    ]);
+});

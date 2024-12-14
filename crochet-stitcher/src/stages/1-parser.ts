@@ -13,7 +13,7 @@ export function parse(input: string): Pattern<ParsedInstruction> {
     for (let lineIndex = 0; lineIndex < lines.length; ++lineIndex) {
         const line = lines[lineIndex];
         const lineNum = lineIndex + 1;
-        if (line.trimStart().startsWith('#')) continue;
+        if (line.trimStart().startsWith('//')) continue;
 
         const tokens = lex(line, lineNum);
         let i = 0; // index of current token
