@@ -29,29 +29,13 @@ The following text conventions are used in this manual:
 
 \section{Terms}\label{sec:terms}
 
-Listing~\ref{lst:grammar} details the basic \term*{grammar} used for parsing the input from the \PTI. The available crochet terms and meanings are listed in table~\ref{tbl:keywords}.\index{grammar!keywords}
+Listing~\ref{lst:grammar} details the basic \term*{grammar} used when parsing the pattern text.
+Furthermore, table~\ref{tbl:keywords} contains the list of \term*[grammar!keywords]{keywords}. In each row, the keywords listed next to each other can be used inter\-changeably. For example, \io{ss} has the same meaning as \io{slst}, so whenever the grammar includes ``\io{slst},'' \io{ss} can also be used.
 
 \begin{listing}[htbp]
-    \centering
-    \begin{minted}{text}
-    instructions := (instruction "," | color)* instruction
-    instruction := stitches | repeat
-
-    color := color_name ":"
-    color_name := "white" | "black" | "gray" | "red" | ...
-
-    stitches := (stitch | stitch count | count stitch) into_clause?
-    stitch := "ch" | ("ss" | "slst" | "sl" "st" | "sc" | "dc" | "hdc") "inc"? | "inv"? "dec"
-
-    into_clause := ("in" | "into") into_spec
-    into_spec := stitch | "sp"
-
-    repeat := "(" instructions ")" (count | "twice")
-        | count "(" instructions ")"
-        | "*" instructions "," ("rep" | "repeat") "from"? "*" count?
-
-    count := <integer> "x"? "more"? ("time" | "times")?
-    \end{minted}
+    \begin{tcolorbox}[breakable, parbox = false, colback = black!5, colframe = black!30]
+        {\input{grammar.code.tex}}
+    \end{tcolorbox}
     \caption{The pattern grammar understood by \CC.}
     \label{lst:grammar}
 \end{listing}
@@ -59,28 +43,28 @@ Listing~\ref{lst:grammar} details the basic \term*{grammar} used for parsing the
 \begin{table}[htbp]
     \centering
     \begin{tblr}{c|c}
-        \textbf{Keyword} & \textbf{Meaning} \\
+        \textbf{Keywords} & \textbf{Meaning} \\
         \hline
-        \emph{ch / chain} & chain \\
-        \emph{ss / slst / sl / slip} & slip stitch \\
-        \emph{st / stitch} & stitch \\
-        \emph{sc / single} & single crochet \\
-        \emph{dc / double} & double crochet \\
-        \emph{hdc} & half double crochet \\
-        \emph{tr / tc / triple / treble} & treble crochet \\
-        \emph{inc / increase} & increase \\
-        \emph{inv} & invisible \\
-        \emph{dec / decrease} & decrease \\
-        \emph{sp} & space \\
-        \emph{mr / mc} & magic ring \\
-        \emph{in / into} & into \\
-        \emph{next} & next \\
-        \emph{from} & from \\
-        \emph{two / twice} & twice \\
-        \emph{three / thrice} & thrice \\
-        \emph{x / time / times} & times \\
-        \emph{more} & more \\
-        \emph{rep / repeat} & repeat \\
+        \io{stitch}, \io{st} & stitch \\
+        \io{mr}, \io{mc} & magic ring \\
+        \io{chain}, \io{ch} & chain \\
+        \io{slip}, \io{sl}, \io{slst}, \io{ss} & slip stitch \\
+        \io{single}, \io{sc} & single crochet \\
+        \io{double}, \io{dc} & double crochet \\
+        \io{hdc} & half double crochet \\
+        \io{treble}, \io{triple}, \io{tr}, \io{tc} & treble crochet \\
+        \io{increase}, \io{inc} & increase \\
+        \io{invisible}, \io{inv} & invisible \\
+        \io{decrease}, \io{dec} & decrease \\
+        \io{turn} & turn \\
+        % \io{into}, \io{in} & into \\
+        % \io{next} & next \\
+        \io{repeat}, \io{rep} & repeat \\
+        \io{from} & from \\
+        \io{twice}, \io{two} & two times \\
+        \io{thrice}, \io{three} & three times \\
+        \io{times}, \io{time}, \io{x} & times \\
+        \io{more} & more \\
     \end{tblr}
     \caption{The keywords and their meanings, as recognized by \CC.}
     \label{tbl:keywords}
