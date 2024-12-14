@@ -34,6 +34,10 @@ export interface Pattern<S> {
 
 export interface ParsedStitch {
     type: StitchType;
+    /**
+     * The colour of the stitch. It can be a hex colour (e.g., `#123abc`) or a
+     * named colour (e.g., `red`).
+     */
     colour: string;
     into: StitchType | null;
     parentOffset: number;
