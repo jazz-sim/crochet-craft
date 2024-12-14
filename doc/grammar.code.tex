@@ -1,0 +1,43 @@
+\newcommand{\nonterminal}[1]{\emph{\Verb`#1`}}
+\newcommand{\terminal}[1]{``\io{#1}''}
+\newcommand{\defeq}{$:=$\,}
+\newcommand{\continued}[1][4em]{\phantom{}\hspace{#1}}
+\setlength{\parskip}{8pt}
+
+% mess around with catcodes >:3
+\catcode`\*=13
+\catcode`\?=13
+\catcode`\|=13
+\catcode`\"=13
+\catcode`\'=13
+\catcode`\<=13
+\catcode`\==13
+
+\def*{\raisebox{0.25em}{$\char`\*$}}
+\def\*{\char`\*}
+\def?{$\char`\?$}
+\def|{$\char`\|$}
+\def"#1"{\terminal{#1}}
+\def'#1'{\nonterminal{#1}}
+\def<#1>{\textsc{#1}}
+\def={\defeq}
+
+'pattern' = ('line'? <newline>)* 'line'? \\
+'line' = 'row_number'? 'foundation'? 'instructions'
+
+'row_number' = <integer> ("-" <integer>)? "." \\
+'foundation' = "mr" ","
+
+'instructions' = ('instruction' "," | <color> ":")* 'instruction' \\
+'instruction' = "turn" | 'stitches' | 'repeat'
+
+'stitches' = 'stitch' | 'stitch' 'count' | 'count' 'stitch' \\
+'stitch' = "inv"? "dec" | 'stitch_type' "st"? "inc"? \\
+'stitch_type' = "ch" | "slst" | "sc" | "dc" | "tr"
+
+'repeat' = "(" 'instructions' ")" 'count' \\
+\continued | 'count' "(" 'instructions' ")" \\
+\continued | "\*" 'instructions' "," "rep" 'count' "from"? "\*" \\
+\continued | "\*" 'instructions' "," "rep" "from"? "\*" 'count'
+
+'count' = "x"? (<integer> | "twice" | "thrice") "x"? "times"? "more"? "times"?
