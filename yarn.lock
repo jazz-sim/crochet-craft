@@ -1333,6 +1333,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tailwindcss/forms@npm:^0.5.9":
+  version: 0.5.9
+  resolution: "@tailwindcss/forms@npm:0.5.9"
+  dependencies:
+    mini-svg-data-uri: "npm:^1.2.3"
+  peerDependencies:
+    tailwindcss: ">=3.0.0 || >= 3.0.0-alpha.1 || >= 4.0.0-alpha.20"
+  checksum: 10c0/c7b99bc41ec548a27b68735ae459f5102535b3577020db3d9f348c88d997a623405e0833cf59beff5ca1bac7e7e2c55d5948ab374706277937e512e934947210
+  languageName: node
+  linkType: hard
+
 "@tailwindcss/typography@npm:^0.5.15":
   version: 0.5.15
   resolution: "@tailwindcss/typography@npm:0.5.15"
@@ -2440,6 +2451,7 @@ __metadata:
     "@sveltejs/adapter-auto": "npm:^3.3.1"
     "@sveltejs/kit": "npm:^2.9.0"
     "@sveltejs/vite-plugin-svelte": "npm:^5.0.1"
+    "@tailwindcss/forms": "npm:^0.5.9"
     "@tailwindcss/typography": "npm:^0.5.15"
     "@types/eslint": "npm:^9.6.1"
     "@types/three": "npm:^0.170.0"
@@ -4511,6 +4523,15 @@ __metadata:
   version: 2.1.0
   resolution: "mimic-fn@npm:2.1.0"
   checksum: 10c0/b26f5479d7ec6cc2bce275a08f146cf78f5e7b661b18114e2506dd91ec7ec47e7a25bf4360e5438094db0560bcc868079fb3b1fb3892b833c1ecbf63f80c95a4
+  languageName: node
+  linkType: hard
+
+"mini-svg-data-uri@npm:^1.2.3":
+  version: 1.4.4
+  resolution: "mini-svg-data-uri@npm:1.4.4"
+  bin:
+    mini-svg-data-uri: cli.js
+  checksum: 10c0/24545fa30b5a45449241bf19c25b8bc37594b63ec06401b3d563bd1c2e8a6abb7c18741f8b354e0064baa63c291be214154bf3a66f201ae71dfab3cc1a5e3191
   languageName: node
   linkType: hard
 
