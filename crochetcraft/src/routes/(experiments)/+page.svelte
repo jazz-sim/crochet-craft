@@ -1,8 +1,3 @@
-<script lang="ts">
-    import '../../app.css';
-    import '../../styles/global.css';
-</script>
-
 <div id="DemoPageBox">
     <img
         src="/cc-logo-new-1-purple.png"

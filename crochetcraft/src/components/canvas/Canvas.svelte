@@ -1,9 +1,9 @@
 <script lang="ts">
     // TO-DO: RENDER AFTER PIPELINE IS DONE (see comments)
     import { makeMultiBezier } from '$lib/builder/bezier';
+    import State from '$lib/state.svelte';
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
     import * as THREE from 'three';
-    import { previewCanvasScene } from '../main-ui/stores';
     const ChainStitchParts = makeMultiBezier([
         new THREE.Vector3(0.0, 0.0, 0.0),
         new THREE.Vector3(0.03989, -0.1529, 0.4265),
@@ -38,7 +38,7 @@
     toggleBloom={true}
     cameraPosition={new THREE.Vector3(0, 0, 10)}
     init={(scene: THREE.Scene) => {
-        previewCanvasScene.set(scene);
+        State.scene = scene;
         for (let i = 0; i < 10; ++i) {
             makeChainStitch(scene, new THREE.Vector3(0, 0.5 * i, 0));
         }
