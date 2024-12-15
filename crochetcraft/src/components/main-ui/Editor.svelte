@@ -1,7 +1,9 @@
 <script lang="ts">
-    import Panel from '$components/option-panel/Panel.svelte';
+    import Panel, { type PanelPosition } from '$components/option-panel/Panel.svelte';
     import State from '$lib/state.svelte';
     import { parse } from 'crochet-stitcher';
+
+    let { position }: { position: PanelPosition } = $props();
 
     interface AddStitchButtonData {
         name: string;
@@ -39,7 +41,7 @@
     }
 </script>
 
-<Panel title="Pattern" position="left">
+<Panel title="Pattern" {position}>
     <!-- Input textarea -->
     <textarea
         aria-label="pattern text input"
