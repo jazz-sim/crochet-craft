@@ -1,54 +1,31 @@
 <script lang="ts">
+    import { downloadBlob } from '$lib/files';
     import State from '$lib/state.svelte';
-    import { AppBar, LightSwitch, getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
+    import { LightSwitch, getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
     import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
 
     const modalStore = getModalStore();
 
-    interface HTMLInputEvent extends Event {
-        target: HTMLInputElement & EventTarget;
-    }
-
-    // Reading uploaded file:
-    async function setUpReader(file: File) {
-        let uploadReader = new FileReader();
-        uploadReader.addEventListener(
-            'load',
-            () => {
-                State.pattern = uploadReader.result as string;
-            },
-            false,
-        );
-        uploadReader.readAsText(file);
-    }
-
-    function upload(e: Event) {
-        const fileEvent = e as HTMLInputEvent;
-        let files: any = fileEvent.target.files;
+    async function onUpload(e: Event & { currentTarget: HTMLInputElement }) {
+        let files = e.currentTarget.files;
         if (files) {
             let inputFile = files[0];
-            setUpReader(inputFile);
+            State.pattern = await inputFile.text();
         }
     }
 
-    // Downloading pattern:
-    function download(type: string) {
-        let blob = new Blob([State.pattern], { type: 'text/plain' });
-        let filename = 'pattern.txt';
-        if (type == '3d-object') {
-            const exporter = new OBJExporter();
-            const data = exporter.parse(State.scene);
-            blob = new Blob([data]);
-            filename = 'pattern.obj';
-        }
-        const url = URL.createObjectURL(blob);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+    /** Downloads the pattern text. */
+    function downloadPattern() {
+        const blob = new Blob([State.pattern], { type: 'text/plain' });
+        downloadBlob(blob, 'pattern.txt');
+    }
+
+    /** Downloads the 3D model in OBJ format. */
+    function downloadModel() {
+        const exporter = new OBJExporter();
+        const data = exporter.parse(State.scene);
+        const blob = new Blob([data]);
+        downloadBlob(blob, 'pattern.obj');
     }
 
     // Triggering "about" modal:
@@ -64,40 +41,26 @@
     }
 </script>
 
-<AppBar
-    gridColumns="grid-cols-[auto_1fr_auto]"
-    slotDefault="place-self-center"
-    slotLead="place-content-start space-x-4"
-    slotTrail="place-content-end"
->
-    <svelte:fragment slot="lead">
-        <button class="btn-icon !bg-transparent" on:click={showAboutModal}>
-            <img src="/cc-logo-new-2-purple.png" width="50" height="50" alt="CrochetCraft logo." />
-        </button>
+<div class="flex w-full flex-row flex-wrap items-center gap-3 px-4 py-3">
+    <!-- Left side -->
+    <button class="btn-icon !bg-transparent" onclick={showAboutModal}>
+        <img src="/cc-logo-new-2-purple.png" width="50" height="50" alt="CrochetCraft logo." />
+    </button>
 
-        <label for="file-upload" class="custom-file-upload variant-filled-surface btn rounded-lg">
-            Upload Pattern Text
-        </label>
-        <input id="file-upload" type="file" accept=".txt" on:change={(e) => upload(e)} />
-        <button
-            class="variant-filled-surface btn rounded-lg"
-            on:click={() => download('pattern-text')}>Download Pattern Text</button
-        >
-        <button class="variant-filled-surface btn rounded-lg" on:click={() => download('3d-object')}
-            >Export 3D Object</button
-        >
-    </svelte:fragment>
-    <svelte:fragment slot="trail">
-        <a class="anchor" href={`/`}>← Go Home</a>
-        <LightSwitch rounded="rounded-lg" />
-    </svelte:fragment>
-</AppBar>
+    <label class="variant-filled-surface btn cursor-pointer rounded-lg">
+        Upload Pattern Text...
+        <input type="file" accept=".txt" onchange={(e) => onUpload(e)} class="hidden" />
+    </label>
+    <button class="variant-filled-surface btn rounded-lg" onclick={downloadPattern}>
+        Download Pattern Text
+    </button>
+    <button class="variant-filled-surface btn rounded-lg" onclick={downloadModel}>
+        Export 3D Object
+    </button>
 
-<style>
-    input[type='file'] {
-        display: none;
-    }
-    .custom-file-upload {
-        cursor: pointer;
-    }
-</style>
+    <div class="flex-1"></div>
+
+    <!-- Right side -->
+    <a class="anchor" href="/">← Go Home</a>
+    <LightSwitch rounded="rounded-lg" />
+</div>
