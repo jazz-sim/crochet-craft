@@ -41,7 +41,7 @@ export interface Location {
 export function lex(input: string, line = 0): (Token & Location)[] {
     const tokens: (Token & Location)[] = [];
 
-    const regex = /[A-Za-z_]+|\d+|\S/g;
+    const regex = /[A-Za-z_]+|\d+|#[0-9a-fA-F]{6}|\S/g;
     while (true) {
         const match = regex.exec(input);
         if (!match) break;
@@ -50,8 +50,10 @@ export function lex(input: string, line = 0): (Token & Location)[] {
 
         if (KEYWORD_LUT[value]) {
             tokens.push({ ...loc, type: 'keyword', value: KEYWORD_LUT[value] });
-        } else if (COLOR_LUT.has(value)) {
+        } else if (/^#\w+$/.test(value)) {
             tokens.push({ ...loc, type: 'color', value });
+        } else if (COLOR_LUT.has(value)) {
+            tokens.push({ ...loc, type: 'color', value: value.toLowerCase() });
         } else if (/^\d+$/.test(value)) {
             tokens.push({ ...loc, type: 'number', value: parseInt(value) });
         } else if (/^\W$/.test(value)) {

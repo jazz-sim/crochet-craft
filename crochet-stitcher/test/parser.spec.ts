@@ -55,6 +55,12 @@ describe('simple tests', () => {
         );
     });
 
+    test('hex colour', () => {
+        expect(parse('#Ff0000 : ch 2, #0000ff: ch 2')).toEqual(
+            slkt(st(StitchType.Chain, 2, 0, '#ff0000'), st(StitchType.Chain, 2, 0, '#0000ff')),
+        );
+    });
+
     test('turns', () => {
         expect(parse('ch 2, turn, ch 2')).toEqual(
             slkt(st(StitchType.Chain, 2), 'turn', st(StitchType.Chain, 2)),
@@ -220,7 +226,7 @@ describe('multi-line', () => {
     });
 
     test('comments', () => {
-        expect(parse('1. ch 5\n\n    # this is a comment\n\n2. sc 4')).toEqual(
+        expect(parse('1. ch 5\n\n    // this is a comment\n\n2. sc 4')).toEqual(
             slkt(st(StitchType.Chain, 5), st(StitchType.Single, 4)),
         );
     });
