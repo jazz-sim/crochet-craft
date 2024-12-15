@@ -16,5 +16,13 @@
     },
     "[svelte]": {
         "editor.defaultFormatter": "svelte.svelte-vscode"
+    },
+    "[yaml]": {
+        "editor.insertSpaces": true,
+        "editor.tabSize": 2,
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "yaml.schemas": {
+        "https://json.schemastore.org/pull-request-labeler-5.json": ".github/labeler.yml"
     }
 }
