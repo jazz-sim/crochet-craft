@@ -1,187 +1,84 @@
 <script lang="ts">
-    import { textContent, textContentError, nextStitchColourValue } from './stores';
     import Panel from '$components/option-panel/Panel.svelte';
+    import State from '$lib/state.svelte';
     import { parse } from 'crochet-stitcher';
-    type AddStitchButtonData = {
+
+    interface AddStitchButtonData {
         name: string;
         hovertext: string;
-        disabled: boolean;
-    };
-    const renderAddStitchButtons: AddStitchButtonData[] = [
-        {
-            name: 'ch',
-            hovertext: 'chain',
-            disabled: false,
-        },
-        {
-            name: 'sl st',
-            hovertext: 'slip stitch',
-            disabled: false,
-        },
-        {
-            name: 'sc',
-            hovertext: 'single crochet',
-            disabled: false,
-        },
-        {
-            name: 'dc',
-            hovertext: 'double crochet',
-            disabled: false,
-        },
-        {
-            name: 'hdc',
-            hovertext: 'half double crochet',
-            disabled: true,
-        },
-        {
-            name: 'tc',
-            hovertext: 'treble crochet',
-            disabled: false,
-        },
-        {
-            name: 'inc',
-            hovertext: 'increase',
-            disabled: true,
-        },
-        {
-            name: 'inv',
-            hovertext: 'invisible',
-            disabled: true,
-        },
-        {
-            name: 'dec',
-            hovertext: 'decrease',
-            disabled: true,
-        },
-        {
-            name: 'sp',
-            hovertext: 'space',
-            disabled: true,
-        },
-        {
-            name: 'mr',
-            hovertext: 'magic ring',
-            disabled: false,
-        },
-        {
-            name: 'in',
-            hovertext: 'into',
-            disabled: true,
-        },
-        {
-            name: 'next',
-            hovertext: 'next',
-            disabled: true,
-        },
-        {
-            name: 'from',
-            hovertext: 'from',
-            disabled: true,
-        },
-        {
-            name: 'two',
-            hovertext: 'twice',
-            disabled: true,
-        },
-        {
-            name: 'three',
-            hovertext: 'thrice',
-            disabled: true,
-        },
-        {
-            name: 'time',
-            hovertext: 'times',
-            disabled: true,
-        },
-        {
-            name: 'more',
-            hovertext: 'more',
-            disabled: true,
-        },
-        {
-            name: 'rep',
-            hovertext: 'repeat',
-            disabled: true,
-        },
+    }
+
+    const ADD_STITCH_BUTTONS: AddStitchButtonData[] = [
+        { name: 'ch', hovertext: 'chain' },
+        { name: 'slst', hovertext: 'slip stitch' },
+        { name: 'sc', hovertext: 'single crochet' },
+        { name: 'dc', hovertext: 'double crochet' },
+        { name: 'tr', hovertext: 'treble crochet' },
+        { name: 'dec', hovertext: 'decrease' },
     ];
-    function sendToParser() {
+
+    let errorMessage: string | null = $state(null);
+
+    function runParser() {
         try {
-            parse($textContent);
-            textContentError.set({
-                errorText: $textContent.length > 0 ? '✅ Valid pattern.' : '',
-                errorValue: false,
-            });
+            parse(State.pattern);
+            errorMessage = null;
         } catch (error) {
-            textContentError.set({
-                errorText: '❌ ' + error + '.',
-                errorValue: true,
-            });
+            errorMessage = '❌ ' + error;
         }
     }
-    function appendStitch(e: any) {
-        let stitchText = e.target.textContent as string;
-        if (/^$|\n$/.test($textContent)) {
-            $textContent += stitchText;
-        } else {
-            $textContent += ', ' + stitchText;
+
+    function appendToPattern(stitch: string) {
+        if (!/^$|[\n:,.]\s*$/.test(State.pattern)) {
+            State.pattern += ', ';
+        } else if (!/^$|\s$/.test(State.pattern)) {
+            State.pattern += ' ';
         }
-        sendToParser();
+        State.pattern += stitch;
+        runParser();
     }
 </script>
 
-<Panel --left="1vw">
-    <div slot="panel-title">
-        <h4 class="h4">Pattern</h4>
-    </div>
-    <div slot="panel-elements">
-        <textarea
-            id="editor_textarea"
-            class="textarea rounded-lg p-1"
-            rows="4"
-            placeholder="Begin by entering your crochet pattern here!"
-            bind:value={$textContent}
-            on:input={sendToParser}
-            on:change={sendToParser}
-        ></textarea>
-        <pre
-            class:text-error-500={$textContentError.errorValue}
-            class:text-success-500={!$textContentError.errorValue}
-            class="whitespace-break-spaces">{$textContentError.errorText}</pre>
-        <br />
-        <p>Add Stitches / Instructions:</p>
-        <div id="add-stitch-buttons" class="flex flex-wrap gap-1">
-            {#each renderAddStitchButtons as stitch}
-                <button
-                    class={'btn-sm rounded-lg '.concat(
-                        stitch.disabled == true
-                            ? 'variant-ghost-surface'
-                            : 'variant-filled-surface',
-                    )}
-                    title={stitch.hovertext}
-                    disabled={stitch.disabled}
-                    on:click={appendStitch}
-                >
-                    {stitch.name}
-                </button>
-            {/each}
-        </div>
-        <br />
-        <p>Next Stitch Colour:</p>
-        <input
-            id="EditorColorInput"
-            type="color"
-            class="rounded-lg"
-            bind:value={$nextStitchColourValue}
-        />
-    </div>
-</Panel>
+<Panel title="Pattern" position="left">
+    <!-- Input textarea -->
+    <textarea
+        aria-label="pattern text input"
+        class="textarea rounded-lg"
+        rows="6"
+        placeholder="Enter your crochet pattern here"
+        bind:value={State.pattern}
+        oninput={runParser}
+        onchange={runParser}
+    ></textarea>
 
-<style>
-    #EditorColorInput {
-        cursor: pointer;
-    }
-    button {
-        display: block;
-        margin-bottom: 10px;
-    }
-</style>
+    <!-- Output feedback -->
+    {#if State.pattern}
+        <pre
+            class:text-error-500={errorMessage !== null}
+            class:text-success-500={errorMessage === null}
+            class="whitespace-break-spaces">{errorMessage ?? '✅ Valid pattern.'}</pre>
+    {/if}
+
+    <div class="flex flex-wrap gap-1">
+        {#each ADD_STITCH_BUTTONS as { name, hovertext }}
+            <button
+                aria-label="add {hovertext}"
+                class="btn-sm variant-filled-surface rounded-lg"
+                title={hovertext}
+                onclick={() => appendToPattern(name)}
+            >
+                {name}
+            </button>
+        {/each}
+    </div>
+
+    <label class="label">
+        <span>Next Stitch Colour</span>
+        <input
+            type="color"
+            class="input block !rounded-full"
+            value="#d281fb"
+            onchange={(event) => appendToPattern(event.currentTarget.value + ':')}
+        />
+    </label>
+</Panel>

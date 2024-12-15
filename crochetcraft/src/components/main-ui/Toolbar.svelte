@@ -1,25 +1,27 @@
 <script lang="ts">
-    import { textContent, previewCanvasScene } from './stores';
+    import State from '$lib/state.svelte';
     import { AppBar, LightSwitch, getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
     import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
 
     const modalStore = getModalStore();
+
     interface HTMLInputEvent extends Event {
         target: HTMLInputElement & EventTarget;
     }
+
     // Reading uploaded file:
     async function setUpReader(file: File) {
         let uploadReader = new FileReader();
         uploadReader.addEventListener(
             'load',
             () => {
-                let input = uploadReader.result as string;
-                textContent.set(input);
+                State.pattern = uploadReader.result as string;
             },
             false,
         );
         uploadReader.readAsText(file);
     }
+
     function upload(e: Event) {
         const fileEvent = e as HTMLInputEvent;
         let files: any = fileEvent.target.files;
@@ -28,13 +30,14 @@
             setUpReader(inputFile);
         }
     }
+
     // Downloading pattern:
-    function download(type: String) {
-        let blob = new Blob([$textContent], { type: 'text/plain' });
+    function download(type: string) {
+        let blob = new Blob([State.pattern], { type: 'text/plain' });
         let filename = 'pattern.txt';
         if (type == '3d-object') {
             const exporter = new OBJExporter();
-            const data = exporter.parse($previewCanvasScene);
+            const data = exporter.parse(State.scene);
             blob = new Blob([data]);
             filename = 'pattern.obj';
         }
@@ -47,6 +50,7 @@
         link.click();
         link.remove();
     }
+
     // Triggering "about" modal:
     const modal: ModalSettings = {
         type: 'alert',
@@ -54,6 +58,7 @@
         body: '<div class="flex justify-center items-center"><p>CrochetCraft is a Final Year Design Project (FYDP).</p></div>',
         buttonTextCancel: 'Close',
     };
+
     function showAboutModal() {
         modalStore.trigger(modal);
     }
