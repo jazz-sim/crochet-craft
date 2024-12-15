@@ -1,3 +1,5 @@
+@import '@flaticon/flaticon-uicons/css/bold/rounded';
+
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
@@ -9,4 +11,11 @@ body {
     min-height: 100%;
     margin: 0;
     padding: 0;
+}
+
+.fi {
+    /* Icons are always block displayed */
+    display: block;
+    /* Icons have 0 line height to avoid weird extra space below them */
+    line-height: 0;
 }
