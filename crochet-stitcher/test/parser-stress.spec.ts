@@ -8,9 +8,8 @@ const slkt = rawSlkt<ParsedInstruction>;
 
 test('heart', () => {
     expect(
-        parse(`
-# Credit: Hooked by Robin - https://www.hookedbyrobin.com/blog/crochet-tiny-heart
-MR, Ch 2, 3 TR, 3 DC, Ch 1, 1 TR, Ch 1, 3 DC, 3 TR, Ch 2, Sl st, Ch 1`),
+        // Credit: Hooked by Robin - https://www.hookedbyrobin.com/blog/crochet-tiny-heart
+        parse('MR, Ch 2, 3 TR, 3 DC, Ch 1, 1 TR, Ch 1, 3 DC, 3 TR, Ch 2, Sl st, Ch 1'),
     ).toEqual(
         mc(
             st(StitchType.Chain, 2),
