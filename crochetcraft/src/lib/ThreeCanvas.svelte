@@ -1,11 +1,11 @@
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
-    import { selected3DObject } from '../components/main-ui/stores';
     import * as Three from 'three';
     import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
     import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
     import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+    import State from './state.svelte';
 
     let wrapper: HTMLDivElement;
     let canvas: HTMLCanvasElement;
@@ -116,9 +116,9 @@
                     }
                 } else {
                     if (currentIntersectedObject) {
-                        selected3DObject.set(currentIntersectedObject);
+                        State.selectedMesh = currentIntersectedObject;
                     } else {
-                        selected3DObject.set(null);
+                        State.selectedMesh = null;
                     }
                 }
             }

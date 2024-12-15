@@ -2,50 +2,42 @@
     import { draggable } from '@neodrag/svelte';
     import plus from '$lib/assets/white-plus.png';
     import minus from '$lib/assets/white-minus.png';
+    import type { Snippet } from 'svelte';
 
-    let panelContents: HTMLDivElement;
-    let panelButtonState = true;
-    function collapsePanel() {
-        if (panelButtonState) {
-            panelContents.style.display = 'none';
-        } else {
-            panelContents.style.display = 'block';
-        }
-        panelButtonState = !panelButtonState;
-    }
+    let {
+        children,
+        title,
+        position,
+        shown = true,
+    }: {
+        children: Snippet;
+        title: string;
+        position: 'left' | 'right';
+        shown?: boolean;
+    } = $props();
+
+    let expanded = $state(true);
 </script>
 
 <div
     use:draggable={{ bounds: '#render-div', handle: '.panel-bar' }}
-    class="overlay card rounded-lg"
+    class="card absolute top-2 z-10 w-96 rounded-lg"
+    class:left-2={position === 'left'}
+    class:right-2={position === 'right'}
+    class:hidden={!shown}
 >
-    <div class="panel-bar variant-soft-primary card flex flex-row justify-between rounded-t-lg p-4">
-        <slot class="justify-start" name="panel-title" />
+    <div
+        class="panel-bar variant-soft-primary card flex cursor-move flex-row justify-between rounded-t-lg p-4"
+    >
+        <h4 class="h4">{title}</h4>
         <button
             class="btn-icon btn-icon-sm variant-filled-surface justify-end rounded-lg"
-            title={panelButtonState ? 'Minimize' : 'Maximize'}
-            aria-label={panelButtonState ? 'Minimize' : 'Maximize'}
-            on:click={collapsePanel}
-            ><img
-                src={panelButtonState ? minus : plus}
-                alt={panelButtonState ? 'Minimize' : 'Maximize'}
-            /></button
+            title={expanded ? 'Minimize' : 'Maximize'}
+            aria-label={expanded ? 'Minimize' : 'Maximize'}
+            onclick={() => (expanded = !expanded)}
         >
+            <img src={expanded ? minus : plus} alt={expanded ? 'Minimize' : 'Maximize'} />
+        </button>
     </div>
-    <div class="p-4" bind:this={panelContents}><slot name="panel-elements" /></div>
+    <div class="space-y-4 p-4" class:hidden={!expanded}>{@render children()}</div>
 </div>
-
-<style>
-    .overlay {
-        position: absolute;
-        z-index: 1; /* Ensure it's above the canvas */
-        width: 400px;
-        top: var(--top, 10px);
-        left: var(--left, 10px);
-        display: var(--display, 'initial');
-    }
-    .panel-bar {
-        padding: none;
-        cursor: move;
-    }
-</style>
