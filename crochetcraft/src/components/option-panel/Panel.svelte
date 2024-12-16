@@ -25,7 +25,8 @@
 
 {#snippet cardContent()}
     <div
-        class="panel-bar variant-soft-primary card flex cursor-move flex-row justify-between p-4"
+        class="panel-bar variant-soft-primary card flex flex-none flex-row justify-between p-4"
+        class:cursor-move={position !== 'docked'}
         class:rounded-t-lg={position !== 'docked'}
     >
         <h4 class="h4">{title}</h4>
@@ -40,17 +41,19 @@
             </button>
         {/if}
     </div>
-    <div class="space-y-4 p-4" class:hidden={!expanded}>{@render children()}</div>
+    <div class="flex-1 space-y-4 overflow-y-auto p-4" class:hidden={!expanded}>
+        {@render children()}
+    </div>
 {/snippet}
 
 {#if position === 'docked'}
-    <div class="card z-10 w-96 flex-none">
+    <div class="card z-10 flex w-96 flex-none flex-col">
         {@render cardContent()}
     </div>
 {:else}
     <div
         use:draggable={{ bounds: '#render-div', handle: '.panel-bar' }}
-        class="card absolute top-2 z-10 w-96 flex-none rounded-lg"
+        class="card absolute top-2 z-10 flex max-h-[calc(100%-1rem)] w-96 flex-none flex-col rounded-lg"
         class:left-2={position === 'left'}
         class:right-2={position === 'right'}
         class:hidden={!shown}
