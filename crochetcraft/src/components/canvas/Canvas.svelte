@@ -1,9 +1,10 @@
 <script lang="ts">
-    // TO-DO: RENDER AFTER PIPELINE IS DONE (see comments)
     import { makeMultiBezier } from '$lib/builder/bezier';
     import State from '$lib/state.svelte';
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
     import * as THREE from 'three';
+
+    // TO-DO: RENDER AFTER PIPELINE IS DONE (see comments)
     const ChainStitchParts = makeMultiBezier([
         new THREE.Vector3(0.0, 0.0, 0.0),
         new THREE.Vector3(0.03989, -0.1529, 0.4265),
@@ -16,6 +17,7 @@
         new THREE.Vector3(-0.4605, 0.585, -0.5125),
         new THREE.Vector3(-0.01001, 0.4943, -0.007016),
     ]);
+
     function makeChainStitch(scene: THREE.Scene, pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0)) {
         ChainStitchParts.map((curve) => {
             const geometry = new THREE.TubeGeometry(curve, 50, 0.1, 10);
