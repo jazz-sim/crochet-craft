@@ -10,6 +10,6 @@
     <div id="render-div" class="relative flex min-h-0 flex-1 flex-row">
         <Editor position="docked" />
         <Canvas />
-        <Properties position="docked" />
+        <Properties position="right" />
     </div>
 </div>
