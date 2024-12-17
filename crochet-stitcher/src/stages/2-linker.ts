@@ -61,12 +61,9 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
 
             // Don't need conditional since we're for sure at the end of the row
             // if (prevPtr == previous.length) {
-            console.log('preswap', previous, current);
             previous = current;
-            console.log('midswap', previous, current);
             // weird but apparently valid
             current = [];
-            console.log('postswap', previous, current);
             if (parsedList[i] === 'turn') {
                 // If turning around - need conditional!
                 previous.reverse();
@@ -78,7 +75,6 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
             let type = item.type;
             let colour = item.colour;
             let offset = item.parentOffset;
-            console.log(i, parsedList[i], prevPtr, offset, previous, current);
             // Chain stitches have no parent
             if (type == StitchType.Chain) {
                 current.push({
