@@ -69,20 +69,35 @@ describe('multiple row linking', () => {
 
     test('3x3 square', () => {
         expect(
-            link(slkt(st(StitchType.Chain, 3), st(StitchType.Single, 3), st(StitchType.Single, 3))),
+            link(
+                slkt(
+                    st(StitchType.Chain, 3),
+                    'turn',
+                    st(StitchType.Chain, 1),
+                    st(StitchType.Single, 3),
+                    'turn',
+                    st(StitchType.Single, 3),
+                ),
+            ),
         ).toEqual({
             foundation: Foundation.SlipKnot,
             stitches: stitchesWithDefOpt([
                 chainLink,
                 chainLink,
                 chainLink,
+                chainLink,
                 singleLink(2),
-                singleLink(3),
-                singleLink(4),
-                singleLink(5),
+                singleLink(1),
+                singleLink(0),
                 singleLink(6),
-                singleLink(7),
+                singleLink(5),
+                singleLink(4),
             ]),
         });
+        /* Visually, we should get something like:
+         7  8  9
+		 6  5  4 (3)
+		 0  1  2
+		*/
     });
 });
