@@ -93,7 +93,7 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
         });
         // Update position for start of new row
         placementPoint = {
-            x: placementPoint.x,
+            x: placementPoint.x - stitchSpacing * direction,
             y: placementPoint.y + rowSpacing,
             z: placementPoint.z,
         };
