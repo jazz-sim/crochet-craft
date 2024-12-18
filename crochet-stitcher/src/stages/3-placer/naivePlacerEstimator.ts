@@ -47,7 +47,7 @@ function convertPatternToLines(pattern: Pattern<LinkedStitch>): LinkedStitch[][]
             }
             break;
         case Foundation.MagicRing:
-            throw 'Magic Ring not yet supported by placer.';
+            throw 'Magic Ring not yet supported by naive placer.';
     }
     return lines;
 }
