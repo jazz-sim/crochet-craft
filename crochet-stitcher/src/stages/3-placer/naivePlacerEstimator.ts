@@ -12,6 +12,7 @@
  */
 
 import { Foundation, LinkedStitch, Pattern, PlacedStitch, Point } from '../../types';
+import { evaluateForce } from './iterativeForcing';
 
 /**
  * Infers lines from a linked pattern.

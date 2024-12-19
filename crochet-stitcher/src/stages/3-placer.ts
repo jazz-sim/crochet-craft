@@ -9,3 +9,6 @@ export function place(input: Pattern<LinkedStitch>): Pattern<PlacedStitch> {
         stitches: initialPlacement,
     };
 }
+
+// Scuffed export for use in experiments
+export { evaluateForce } from './3-placer/iterativeForcing.js';
