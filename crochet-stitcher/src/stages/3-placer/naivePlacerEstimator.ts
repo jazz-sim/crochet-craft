@@ -83,7 +83,7 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                     ...(index < maxIndex ? [index + 1] : []),
                 ],
                 position: placementPoint,
-                orientation: { a: 0, b: 0, c: 0, d: 0 },
+                orientation: { a: 0.7071, b: 0, c: 0, d: direction * -0.7071 },
             });
             // Update position for the next point to place
             placementPoint = {

@@ -2,7 +2,7 @@
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
     import * as THREE from 'three';
     import { Vector3 } from 'three';
-    import { parse, link, place } from 'crochet-stitcher';
+    import { parse, link, place, elaborate } from 'crochet-stitcher';
     import { placeDebugSpheres } from '$lib/render/debug';
 
     // Scene objects
@@ -16,16 +16,26 @@
     };
     const sampleNames = Object.keys(sampleInputs);
     let selectedSampleName = 'default chain';
+    let doElaboration = false;
 
     $: {
         const currentSample = sampleInputs[selectedSampleName];
-        const placedPoints = place(link(parse(currentSample)));
-
         mainGroup.clear();
-        placeDebugSpheres(
-            placedPoints.stitches.map((p) => new Vector3(p.position.x, p.position.y, p.position.z)),
-            mainGroup,
-        );
+
+        if (doElaboration) {
+            const elaboratedPoints = elaborate(place(link(parse(currentSample))));
+            console.log(elaboratedPoints);
+            elaboratedPoints.forEach((mesh) => mainGroup.add(mesh));
+        } else {
+            const placedPoints = place(link(parse(currentSample)));
+
+            placeDebugSpheres(
+                placedPoints.stitches.map(
+                    (p) => new Vector3(p.position.x, p.position.y, p.position.z),
+                ),
+                mainGroup,
+            );
+        }
         scene?.add(mainGroup);
     }
 </script>
@@ -42,6 +52,11 @@
                 <option value={sampleStr}>{sampleStr}</option>
             {/each}
         </select>
+        <br /><br />
+        <label
+            ><i>Do elaboration?</i>
+            <input type="checkbox" bind:checked={doElaboration} />
+        </label>
     </div>
 </div>
 
