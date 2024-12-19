@@ -54,15 +54,15 @@ describe('basic linking', () => {
 
 describe('multiple row linking', () => {
     test('two rows', () => {
-        expect(link(slkt(st(StitchType.Chain, 3), st(StitchType.Single, 3)))).toEqual({
+        expect(link(slkt(st(StitchType.Chain, 3), 'eor', st(StitchType.Single, 3)))).toEqual({
             foundation: Foundation.SlipKnot,
             stitches: stitchesWithDefOpt([
                 chainLink,
                 chainLink,
                 chainLink,
+                singleLink(0),
+                singleLink(1),
                 singleLink(2),
-                singleLink(3),
-                singleLink(4),
             ]),
         });
     });
