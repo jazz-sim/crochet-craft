@@ -54,6 +54,7 @@ export interface LinkedStitch {
      * stitches. Null for stitches that hook onto the magic ring foundation.
      */
     parent: number | null;
+    colour: string;
 }
 
 export interface PlacedStitch {
