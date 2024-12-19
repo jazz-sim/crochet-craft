@@ -20,6 +20,15 @@ import {
     MeshLambertMaterial,
 } from 'three';
 
+/**
+ * Replaces placed stitches with a set of geometries corresponding to
+ * how each stitch would actually look.
+ *
+ * This only "copy-pastes" from a template, so there is no
+ * awareness of distortion, compression, etc.
+ * @param placedStitches
+ * @returns
+ */
 export function copyPasteStitches(
     placedStitches: Pattern<PlacedStitch>,
 ): Mesh<BufferGeometry<NormalBufferAttributes>, Material | Material[], Object3DEventMap>[] {
@@ -62,6 +71,7 @@ function movePointsToPlacement(stitch: IntermediatePlacement): IntermediatePlace
         points: stitch.points.map((p) => {
             const [x, y, z] = p;
             // handrolled matmul
+            // Also, multiple by 2 to scale the stitches to what the placer thinks is right
             const rx = 2 * (x * mat[0][0] + y * mat[0][1] + z * mat[0][2]);
             const ry = 2 * (x * mat[1][0] + y * mat[1][1] + z * mat[1][2]);
             const rz = 2 * (x * mat[2][0] + y * mat[2][1] + z * mat[2][2]);
@@ -93,6 +103,12 @@ function curveToGeometries(
     }
 }
 
+/**
+ * Helper function to get the stitch model for a given placed stitch.
+ *
+ * @param stitch
+ * @returns
+ */
 function substituteStitch(stitch: PlacedStitch) {
     switch (stitch.type) {
         case StitchType.Chain:
