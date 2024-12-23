@@ -1,4 +1,5 @@
 import { Vector3 } from 'three';
+import { Pattern, LinkedStitch, PlacedStitch, Point } from '../../types';
 
 // Lets evaluateForce accept THREE.Vector3. Cannot be cast to THREE.Vector3 due to missing fields.
 type Vec3 = {
@@ -19,7 +20,7 @@ type Vec3 = {
  */
 export function evaluateForce(v: Vec3, ownStitchRadius: number, otherStitchRadius: number): Vec3 {
     // "spring constant", adjust as needed
-    // Allen's note: this spring constant is kind of magical and just worked.
+    // Allen's note: this spring constant of 0.5 is kind of magical and just worked.
     // I have no idea how Osman magicked this one but it's a pretty good choice.
     const k = 0.5;
     let distance = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
@@ -32,6 +33,9 @@ export function evaluateForce(v: Vec3, ownStitchRadius: number, otherStitchRadiu
 }
 
 /**
+ * WARNING: THIS IS ONLY KEPT FOR COMPATIBILITY WITH AN EXPERIMENT
+ * PLEASE use `iterateForces` within the placer instead! (Thanks!)
+ *
  * Applies forces to the points for a single timestep, given their connections to each other.
  * Returns the positions of the points after one timestep in a new array.
  *
@@ -76,4 +80,86 @@ export function evaluateForces(
         );
     }
     return output;
+}
+
+export function iterateForces(
+    pattern: Pattern<PlacedStitch>,
+    maxIterations: number = 100,
+    timeStep: number = 1,
+    movementThreshold: number = 1,
+): Pattern<PlacedStitch> {
+    const { foundation, stitches } = pattern;
+    const numStitches = stitches.length;
+
+    // If nothing to do
+    if (numStitches < 2) {
+        return pattern;
+    }
+
+    // Prev/next
+    stitches[0].links.next = stitches[1];
+    for (let i = 1; i < numStitches - 1; ++i) {
+        stitches[i].links.prev = stitches[i - 1];
+        stitches[i].links.next = stitches[i + 1];
+    }
+    stitches[numStitches - 1].links.prev = stitches[numStitches - 2];
+
+    // JANK: rely on naive placer estimator for parent/child
+
+    // Helper function to apply forces for a given link, if it exists
+    function applyForceIfLinkExists(
+        basePosition: Point,
+        link: PlacedStitch | undefined,
+        accumulatedForce: Vector3,
+    ) {
+        if (link) {
+            const fk = evaluateForce(
+                {
+                    x: link.position.x - basePosition.x,
+                    y: link.position.y - basePosition.y,
+                    z: link.position.z - basePosition.z,
+                },
+                // Hardcoded radii
+                0.5,
+                0.5,
+            );
+            accumulatedForce.add(new Vector3(fk.x, fk.y, fk.z));
+        }
+    }
+
+    const forces: Vector3[] = [];
+    stitches.forEach(() => forces.push(new Vector3(0, 0, 0)));
+
+    // Actually apply the forces
+    for (let iter = 0; iter < maxIterations; ++iter) {
+        let totalMovement = 0;
+        // Compute all forces
+        for (let i = 0; i < numStitches; ++i) {
+            const lastPoint = stitches[i].position;
+            const { prev, next, parent, children } = stitches[i].links;
+            let netForce = new Vector3(0, 0, 0);
+            applyForceIfLinkExists(lastPoint, prev, netForce);
+            applyForceIfLinkExists(lastPoint, next, netForce);
+            applyForceIfLinkExists(lastPoint, parent, netForce);
+            applyForceIfLinkExists(lastPoint, children, netForce);
+            netForce.multiplyScalar(timeStep);
+            forces[i] = netForce;
+            totalMovement += netForce.lengthSq();
+        }
+        // Apply all forces at once
+        for (let i = 0; i < numStitches; ++i) {
+            const { x, y, z } = stitches[i].position;
+            stitches[i].position = {
+                x: x + forces[i].x,
+                y: y + forces[i].y,
+                z: z + forces[i].z,
+            };
+        }
+        // If things have converged closely enough, just stop iterating immediately.
+        if (totalMovement < movementThreshold) {
+            console.log(`Rough convergence achieved in ${iter} iterations. Exiting early.`);
+            break;
+        }
+    }
+    return pattern;
 }
