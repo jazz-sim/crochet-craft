@@ -55,7 +55,6 @@ function convertPatternToLines(pattern: Pattern<LinkedStitch>): LinkedStitch[][]
 
 export function naivePlacer(pattern: Pattern<LinkedStitch>) {
     const out: (PlacedStitch & {
-        links: number[];
         parent: number | null;
         colour: string;
     })[] = [];
@@ -77,11 +76,7 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
         line.forEach((stitch) => {
             out.push({
                 ...stitch,
-                links: [
-                    ...(stitch.parent ? [stitch.parent] : []),
-                    ...(index > 0 ? [index - 1] : []),
-                    ...(index < maxIndex ? [index + 1] : []),
-                ],
+                links: {},
                 position: placementPoint,
                 orientation: { a: 0.7071, b: 0, c: 0, d: direction * -0.7071 },
             });
@@ -100,6 +95,22 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
         };
         // Swap direction when changing rows
         direction *= -1;
+    });
+
+    // Retain parents in links field
+    // Should probably be done somewhere else but idk.
+    out.forEach((stitch) => {
+        if (stitch.parent) {
+            stitch.links = {
+                parent: out[stitch.parent],
+            };
+        }
+    });
+    // Inverse mapping for children
+    out.forEach((stitch) => {
+        if (stitch.links.parent) {
+            stitch.links.parent.links.children = stitch;
+        }
     });
 
     return out;
