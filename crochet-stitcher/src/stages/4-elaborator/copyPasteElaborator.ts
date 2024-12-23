@@ -118,11 +118,13 @@ function startToEndFixer(
     // Deep copy to prevent reference jank
     nextStitch.points[0] = [endOfPrevStitch[0], endOfPrevStitch[1], endOfPrevStitch[2]];
 
-    // Reorient anchor for continuity
+    // Reorient first anchor for continuity
     // On the one hand, this does make the chain stitch look much better.
     // On the other, this is a lot of work to fix an issue with the original base model.
     // (...which is my fault for the record - Allen)
     // But on the other other hand, it's unreasonable for every base model to end in the same direction.
+
+    // Project the first pivot along the line that the last stitch's final point and pivot lie on.
 
     // Find the direction of the end of the previous stitch
     // i.e. what way it would go if you extended it along a line
@@ -132,31 +134,28 @@ function startToEndFixer(
         endOfPrevStitch[1] - prevAnchor[1],
         endOfPrevStitch[2] - prevAnchor[2],
     ];
-    const r = Math.sqrt(
-        prevAnchorDiff[0] * prevAnchorDiff[0] +
-            prevAnchorDiff[1] * prevAnchorDiff[1] +
-            prevAnchorDiff[2] * prevAnchorDiff[2],
-    );
-    const direction = [prevAnchorDiff[0] / r, prevAnchorDiff[1] / r, prevAnchorDiff[2] / r];
-
-    // Get the distance of the first anchor from the first point of the next stitch
     const nextAnchorDiff = [
         nextStitch.points[1][0] - nextStitch.points[0][0],
         nextStitch.points[1][1] - nextStitch.points[0][1],
         nextStitch.points[1][2] - nextStitch.points[0][2],
     ];
-    const distance = Math.sqrt(
-        nextAnchorDiff[0] * nextAnchorDiff[0] +
-            nextAnchorDiff[1] * nextAnchorDiff[1] +
-            nextAnchorDiff[2] * nextAnchorDiff[2],
+    const distSquared = Math.sqrt(
+        prevAnchorDiff[0] * prevAnchorDiff[0] +
+            prevAnchorDiff[1] * prevAnchorDiff[1] +
+            prevAnchorDiff[2] * prevAnchorDiff[2],
     );
+    const dotProduct =
+        prevAnchorDiff[0] * nextAnchorDiff[0] +
+        prevAnchorDiff[1] * nextAnchorDiff[1] +
+        prevAnchorDiff[2] * nextAnchorDiff[2];
+    const multiplier = distSquared / dotProduct;
 
     // Modify the first anchor to be aligned in the same direction as the
     // last anchor of the previous stitch.
     nextStitch.points[1] = [
-        nextStitch.points[0][0] + direction[0] * distance,
-        nextStitch.points[0][1] + direction[1] * distance,
-        nextStitch.points[0][2] + direction[2] * distance,
+        nextStitch.points[0][0] + prevAnchorDiff[0] * multiplier,
+        nextStitch.points[0][1] + prevAnchorDiff[1] * multiplier,
+        nextStitch.points[0][2] + prevAnchorDiff[2] * multiplier,
     ];
 
     return nextStitch;
