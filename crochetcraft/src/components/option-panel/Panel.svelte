@@ -28,18 +28,20 @@
         class:rounded-t-lg={position !== 'docked'}
     >
         <h4 class="h4">{title}</h4>
-        <button
-            class="btn-icon btn-icon-sm variant-filled-surface rounded-lg"
-            title={expanded ? 'Collapse' : 'Expand'}
-            aria-label={expanded ? 'collapse panel' : 'expand panel'}
-            onclick={() => (expanded = !expanded)}
-        >
-            {#if expanded}
-                <i class="fi fi-br-minus"></i>
-            {:else}
-                <i class="fi fi-br-plus"></i>
-            {/if}
-        </button>
+        {#if position !== 'docked'}
+            <button
+                class="btn-icon btn-icon-sm variant-filled-surface rounded-lg"
+                title={expanded ? 'Collapse' : 'Expand'}
+                aria-label={expanded ? 'collapse panel' : 'expand panel'}
+                onclick={() => (expanded = !expanded)}
+            >
+                {#if expanded}
+                    <i class="fi fi-br-minus"></i>
+                {:else}
+                    <i class="fi fi-br-plus"></i>
+                {/if}
+            </button>
+        {/if}
     </div>
     <div class="flex-1 space-y-4 overflow-y-auto p-4" class:hidden={!expanded}>
         {@render children()}
