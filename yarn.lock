@@ -670,6 +670,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@flaticon/flaticon-uicons@npm:^3.3.1":
+  version: 3.3.1
+  resolution: "@flaticon/flaticon-uicons@npm:3.3.1"
+  dependencies:
+    esbuild-linux-64: "npm:^0.14.5"
+  dependenciesMeta:
+    esbuild-linux-64:
+      optional: true
+  checksum: 10c0/428211b5ada6088d4149a87006c4e2d81d19aa74474796d555b07f14b332d52693e9d6520f9b62539758865685c10f0fd404e3ec0b0ce77d7bf9530581a0b645
+  languageName: node
+  linkType: hard
+
 "@humanfs/core@npm:^0.19.1":
   version: 0.19.1
   resolution: "@humanfs/core@npm:0.19.1"
@@ -2444,6 +2456,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "crochetcraft@workspace:crochetcraft"
   dependencies:
+    "@flaticon/flaticon-uicons": "npm:^3.3.1"
     "@neodrag/svelte": "npm:^2.0.6"
     "@playwright/test": "npm:^1.49.0"
     "@skeletonlabs/skeleton": "npm:^2.10.3"
@@ -2677,6 +2690,13 @@ __metadata:
   version: 1.5.4
   resolution: "es-module-lexer@npm:1.5.4"
   checksum: 10c0/300a469488c2f22081df1e4c8398c78db92358496e639b0df7f89ac6455462aaf5d8893939087c1a1cbcbf20eed4610c70e0bcb8f3e4b0d80a5d2611c539408c
+  languageName: node
+  linkType: hard
+
+"esbuild-linux-64@npm:^0.14.5":
+  version: 0.14.54
+  resolution: "esbuild-linux-64@npm:0.14.54"
+  conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
