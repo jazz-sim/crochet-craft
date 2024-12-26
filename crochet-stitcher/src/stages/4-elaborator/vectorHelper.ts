@@ -1,4 +1,5 @@
 import { Vector3 } from 'three';
+import { Point } from '../../types';
 
 /**
  * Converts a 2D array of numbers into a list of Vector3.
@@ -6,4 +7,8 @@ import { Vector3 } from 'three';
  */
 export function arrayToVector3List(points: [number, number, number][]) {
     return points.map(([x, y, z]) => new Vector3(x, y, z));
+}
+
+export function pointArrayToVector3List(points: Point[]) {
+    return points.map(({ x, y, z }) => new Vector3(x, y, z));
 }
