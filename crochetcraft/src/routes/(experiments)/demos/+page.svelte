@@ -29,6 +29,10 @@
             name: 'Efficient Rendering - 3D Shear',
             route: '/efficient-shear3d',
         },
+        {
+            name: 'End to end testing purgatory',
+            route: '/e2e-hell',
+        },
     ];
 
     const crochetDemos: DemoData[] = [
