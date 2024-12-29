@@ -25,11 +25,25 @@ describe('basic linking', () => {
             linkedMc(lst(StitchType.Chain), lst(StitchType.Chain), lst(StitchType.Chain)),
         );
     });
+
+    test('parent offset', () => {
+        expect(
+            link(slkt(st(StitchType.Chain, 3), st(StitchType.Single), st(StitchType.Single, 1, 1))),
+        ).toEqual(
+            linkedSlkt(
+                lst(StitchType.Chain),
+                lst(StitchType.Chain),
+                lst(StitchType.Chain),
+                lst(StitchType.Single, 0),
+                lst(StitchType.Single, 2),
+            ),
+        );
+    });
 });
 
 describe('multiple row linking', () => {
     test('two rows', () => {
-        expect(link(slkt(st(StitchType.Chain, 3), 'eor', st(StitchType.Single, 3)))).toEqual(
+        expect(link(slkt(st(StitchType.Chain, 3), st(StitchType.Single, 3)))).toEqual(
             linkedSlkt(
                 lst(StitchType.Chain),
                 lst(StitchType.Chain),
@@ -37,6 +51,36 @@ describe('multiple row linking', () => {
                 lst(StitchType.Single, 0),
                 lst(StitchType.Single, 1),
                 lst(StitchType.Single, 2),
+            ),
+        );
+    });
+
+    test('two rows with turn', () => {
+        expect(link(slkt(st(StitchType.Chain, 3), 'turn', st(StitchType.Single, 3)))).toEqual(
+            linkedSlkt(
+                lst(StitchType.Chain),
+                lst(StitchType.Chain),
+                lst(StitchType.Chain),
+                lst(StitchType.Single, 2),
+                lst(StitchType.Single, 1),
+                lst(StitchType.Single, 0),
+            ),
+        );
+    });
+
+    test('multiple rows with magic ring', () => {
+        expect(link(mc(st(StitchType.Single, 3), 'eor', st(StitchType.Single, 7)))).toEqual(
+            linkedMc(
+                lst(StitchType.Single),
+                lst(StitchType.Single),
+                lst(StitchType.Single),
+                lst(StitchType.Single, 0),
+                lst(StitchType.Single, 1),
+                lst(StitchType.Single, 2),
+                lst(StitchType.Single, 3),
+                lst(StitchType.Single, 4),
+                lst(StitchType.Single, 5),
+                lst(StitchType.Single, 6),
             ),
         );
     });
@@ -72,5 +116,30 @@ describe('multiple row linking', () => {
 		 6  5  4 (3)
 		 0  1  2
 		*/
+    });
+});
+
+describe('edge cases', () => {
+    test('skip first stitch of previous row', () => {
+        expect(
+            link(
+                mc(
+                    st(StitchType.Single, 3),
+                    'eor',
+                    st(StitchType.Single, 3),
+                    st(StitchType.Single, 1, 1),
+                ),
+            ),
+        ).toEqual(
+            linkedMc(
+                lst(StitchType.Single),
+                lst(StitchType.Single),
+                lst(StitchType.Single),
+                lst(StitchType.Single, 0),
+                lst(StitchType.Single, 1),
+                lst(StitchType.Single, 2),
+                lst(StitchType.Single, 4),
+            ),
+        );
     });
 });
