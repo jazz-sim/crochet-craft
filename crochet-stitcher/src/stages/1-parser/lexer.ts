@@ -1,3 +1,5 @@
+import { Location } from '../../types';
+
 export enum Keyword {
     // Generic words:
     Stitch = 'Stitch',
@@ -26,38 +28,34 @@ export enum Keyword {
     More = 'More',
 }
 
-export type Token =
+type TokenData =
     | { type: 'keyword'; value: Keyword }
     | { type: 'color'; value: string }
     | { type: 'symbol'; value: string }
     | { type: 'number'; value: number };
 
-export interface Location {
-    line: number;
-    column: number;
-    length: number;
-}
+export type Token = TokenData & { location: Location };
 
-export function lex(input: string, line = 0): (Token & Location)[] {
-    const tokens: (Token & Location)[] = [];
+export function lex(input: string, line = 0): Token[] {
+    const tokens: Token[] = [];
 
     const regex = /[A-Za-z_]+|\d+|#[0-9a-fA-F]{6}|\S/g;
     while (true) {
         const match = regex.exec(input);
         if (!match) break;
         const value = match[0].toLowerCase();
-        const loc = { line, column: match.index, length: match[0].length };
+        const location = new Location(line, match.index, match[0].length);
 
         if (KEYWORD_LUT[value]) {
-            tokens.push({ ...loc, type: 'keyword', value: KEYWORD_LUT[value] });
+            tokens.push({ location, type: 'keyword', value: KEYWORD_LUT[value] });
         } else if (/^#\w+$/.test(value)) {
-            tokens.push({ ...loc, type: 'color', value });
+            tokens.push({ location, type: 'color', value });
         } else if (COLOR_LUT.has(value)) {
-            tokens.push({ ...loc, type: 'color', value: value.toLowerCase() });
+            tokens.push({ location, type: 'color', value: value.toLowerCase() });
         } else if (/^\d+$/.test(value)) {
-            tokens.push({ ...loc, type: 'number', value: parseInt(value) });
+            tokens.push({ location, type: 'number', value: parseInt(value) });
         } else if (/^\W$/.test(value)) {
-            tokens.push({ ...loc, type: 'symbol', value });
+            tokens.push({ location, type: 'symbol', value });
         } else {
             throw Error(`Unrecognized token '${value}'`);
         }

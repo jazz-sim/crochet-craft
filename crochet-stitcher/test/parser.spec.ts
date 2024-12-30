@@ -1,6 +1,6 @@
 import { parse } from '../src/stages/1-parser.js';
 import { ParsedInstruction, StitchType } from '../src/types.js';
-import { st } from './parser.js';
+import { st } from './parser-util.js';
 import { mc as rawMc, slkt as rawSlkt } from './util.js';
 
 const mc = rawMc<ParsedInstruction>;

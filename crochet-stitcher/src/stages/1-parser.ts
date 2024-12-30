@@ -1,4 +1,11 @@
-import { Foundation, ParsedInstruction, ParsedStitch, Pattern, StitchType } from '../types.js';
+import {
+    Foundation,
+    Location,
+    ParsedInstruction,
+    ParsedStitch,
+    Pattern,
+    StitchType,
+} from '../types.js';
 import { Keyword, lex } from './1-parser/lexer.js';
 
 export function parse(input: string): Pattern<ParsedInstruction> {
@@ -10,6 +17,7 @@ export function parse(input: string): Pattern<ParsedInstruction> {
     let currentColour = 'white';
 
     const lines = input.split(/\r?\n/);
+    let lastRowNumber = 0;
     for (let lineIndex = 0; lineIndex < lines.length; ++lineIndex) {
         const line = lines[lineIndex];
         const lineNum = lineIndex + 1;
@@ -18,8 +26,14 @@ export function parse(input: string): Pattern<ParsedInstruction> {
         const tokens = lex(line, lineNum);
         let i = 0; // index of current token
 
-        const [rowStart, rowEnd] = parseRowRange() ?? [0, 0];
+        const [rowStart, rowEnd] = parseRowRange() ?? [lastRowNumber, lastRowNumber];
         const rowRepetitions = Math.max(1, rowEnd - rowStart + 1);
+        lastRowNumber = rowEnd;
+
+        // Update the location information of the tokens
+        for (const token of tokens) {
+            token.location.row = rowStart;
+        }
 
         try {
             // Foundation stitch?
@@ -35,7 +49,16 @@ export function parse(input: string): Pattern<ParsedInstruction> {
 
             // Instructions?
             if (i < tokens.length) {
+                let stitchNumber = 1;
+
                 const rowInstructions = parseInstructions();
+                // Update location information for these stitches
+                for (const instruction of rowInstructions) {
+                    if (typeof instruction !== 'string' && instruction.location.stitch < 0) {
+                        instruction.location.stitch = stitchNumber++;
+                    }
+                }
+
                 if (pattern.foundation === Foundation.MagicRing) {
                     // Add end-of-row marker only for magic ring patterns
                     rowInstructions.push('eor');
@@ -45,10 +68,11 @@ export function parse(input: string): Pattern<ParsedInstruction> {
             }
             if (i !== tokens.length) throw 'Syntax error';
         } catch (error) {
-            const spaces = tokens[i]?.column ?? line.length;
-            const carets = tokens[i]?.length || 1;
+            const location = tokens[i]?.location ?? new Location(lineNum, line.length, 1, rowStart);
+            const spaces = location.column;
+            const carets = location.length || 1;
             throw Error(
-                `Parse error on line ${lineNum}: ${error}\n` +
+                `Parse error at ${location}: ${error}\n` +
                     `\t${line}\n` +
                     `\t${' '.repeat(spaces)}${'^'.repeat(carets)}`,
             );
@@ -201,6 +225,8 @@ export function parse(input: string): Pattern<ParsedInstruction> {
 
         /** Tries to parse a stitch type. O(1). */
         function parseStitch(): ParsedStitch[] | null {
+            let location: Location | null = null;
+
             const start = i;
             // Invisible?
             if (tokens[i]?.value === Keyword.Invisible) i += 1;
@@ -212,33 +238,42 @@ export function parse(input: string): Pattern<ParsedInstruction> {
                 [Keyword.Double]: StitchType.Double,
                 [Keyword.Treble]: StitchType.Treble,
             }[tokens[i]?.value];
-            if (stitchType) i += 1;
+            if (stitchType) {
+                location = tokens[i].location;
+                i += 1;
+            }
             // Stitch?
             if (tokens[i]?.value === Keyword.Stitch) i += 1;
             // Increase/decrease?
             if (tokens[i]?.value === Keyword.Increase) {
-                i += 1;
                 const stitch = {
+                    location: tokens[i].location,
                     type: stitchType ?? StitchType.Single,
                     colour: currentColour,
                     into: null,
                 };
+                i += 1;
                 return [
                     { ...stitch, parentOffset: 0 },
                     { ...stitch, parentOffset: -1 },
                 ];
             } else if (tokens[i]?.value === Keyword.Decrease) {
-                i += 1;
+                location = tokens[i].location;
                 stitchType = StitchType.InvisibleDecrease;
+                i += 1;
             }
             // Stitch?
             if (tokens[i]?.value === Keyword.Stitch) i += 1;
 
-            if (!stitchType) {
+            // stitchType and location should be either both null or both
+            // non-null. We check both to make TypeScript happy.
+            if (!stitchType || !location) {
                 i = start;
                 return null;
             }
-            return [{ type: stitchType, colour: currentColour, into: null, parentOffset: 0 }];
+            return [
+                { type: stitchType, colour: currentColour, into: null, parentOffset: 0, location },
+            ];
         }
 
         /** Tries to parse a count. O(1). */
