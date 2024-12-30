@@ -13,6 +13,8 @@
         'default chain': 'ch 10',
         'long chain': 'ch 100',
         '3x3 square': 'ch 3, turn, sc 3, turn, sc3',
+        '3x10 rectangle': 'ch 10, turn, sc 10, turn, sc10',
+        'Janky chain': 'ch 5, turn, sc 5, ch 5, turn, sc 4, ch 3, sc 6',
     };
     const sampleNames = Object.keys(sampleInputs);
     let selectedSampleName = 'default chain';
