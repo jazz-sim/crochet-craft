@@ -17,7 +17,7 @@ export function parse(input: string): Pattern<ParsedInstruction> {
     let currentColour = 'white';
 
     const lines = input.split(/\r?\n/);
-    let lastRowNumber = 0;
+    let nextRowNumber = 1; // The next row number if it's not specified
     for (let lineIndex = 0; lineIndex < lines.length; ++lineIndex) {
         const line = lines[lineIndex];
         const lineNum = lineIndex + 1;
@@ -26,16 +26,19 @@ export function parse(input: string): Pattern<ParsedInstruction> {
         const tokens = lex(line, lineNum);
         let i = 0; // index of current token
 
-        const [rowStart, rowEnd] = parseRowRange() ?? [lastRowNumber, lastRowNumber];
-        const rowRepetitions = Math.max(1, rowEnd - rowStart + 1);
-        lastRowNumber = rowEnd;
-
-        // Update the location information of the tokens
-        for (const token of tokens) {
-            token.location.row = rowStart;
-        }
-
         try {
+            // Parse row range
+            const [rowStart, rowEnd] = parseRowRange() ?? [nextRowNumber, nextRowNumber];
+            const rowRepetitions = Math.max(1, rowEnd - rowStart + 1);
+            nextRowNumber = rowEnd; // we only add 1 later if there are actually stitches in this row
+
+            // Update the location information of the tokens
+            for (const token of tokens) {
+                // TODO(jtai): add correct row numbers in the location for each
+                // copy of the row in a row range
+                token.location.row = rowStart;
+            }
+
             // Foundation stitch?
             if (tokens[i]?.value === Keyword.MagicRing) {
                 pattern.foundation = Foundation.MagicRing;
@@ -49,26 +52,32 @@ export function parse(input: string): Pattern<ParsedInstruction> {
 
             // Instructions?
             if (i < tokens.length) {
-                let stitchNumber = 1;
-
                 const rowInstructions = parseInstructions();
+
                 // Update location information for these stitches
+                let stitchNumber = 1;
                 for (const instruction of rowInstructions) {
                     if (typeof instruction !== 'string' && instruction.location.stitch < 0) {
                         instruction.location.stitch = stitchNumber++;
                     }
                 }
 
+                // Update row number for next row
+                if (rowInstructions.length) {
+                    nextRowNumber += 1;
+                }
+
                 if (pattern.foundation === Foundation.MagicRing) {
                     // Add end-of-row marker only for magic ring patterns
                     rowInstructions.push('eor');
                 }
+
                 pattern.stitches.push(...repeat(rowInstructions, rowRepetitions));
                 checkStitchLimit(pattern.stitches.length);
             }
             if (i !== tokens.length) throw 'Syntax error';
         } catch (error) {
-            const location = tokens[i]?.location ?? new Location(lineNum, line.length, 1, rowStart);
+            const location = tokens[i]?.location ?? new Location(lineNum, line.length, 1);
             const spaces = location.column;
             const carets = location.length || 1;
             throw Error(
