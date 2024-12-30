@@ -1,112 +1,70 @@
-import { LinkedStitch, ParsedInstruction, ParsedStitch, Pattern, StitchType } from '../types.js';
-
-interface LinkedStitchIntermediate {
-    stitch: LinkedStitch;
-    globalIndex: number;
-}
+import { Foundation, LinkedStitch, ParsedInstruction, Pattern, StitchType } from '../types.js';
 
 export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
-    let previous: LinkedStitchIntermediate[] = [];
-    let current: LinkedStitchIntermediate[] = [];
+    // Note that the input contains instructions other than stitches, like
+    // 'turn'. These do not exist in the linked output, so each stitch has two
+    // separate indices. The 'input index' is its index in `input.stitches`, and
+    // the 'output index' is the index in `output`.
 
-    let stitches: LinkedStitchIntermediate[] = [];
-    let parsedList = input.stitches;
-    let prevPtr = 0;
-    let totalIndex = 0;
-    let baseIndex = 0;
-    // For starting off, we need to 'seed' the current row before we get to the general pattern
-    for (let i = 0; i < parsedList.length; i++) {
-        if (parsedList[i] === 'turn' || parsedList[i] === 'eor') {
-            break;
+    // The output stitches.
+    const output: LinkedStitch[] = input.stitches
+        .filter((instr) => typeof instr !== 'string')
+        .map((stitch) => ({
+            type: stitch.type,
+            colour: stitch.colour,
+            parent: null,
+        }));
+
+    // Whether or not we are currently crocheting into the magic ring.
+    let isInMagicRing = input.foundation === Foundation.MagicRing;
+
+    // The stitches in the previous row. Array of output indices.
+    let previousRow: number[] = [];
+    // The stitches in the current row. Array of output indices.
+    let currentRow: number[] = [];
+
+    // Index of the next element of `previousRow` to link to.
+    let previousIndex = 0;
+
+    let outputIndex = 0;
+    for (let inputIndex = 0; inputIndex < input.stitches.length; inputIndex++) {
+        const instruction = input.stitches[inputIndex];
+        if (instruction === 'turn') {
+            previousIndex = 0;
+            previousRow = currentRow.reverse();
+            currentRow = [];
+        } else if (instruction === 'eor') {
+            isInMagicRing = false;
         } else {
-            let item = parsedList[i] as ParsedStitch;
-            let type = item.type;
-            let colour = item.colour;
-            let offset = item.parentOffset;
-            // Chain stitches have no parent
-            if (type == StitchType.Chain) {
-                current.push({
-                    stitch: { type: type, colour: colour, parent: null },
-                    globalIndex: totalIndex,
-                });
-                stitches.push({
-                    stitch: { type: type, colour: colour, parent: null },
-                    globalIndex: totalIndex,
-                });
-                totalIndex += 1;
-                baseIndex += 1;
-            } else {
-                // I think the index is right here??
-                current.push({
-                    stitch: { type: type, colour: colour, parent: totalIndex - 1 },
-                    globalIndex: totalIndex,
-                });
-                stitches.push({
-                    stitch: { type: type, colour: colour, parent: totalIndex - 1 },
-                    globalIndex: totalIndex,
-                });
-                baseIndex += 1;
-                totalIndex += 1;
+            const stitch = instruction;
+
+            if (stitch.type !== StitchType.Chain && !isInMagicRing) {
+                // This stitch needs a parent
+                previousIndex += stitch.parentOffset;
+                if (previousIndex >= previousRow.length) {
+                    // Overran the end of the previous row, so restart in the current row.
+                    previousIndex -= previousRow.length;
+                    previousRow = currentRow;
+                    currentRow = [];
+                    if (!previousRow.length) {
+                        // Nothing in the previous row?!
+                        throw new Error(`No stitch to link to, for stitch ${outputIndex + 1}`);
+                    }
+                } else if (previousIndex < 0) {
+                    throw new Error(`No previous stitch to link to, for stitch ${outputIndex + 1}`);
+                }
+
+                output[outputIndex].parent = previousRow[previousIndex];
+                previousIndex += 1 + stitch.parentOffset;
             }
+
+            currentRow.push(outputIndex);
+            outputIndex += 1;
         }
     }
 
-    // General pattern - add stitches to the current row
-    // If you end the row with a turnaround, reverse the previous row
-    // If you don't just add parents one by one
-
-    for (let i = baseIndex; i < parsedList.length; i++) {
-        if (parsedList[i] === 'turn' || parsedList[i] === 'eor') {
-            //swap lists if at the end of previous
-
-            // Don't need conditional since we're for sure at the end of the row
-            // if (prevPtr == previous.length) {
-            previous = current;
-            // weird but apparently valid
-            current = [];
-            if (parsedList[i] === 'turn') {
-                // If turning around - need conditional!
-                previous.reverse();
-            }
-            prevPtr = 0;
-            // }
-        } else {
-            let item = parsedList[i] as ParsedStitch;
-            let type = item.type;
-            let colour = item.colour;
-            let offset = item.parentOffset;
-            // Chain stitches have no parent
-            if (type == StitchType.Chain) {
-                current.push({
-                    stitch: { type: type, colour: colour, parent: null },
-                    globalIndex: totalIndex,
-                });
-                stitches.push({
-                    stitch: { type: type, colour: colour, parent: null },
-                    globalIndex: totalIndex,
-                });
-                totalIndex += 1;
-            } else {
-                // Should always be valid? Double check this
-                let parent = previous[prevPtr + offset];
-                let parentIndex = parent.globalIndex;
-                current.push({
-                    stitch: { type: type, colour: colour, parent: parentIndex },
-                    globalIndex: totalIndex,
-                });
-                stitches.push({
-                    stitch: { type: type, colour: colour, parent: parentIndex },
-                    globalIndex: totalIndex,
-                });
-                prevPtr += offset + 1;
-                totalIndex += 1;
-            }
-        }
-    }
-
-    let trimmedStitches: LinkedStitch[] = [];
-    for (let i = 0; i < stitches.length; i++) {
-        trimmedStitches.push(stitches[i].stitch);
-    }
-    return { foundation: input.foundation, stitches: trimmedStitches };
+    return {
+        foundation: input.foundation,
+        stitches: output,
+    };
 }
