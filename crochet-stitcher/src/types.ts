@@ -61,4 +61,11 @@ export interface PlacedStitch {
     type: StitchType;
     position: Point;
     orientation: Quaternion;
+    links: {
+        prev?: PlacedStitch;
+        next?: PlacedStitch;
+        parent?: PlacedStitch;
+        // Should be an array...
+        children?: PlacedStitch;
+    };
 }

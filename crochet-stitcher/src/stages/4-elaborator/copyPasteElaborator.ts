@@ -148,7 +148,9 @@ function startToEndFixer(
         prevAnchorDiff[0] * nextAnchorDiff[0] +
         prevAnchorDiff[1] * nextAnchorDiff[1] +
         prevAnchorDiff[2] * nextAnchorDiff[2];
-    const multiplier = distSquared / dotProduct;
+    // If the dot product is negative, this leads to... weird results
+    // (i.e. non-smooth zigzags)
+    const multiplier = distSquared / Math.abs(dotProduct);
 
     // Modify the first anchor to be aligned in the same direction as the
     // last anchor of the previous stitch.
@@ -189,10 +191,21 @@ function curveToGeometries(
  * @param stitch
  * @returns
  */
-function substituteStitch(stitch: PlacedStitch) {
+function substituteStitch(stitch: PlacedStitch): StitchModel {
     switch (stitch.type) {
         case StitchType.Chain:
             return StitchModel.CHAIN;
+        case StitchType.Single:
+            // Return a line, just for testing
+            return {
+                curveType: 'bezier',
+                points: [
+                    [0.0, 0.0, 0.0],
+                    [0.3, 0.0, 0.0],
+                    [0.7, 0.0, 0.0],
+                    [1.0, 0.0, 0.0],
+                ],
+            };
         default:
             throw 'Unsupported stitch!';
     }
