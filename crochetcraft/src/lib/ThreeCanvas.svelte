@@ -82,8 +82,8 @@
             let previousIntersectedObject = null as null | Three.Mesh;
             function checkIntersection(e: MouseEvent, type: String) {
                 // get mouse coords:
-                mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
-                mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+                mouse.x = (e.offsetX / wrapper.clientWidth) * 2 - 1;
+                mouse.y = -(e.offsetY / wrapper.clientHeight) * 2 + 1;
                 // Get intersection list:
                 const intersects = raycaster.intersectObjects(scene.children);
                 let sameIntersection = false;
