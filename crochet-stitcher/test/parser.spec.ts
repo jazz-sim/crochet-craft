@@ -1,5 +1,5 @@
 import { parse } from '../src/stages/1-parser.js';
-import { ParsedInstruction, StitchType } from '../src/types.js';
+import { Location, ParsedInstruction, StitchType } from '../src/types.js';
 import { st } from './parser-util.js';
 import { mc as rawMc, slkt as rawSlkt } from './util.js';
 
@@ -64,6 +64,36 @@ describe('simple tests', () => {
     test('turns', () => {
         expect(parse('ch 2, turn, ch 2')).toEqual(
             slkt(st(StitchType.Chain, 2), 'turn', st(StitchType.Chain, 2)),
+        );
+    });
+
+    test('automatic row numbers', () => {
+        const anyNum = expect.any(Number);
+        expect(parse('ch 1\nch 1\n\n\n\n    \nch 1')).toEqual(
+            slkt(
+                [1, 2, 3].map((row) => ({
+                    type: StitchType.Chain,
+                    parentOffset: 0,
+                    into: null,
+                    colour: 'white',
+                    location: new Location(anyNum, anyNum, anyNum, row, 1),
+                })),
+            ),
+        );
+    });
+
+    test('continuing from manual row numbers', () => {
+        const anyNum = expect.any(Number);
+        expect(parse('6-7. ch 1\nch 1\n\n\n\n    \nch 1')).toEqual(
+            slkt(
+                [6, anyNum, 8, 9].map((row) => ({
+                    type: StitchType.Chain,
+                    parentOffset: 0,
+                    into: null,
+                    colour: 'white',
+                    location: new Location(anyNum, anyNum, anyNum, row, 1),
+                })),
+            ),
         );
     });
 });
