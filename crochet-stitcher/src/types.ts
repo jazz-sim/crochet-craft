@@ -27,6 +27,35 @@ export enum StitchType {
     InvisibleDecrease = 'InvisibleDecrease',
 }
 
+/**
+ * The location of a stitch in the pattern text.
+ *
+ * WARNING: The fields in this class are provided on a best-effort basis. Hence,
+ * this information should ONLY be used for error diagnostics. Do NOT rely on
+ * these values in your algorithms!
+ */
+export class Location {
+    constructor(
+        /** Line number, starting at 1. */
+        public line: number,
+        /** Column number, starting at 0. */
+        public column: number,
+        /** Length of text fragment. */
+        public length: number,
+        /** Row number. */
+        public row = -1,
+        /** Stitch number within the row, starting at 1. */
+        public stitch = -1,
+    ) {}
+
+    toString() {
+        let description = '';
+        if (this.row >= 0) description += `row ${this.row} `;
+        if (this.stitch >= 0) description += `stitch ${this.stitch} `;
+        return description + `(input:${this.line}:${this.column})`;
+    }
+}
+
 export interface Pattern<S> {
     foundation: Foundation;
     stitches: S[];
@@ -41,6 +70,7 @@ export interface ParsedStitch {
     colour: string;
     into: StitchType | null;
     parentOffset: number;
+    location: Location;
 }
 
 /// An instruction output from the parser can be a stitch, a turn, or an
@@ -55,6 +85,7 @@ export interface LinkedStitch {
      */
     parent: number | null;
     colour: string;
+    location: Location;
 }
 
 export interface PlacedStitch {
