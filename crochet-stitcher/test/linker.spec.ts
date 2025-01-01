@@ -1,7 +1,7 @@
-import { link } from '../src/stages/2-linker';
+import { link } from '../src/stages/2-linker.js';
 import { LinkedStitch, ParsedInstruction, StitchType } from '../src/types';
 import { lst } from './linker-util.js';
-import { st } from './parser.js';
+import { st } from './parser-util.js';
 import { mc as rawMc, slkt as rawSlkt } from './util.js';
 
 const mc = rawMc<ParsedInstruction>;
