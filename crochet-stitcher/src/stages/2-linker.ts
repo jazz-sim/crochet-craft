@@ -10,6 +10,7 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
     const output: LinkedStitch[] = input.stitches
         .filter((instr) => typeof instr !== 'string')
         .map((stitch) => ({
+            location: stitch.location,
             type: stitch.type,
             colour: stitch.colour,
             parent: null,

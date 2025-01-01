@@ -1,7 +1,7 @@
 import { parse } from '../src/stages/1-parser.js';
-import { slkt } from './util.js';
-import { st } from './parser.js';
 import { StitchType } from '../src/types.js';
+import { st } from './parser-util.js';
+import { slkt } from './util.js';
 
 describe('stitch limit', () => {
     test('via large number', () => {
