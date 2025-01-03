@@ -1,5 +1,5 @@
 import { Vector3 } from 'three';
-import { Pattern, LinkedStitch, PlacedStitch, Point } from '../../types';
+import { Pattern, PlacedStitch } from '../../types';
 
 // Lets evaluateForce accept THREE.Vector3. Cannot be cast to THREE.Vector3 due to missing fields.
 type Vec3 = {
@@ -108,7 +108,7 @@ export function iterateForces(
 
     // Helper function to apply forces for a given link, if it exists
     function applyForceIfLinkExists(
-        basePosition: Point,
+        basePosition: Vector3,
         link: PlacedStitch | undefined,
         accumulatedForce: Vector3,
     ) {
@@ -148,12 +148,7 @@ export function iterateForces(
         }
         // Apply all forces at once
         for (let i = 0; i < numStitches; ++i) {
-            const { x, y, z } = stitches[i].position;
-            stitches[i].position = {
-                x: x + forces[i].x,
-                y: y + forces[i].y,
-                z: z + forces[i].z,
-            };
+            stitches[i].position.add(forces[i]);
         }
         // If things have converged closely enough, just stop iterating immediately.
         if (totalMovement < movementThreshold) {
