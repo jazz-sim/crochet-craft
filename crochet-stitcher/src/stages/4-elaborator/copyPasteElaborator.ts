@@ -77,7 +77,7 @@ function movePointsToPlacement(stitch: IntermediatePlacement): IntermediatePlace
     // and just copy paste the Wikipedia conversion to a matrix.
     // If anyone is willing to make quaternions work nicely, please do.
     // Otherwise, I might just switch to Euler angles.
-    const { a: r, b: i, c: j, d: k } = stitch.orientation;
+    const { w: r, x: i, y: j, z: k } = stitch.orientation;
     const mat = [
         [1 - 2 * (j * j + k * k), 2 * (i * j - k * r), 2 * (i * k + j * r)],
         [2 * (i * j + k * r), 1 - 2 * (i * i + k * k), 2 * (j * k - i * r)],

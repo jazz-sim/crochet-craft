@@ -11,7 +11,8 @@
  * and subsequent rows alternate in direction.
  */
 
-import { Foundation, LinkedStitch, Pattern, PlacedStitch, Point } from '../../types';
+import { Quaternion, Vector3 } from 'three';
+import { Foundation, LinkedStitch, Pattern, PlacedStitch } from '../../types';
 import { evaluateForce } from './iterativeForcing';
 
 /**
@@ -71,28 +72,21 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
 
     let index = 0;
     let maxIndex = pattern.stitches.length - 1;
-    let placementPoint = { x: 0, y: 0, z: 0 };
+    let placementPoint = new Vector3();
     lines.forEach((line) => {
         line.forEach((stitch) => {
             out.push({
                 ...stitch,
                 links: {},
-                position: placementPoint,
-                orientation: { a: 0.7071, b: 0, c: 0, d: direction * -0.7071 },
+                position: placementPoint.clone(),
+                orientation: new Quaternion(0, 0, direction * -0.7071, 0.7071),
             });
             // Update position for the next point to place
-            placementPoint = {
-                x: placementPoint.x + stitchSpacing * direction,
-                y: placementPoint.y,
-                z: placementPoint.z,
-            };
+            placementPoint.x += stitchSpacing * direction;
         });
         // Update position for start of new row
-        placementPoint = {
-            x: placementPoint.x - stitchSpacing * direction,
-            y: placementPoint.y + rowSpacing,
-            z: placementPoint.z,
-        };
+        placementPoint.x -= stitchSpacing * direction;
+        placementPoint.y += rowSpacing;
         // Swap direction when changing rows
         direction *= -1;
     });

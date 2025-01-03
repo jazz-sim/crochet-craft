@@ -1,17 +1,4 @@
-/** A point in 3D space. */
-export interface Point {
-    x: number;
-    y: number;
-    z: number;
-}
-
-/** A unit quaternion representing an orientation in 3D space. */
-export interface Quaternion {
-    a: number;
-    b: number;
-    c: number;
-    d: number;
-}
+import { Quaternion, Vector3 } from 'three';
 
 export enum Foundation {
     SlipKnot = 'SlipKnot',
@@ -90,7 +77,7 @@ export interface LinkedStitch {
 
 export interface PlacedStitch {
     type: StitchType;
-    position: Point;
+    position: Vector3;
     orientation: Quaternion;
     links: {
         prev?: PlacedStitch;
