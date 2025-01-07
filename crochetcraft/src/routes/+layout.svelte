@@ -7,6 +7,10 @@
     initializeStores();
 </script>
 
-<Modal rounded="rounded-lg" buttonNeutral="rounded-lg variant-filled-surface" />
+<Modal
+    rounded="rounded-lg"
+    buttonNeutral="rounded-lg variant-filled-surface"
+    buttonPositive="rounded-lg variant-soft-primary"
+/>
 
 {@render children()}

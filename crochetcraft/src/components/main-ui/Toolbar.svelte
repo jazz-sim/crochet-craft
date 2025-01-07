@@ -1,10 +1,17 @@
 <script lang="ts">
     import { downloadBlob } from '$lib/files';
     import State from '$lib/state.svelte';
-    import { LightSwitch, getModalStore, type ModalSettings } from '@skeletonlabs/skeleton';
-    import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
+    import {
+        LightSwitch,
+        getModalStore,
+        type ModalSettings,
+        type ModalComponent,
+    } from '@skeletonlabs/skeleton';
+    import * as Modals from '$components/modals/index';
 
     const modalStore = getModalStore();
+    const aboutModalComponent: ModalComponent = { ref: Modals.AboutModal };
+    const downloadModalComponent: ModalComponent = { ref: Modals.DownloadModal };
 
     async function onUpload(e: Event & { currentTarget: HTMLInputElement }) {
         let files = e.currentTarget.files;
@@ -20,24 +27,24 @@
         downloadBlob(blob, 'pattern.txt');
     }
 
-    /** Downloads the 3D model in OBJ format. */
-    function downloadModel() {
-        const exporter = new OBJExporter();
-        const data = exporter.parse(State.scene);
-        const blob = new Blob([data]);
-        downloadBlob(blob, 'pattern.obj');
+    // Triggering "download" modal:
+    const downloadModal: ModalSettings = {
+        type: 'component',
+        component: downloadModalComponent,
+    };
+
+    function showDownloadModal() {
+        modalStore.trigger(downloadModal);
     }
 
     // Triggering "about" modal:
-    const modal: ModalSettings = {
-        type: 'alert',
-        title: '<div class="flex justify-center items-center"><img src="/cc-logo-new-1-purple.png" width="65%" alt="CrochetCraft logo." /></div>',
-        body: '<div class="flex justify-center items-center"><p>CrochetCraft is a Final Year Design Project (FYDP).</p></div>',
-        buttonTextCancel: 'Close',
+    const aboutModal: ModalSettings = {
+        type: 'component',
+        component: aboutModalComponent,
     };
 
     function showAboutModal() {
-        modalStore.trigger(modal);
+        modalStore.trigger(aboutModal);
     }
 </script>
 
@@ -52,10 +59,10 @@
         <input type="file" accept=".txt" onchange={(e) => onUpload(e)} class="hidden" />
     </label>
     <button class="variant-filled-surface btn rounded-lg" onclick={downloadPattern}>
-        Download Pattern Text
+        Download Pattern Text...
     </button>
-    <button class="variant-filled-surface btn rounded-lg" onclick={downloadModel}>
-        Export 3D Object
+    <button class="variant-filled-surface btn rounded-lg" onclick={showDownloadModal}>
+        Export 3D Object...
     </button>
 
     <div class="flex-1"></div>

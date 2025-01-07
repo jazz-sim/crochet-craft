@@ -41,9 +41,15 @@
         const camera = new Three.PerspectiveCamera(70, width / height, 0.01, 100);
 
         // SET UP SCENE:
-        scene.add(new Three.AmbientLight(0x404040, 10)); // soft white light
-        // without directional light, spheres just look like flat circles
-        scene.add(new Three.DirectionalLight(0x404040, 10));
+        // add soft white light:
+        const ambientLight = new Three.AmbientLight(0x404040, 10);
+        ambientLight.name = 'ambientLight';
+        scene.add(ambientLight);
+        // without directional light, spheres just look like flat circles:
+        const directionalLight = new Three.DirectionalLight(0x404040, 10);
+        directionalLight.name = 'directionalLight';
+        scene.add(directionalLight);
+        // start scene:
         init(scene);
 
         // SET UP RENDERER:
