@@ -5,7 +5,8 @@ import { NoLocation } from './util';
 export function lst(
     type: StitchType,
     parent: number | null = null,
+    children: number[] = [],
     colour = 'white',
 ): NoLocation<LinkedStitch> {
-    return { type, parent, colour };
+    return { type, parent, children, colour };
 }
