@@ -2,7 +2,6 @@ import { Quaternion, Vector3 } from 'three';
 import { LinkedStitch, Pattern, PlacedStitch, StitchType } from '../../types';
 
 export function gdPlace(pattern: Pattern<LinkedStitch>, maxIterations = 20): Pattern<PlacedStitch> {
-    console.log(pattern.stitches);
     const positions: Vector3[] = [];
     const orientations: Quaternion[] = [];
 
