@@ -102,7 +102,7 @@
         <p>
             {isOBJ == true
                 ? 'OBJ is a geometry data file format. Material (and therefore colour data) is not supported.'
-                : 'glTF is a 3D scene / model fiel format. Also stores material and lights data.'}
+                : 'glTF is a 3D scene / model file format. Also stores material and lights data.'}
         </p>
     </div>
     <footer class={parent.regionFooter}>
