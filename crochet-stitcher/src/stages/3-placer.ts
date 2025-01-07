@@ -1,4 +1,3 @@
-import { Vector3 } from 'three';
 import { LinkedStitch, Pattern, PlacedStitch } from '../types.js';
 import { iterateForces } from './3-placer/iterativeForcing.js';
 import { naivePlacer } from './3-placer/naivePlacerEstimator.js';
@@ -16,4 +15,5 @@ export function place(input: Pattern<LinkedStitch>): Pattern<PlacedStitch> {
 }
 
 // Scuffed export for use in experiments
+export { gdPlace } from './3-placer/gd-placer.js';
 export { evaluateForces } from './3-placer/iterativeForcing.js';
