@@ -18,12 +18,13 @@ def alert(message, title='Save Bezier Points', icon='INFO'):
 obj = bpy.context.active_object
 curve = obj.data
 spline = curve.splines[0]
+scale = obj.scale
 
 points = []
 for point in spline.bezier_points:
-    points.append(point.handle_left)
-    points.append(point.co)
-    points.append(point.handle_right)
+    points.append(point.handle_left * scale)
+    points.append(point.co * scale)
+    points.append(point.handle_right * scale)
 points = points[1:-1]  # Remove unnecessary first and last control points
 
 # Write results to JSON file
@@ -38,7 +39,7 @@ with open(json_path, 'w') as fd:
     }, fd)
 
 alert(f"""
-Done! The points have been saved at:\n
+Done! The {len(points)} points have been saved at:\n
 {json_path}\n
 Please reformat the file before committing.
 """)
