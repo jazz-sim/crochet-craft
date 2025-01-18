@@ -14,6 +14,7 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
             type: stitch.type,
             colour: stitch.colour,
             parent: null,
+            children: [],
         }));
 
     // Whether or not we are currently crocheting into the magic ring.
@@ -55,7 +56,18 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
                     throw new Error(`No previous stitch to link to, for stitch ${outputIndex + 1}`);
                 }
 
+                if (previousRow[previousIndex] === outputIndex - 1) {
+                    // Cannot link a stitch to its previous one. Skip this parent.
+                    previousIndex += 1;
+                    if (previousIndex >= previousRow.length) {
+                        throw new Error(
+                            `Cannot link a stitch to its previous, for stitch ${outputIndex + 1}`,
+                        );
+                    }
+                }
+
                 output[outputIndex].parent = previousRow[previousIndex];
+                output[previousRow[previousIndex]].children.push(outputIndex);
                 previousIndex += 1 + stitch.parentOffset;
             }
 

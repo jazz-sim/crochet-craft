@@ -1,3 +1,4 @@
+import { BufferGeometry, Material, Mesh, NormalBufferAttributes, Object3DEventMap } from 'three';
 import { Pattern, PlacedStitch } from '../types.js';
 import { copyPasteStitches } from './4-elaborator/copyPasteElaborator.js';
 import { Mesh, BufferGeometry, NormalBufferAttributes, Material, Object3DEventMap } from 'three';
