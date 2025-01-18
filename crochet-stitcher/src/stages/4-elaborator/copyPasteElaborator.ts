@@ -5,6 +5,7 @@
  *
  * No additional work is done to make the resulting stitches look "nice".
  */
+import { Vector3 } from 'three';
 
 import StitchModel from '../../models';
 import { Pattern, PlacedStitch, StitchType } from '../../types';
@@ -72,7 +73,7 @@ function rotatePoints(stitch: StitchIR): StitchIR {
     // and just copy paste the Wikipedia conversion to a matrix.
     // If anyone is willing to make quaternions work nicely, please do.
     // Otherwise, I might just switch to Euler angles.
-    const { a: r, b: i, c: j, d: k } = stitch.orientation;
+    const { w: r, x: i, y: j, z: k } = stitch.orientation;
     const mat = [
         [1 - 2 * (j * j + k * k), 2 * (i * j - k * r), 2 * (i * k + j * r)],
         [2 * (i * j + k * r), 1 - 2 * (i * i + k * k), 2 * (j * k - i * r)],
@@ -92,11 +93,7 @@ function rotatePoints(stitch: StitchIR): StitchIR {
                       const ry = 2 * (x * mat[1][0] + y * mat[1][1] + z * mat[1][2]);
                       const rz = 2 * (x * mat[2][0] + y * mat[2][1] + z * mat[2][2]);
 
-                      return {
-                          x: rx,
-                          y: ry,
-                          z: rz,
-                      };
+                      return new Vector3(rx, ry, rz);
                   }),
               }
             : undefined,
