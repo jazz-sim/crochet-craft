@@ -52,16 +52,7 @@ function substituteStitch(stitch: PlacedStitch): StitchModel {
         case StitchType.Chain:
             return StitchModel.CHAIN;
         case StitchType.Single:
-            // Return a line, just for testing
-            return {
-                curveType: 'bezier',
-                points: [
-                    [0.0, 0.0, 0.0],
-                    [0.3, 0.0, 0.0],
-                    [0.7, 0.0, 0.0],
-                    [1.0, 0.0, 0.0],
-                ],
-            };
+            return StitchModel.SINGLE_CROCHET;
         default:
             throw 'Unsupported stitch!';
     }
