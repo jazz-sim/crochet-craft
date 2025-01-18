@@ -1,3 +1,4 @@
+import { Vector3 } from 'three';
 import { PatternIR, StitchIR } from './ir';
 
 export function smoothConnections(pattern: PatternIR): PatternIR {
@@ -35,11 +36,11 @@ function startToEndFixer(nextStitch: StitchIR, prevStitch: StitchIR): StitchIR {
     // Move start of next stitch to end of next
     const endOfPrevStitch = prevStitch.model.points[prevStitch.model.points.length - 1];
     // Deep copy to prevent reference jank
-    nextStitch.model.points[0] = {
-        x: prevStitch.position.x - nextStitch.position.x + endOfPrevStitch.x,
-        y: prevStitch.position.y - nextStitch.position.y + endOfPrevStitch.y,
-        z: prevStitch.position.z - nextStitch.position.z + endOfPrevStitch.z,
-    };
+    nextStitch.model.points[0] = new Vector3(
+        prevStitch.position.x - nextStitch.position.x + endOfPrevStitch.x,
+        prevStitch.position.y - nextStitch.position.y + endOfPrevStitch.y,
+        prevStitch.position.z - nextStitch.position.z + endOfPrevStitch.z,
+    );
 
     // Reorient first anchor for continuity
     // On the one hand, this does make the chain stitch look much better.
@@ -74,11 +75,11 @@ function startToEndFixer(nextStitch: StitchIR, prevStitch: StitchIR): StitchIR {
 
     // Modify the first anchor to be aligned in the same direction as the
     // last anchor of the previous stitch.
-    nextStitch.model.points[1] = {
-        x: nextStitch.model.points[0].x + prevAnchorDiff.x * multiplier,
-        y: nextStitch.model.points[0].y + prevAnchorDiff.y * multiplier,
-        z: nextStitch.model.points[0].z + prevAnchorDiff.z * multiplier,
-    };
+    nextStitch.model.points[1] = new Vector3(
+        nextStitch.model.points[0].x + prevAnchorDiff.x * multiplier,
+        nextStitch.model.points[0].y + prevAnchorDiff.y * multiplier,
+        nextStitch.model.points[0].z + prevAnchorDiff.z * multiplier,
+    );
 
     return nextStitch;
 }

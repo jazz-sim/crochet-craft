@@ -6,10 +6,10 @@ import {
     Object3DEventMap,
     TubeGeometry,
     MeshLambertMaterial,
+    Vector3,
 } from 'three';
 import { makeMultiBezier } from './bezier';
 import { PatternIR, StitchIR } from './ir';
-import { pointArrayToVector3List } from './vectorHelper';
 
 export function generateGeometry(
     pattern: PatternIR,
@@ -38,11 +38,14 @@ function movePointsToPlacement(stitch: StitchIR): StitchIR {
         model: stitch.model
             ? {
                   ...stitch.model,
-                  points: stitch.model.points.map((p) => ({
-                      x: p.x + stitch.position.x,
-                      y: p.y + stitch.position.y,
-                      z: p.z + stitch.position.z,
-                  })),
+                  points: stitch.model.points.map(
+                      (p) =>
+                          new Vector3(
+                              p.x + stitch.position.x,
+                              p.y + stitch.position.y,
+                              p.z + stitch.position.z,
+                          ),
+                  ),
               }
             : undefined,
     };
@@ -61,7 +64,7 @@ function curveToGeometries(
     // TODO: Make efficient
     switch (stitch.model.curveType) {
         case 'bezier':
-            const curveParts = makeMultiBezier(pointArrayToVector3List(stitch.model.points));
+            const curveParts = makeMultiBezier(stitch.model.points);
             return curveParts.map((curve) => {
                 const geometry = new TubeGeometry(curve, 50, 0.1, 10);
                 const material = new MeshLambertMaterial();
