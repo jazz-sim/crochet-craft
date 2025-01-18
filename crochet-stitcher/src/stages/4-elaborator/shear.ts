@@ -1,6 +1,7 @@
 import { Point } from '../../types';
 import { PatternIR, StitchIR } from './ir';
 
+// (Incomplete)
 export function interpolatedShear(pattern: PatternIR) {
     // Get target points from links
     // Assume prev/next are x-axis aligned,
@@ -26,8 +27,4 @@ export function interpolatedShear(pattern: PatternIR) {
             posY: stitch.links.children ? stitch.links.children.position : { x: 0, y: 1, z: 0 },
         });
     });
-
-    // Scaling
-
-    // Shearing
 }
