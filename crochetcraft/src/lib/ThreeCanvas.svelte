@@ -12,21 +12,21 @@
 
     /**
      * The function that initializes the scene. This is called once on component
-     * mount.
+     * mount:
      */
     export let init: (scene: Three.Scene) => void = () => {};
 
     /**
-     * The Three.js Scene object. Bind this prop if you want to use it.
+     * The Three.js Scene object. Bind this prop if you want to use it:
      */
     export let scene: Three.Scene = new Three.Scene();
 
     /**
-     * The Three.js Renderer object. Bind this prop if you want to use it.
+     * The Three.js Renderer object. Bind this prop if you want to use it:
      */
     let renderer: Three.WebGLRenderer;
 
-    /** The initial position of the camera. */
+    /** The initial position of the camera: */
     export let cameraPosition: Three.Vector3 = new Three.Vector3(0, 0, 60);
 
     /** For toggling whether to have hover and select bloom + emission effect: */
@@ -39,6 +39,7 @@
         const width = wrapper.clientWidth;
         const height = wrapper.clientHeight;
         const camera = new Three.PerspectiveCamera(70, width / height, 0.01, 100);
+        camera.name = 'camera';
 
         // SET UP SCENE:
         // add soft white light:
@@ -64,6 +65,8 @@
         const controls = new OrbitControls(camera, renderer.domElement);
         camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
         controls.update(); // Must be called after manually updating camera position
+        State.controls = controls;
+        State.camera = camera;
 
         let raycaster: Three.Raycaster;
         let mouse: Three.Vector2;
