@@ -8,15 +8,18 @@
     interface AddStitchButtonData {
         name: string;
         hovertext: string;
+        disabled: boolean;
     }
 
     const ADD_STITCH_BUTTONS: AddStitchButtonData[] = [
-        { name: 'ch', hovertext: 'chain' },
-        { name: 'slst', hovertext: 'slip stitch' },
-        { name: 'sc', hovertext: 'single crochet' },
-        { name: 'dc', hovertext: 'double crochet' },
-        { name: 'tr', hovertext: 'treble crochet' },
-        { name: 'dec', hovertext: 'decrease' },
+        { name: 'ch', hovertext: 'chain', disabled: false },
+        { name: 'slst', hovertext: 'slip stitch', disabled: true },
+        { name: 'sc', hovertext: 'single crochet', disabled: false },
+        { name: 'dc', hovertext: 'double crochet', disabled: true },
+        { name: 'tr', hovertext: 'treble crochet', disabled: true },
+        { name: 'hdc', hovertext: 'half double crochet', disabled: true },
+        { name: 'inc', hovertext: 'increase', disabled: true },
+        { name: 'dec', hovertext: 'decrease', disabled: true },
     ];
 
     let errorMessage: string | null = $state(null);
@@ -62,12 +65,13 @@
     {/if}
 
     <div class="flex flex-wrap gap-1">
-        {#each ADD_STITCH_BUTTONS as { name, hovertext }}
+        {#each ADD_STITCH_BUTTONS as { name, hovertext, disabled }}
             <button
                 aria-label="add {hovertext}"
                 class="btn-sm variant-filled-surface rounded-lg"
                 title={hovertext}
                 onclick={() => appendToPattern(name)}
+                {disabled}
             >
                 {name}
             </button>
