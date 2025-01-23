@@ -46,6 +46,14 @@
     function showAboutModal() {
         modalStore.trigger(aboutModal);
     }
+
+    // Triggering the re-centering for the Three.js canvas:
+    function reCenterModel() {
+        // We just need to move the camera to the original position:
+        State.camera?.position.set(0, 0, 10);
+        State.camera?.updateProjectionMatrix();
+        State.controls?.update();
+    }
 </script>
 
 <div class="flex w-full flex-row flex-wrap items-center gap-3 px-4 py-3">
@@ -69,5 +77,13 @@
 
     <!-- Right side -->
     <a class="anchor" href="/">← Go Home</a>
+    <button
+        class="variant-filled-surface btn rounded-lg p-2"
+        aria-label="Re-center model"
+        title="Re-center model"
+        onclick={reCenterModel}
+    >
+        <i class="fi fi-br-expand"></i>
+    </button>
     <LightSwitch rounded="rounded-lg" />
 </div>
