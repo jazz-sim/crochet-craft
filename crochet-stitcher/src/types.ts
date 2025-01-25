@@ -46,6 +46,7 @@ export class Location {
 export interface Pattern<S> {
     foundation: Foundation;
     stitches: S[];
+    rows?: S[][];
 }
 
 export interface ParsedStitch {
