@@ -60,7 +60,7 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
         colour: string;
     })[] = [];
     // const lines = convertPatternToLines(pattern);
-    const lines = pattern.rows;
+    const lines = pattern.rows !== undefined ? pattern.rows : convertPatternToLines(pattern);
 
     // Eventually, we can include spacing based on settings.
     // For now, spacing shall be constant.
