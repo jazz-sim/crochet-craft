@@ -20,10 +20,13 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
     // Whether or not we are currently crocheting into the magic ring.
     let isInMagicRing = input.foundation === Foundation.MagicRing;
 
+    let rows = []
     // The stitches in the previous row. Array of output indices.
     let previousRow: number[] = [];
     // The stitches in the current row. Array of output indices.
     let currentRow: number[] = [];
+    // The stitches in the current row, stored as LinkedStitch
+    let currentRowLS: LinkedStitch[] = [];
 
     // Index of the next element of `previousRow` to link to.
     let previousIndex = 0;
@@ -34,6 +37,8 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
         if (instruction === 'turn') {
             previousIndex = 0;
             previousRow = currentRow.reverse();
+            rows.push(currentRowLS);
+            currentRowLS = [];
             currentRow = [];
         } else if (instruction === 'eor') {
             isInMagicRing = false;
@@ -70,14 +75,16 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
                 output[previousRow[previousIndex]].children.push(outputIndex);
                 previousIndex += 1 + stitch.parentOffset;
             }
-
+            currentRowLS.push(output[outputIndex]);
             currentRow.push(outputIndex);
             outputIndex += 1;
         }
     }
+    rows.push(currentRowLS);
 
     return {
         foundation: input.foundation,
         stitches: output,
+        rows: rows
     };
 }
