@@ -20,6 +20,7 @@ Enabling this will also:
     - render an unrotated copy of the stitch above the rotated one
     - print the rotated point set (which you can copy-paste to update the base model)
 `;
+    let scale = 1.0;
 
     /**
      * Moves a set of points so the first point lies on the origin.
@@ -28,6 +29,10 @@ Enabling this will also:
     function moveToOrigin(points: THREE.Vector3[]) {
         const first = points[0];
         return points.map((p) => p.clone().sub(first));
+    }
+
+    function multiplyByScale(points: THREE.Vector3[]) {
+        return points.map((p) => p.clone().multiplyScalar(scale));
     }
 
     const UP_SHIFT = new Vector3(0, 2, 0);
@@ -73,15 +78,20 @@ Enabling this will also:
 
         const points = arrayToVector3List(StitchModel[whichModel].points);
 
-        const rotatedPoints = doRotationJank ? rotateToXAxis(moveToOrigin(points)) : points;
+        const rotatedPoints = doRotationJank
+            ? multiplyByScale(rotateToXAxis(moveToOrigin(points)))
+            : points;
 
         const parts = makeMultiBezier(rotatedPoints);
         for (let i = 0; i < repetitions; ++i) {
-            addStitch(parts, new THREE.Vector3(0.5 * i, 0, 0));
+            addStitch(parts, new THREE.Vector3(0.5 * i * scale, 0, 0));
         }
 
         if (doRotationJank) {
-            console.log(rotatedPoints);
+            console.log(
+                'Modified point list: ',
+                rotatedPoints.map((v) => [v.x, v.y, v.z]),
+            );
 
             // Show X-axis
             const xAxis = new THREE.Line(
@@ -142,6 +152,10 @@ Enabling this will also:
         <label class="label">
             <span title={ROTATION_JANK_EXPLANATION}>Do rotation jank?</span>
             <input type="checkbox" bind:checked={doRotationJank} />
+        </label>
+        <label class="label">
+            <span>Scale Slider</span>
+            <input type="number" bind:value={scale} />
         </label>
     </div>
 </div>

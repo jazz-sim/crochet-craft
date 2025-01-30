@@ -95,6 +95,7 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                 ...stitch,
                 links: {},
                 position: placementPoint.clone(),
+                // Trust that this is either +x or -x
                 orientation: new Quaternion(0, 0, direction * -0.7071, 0.7071),
             }
             // Add parents and children to their respective link fields
