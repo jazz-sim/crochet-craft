@@ -22,6 +22,8 @@ import { CubicBezierCurve3, Vector3 } from 'three';
 export function makeMultiBezier(points: Vector3[]) {
     if (points.length % 3 != 1 || points.length < 4) {
         console.error('Invalid input to makeMultiBezier! (See the comment for input format)');
+        console.error(points);
+        return [new CubicBezierCurve3()];
     }
     const curves: CubicBezierCurve3[] = [];
     for (let i = 0; i < points.length - 1; i += 3) {
