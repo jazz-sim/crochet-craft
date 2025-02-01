@@ -13,7 +13,6 @@
 
 import { Quaternion, Vector3 } from 'three';
 import { Foundation, LinkedStitch, Pattern, PlacedStitch } from '../../types';
-import { evaluateForce } from './iterativeForcing';
 
 /**
  * Infers lines from a linked pattern.
@@ -54,6 +53,9 @@ function convertPatternToLines(pattern: Pattern<LinkedStitch>): LinkedStitch[][]
     return lines;
 }
 
+const INVERSE_X_DIRECTION = new Quaternion().setFromAxisAngle(new Vector3(0, 0, 1), Math.PI);
+const IDENITY_QUATERNION = new Quaternion().identity();
+
 export function naivePlacer(pattern: Pattern<LinkedStitch>) {
     const out: (PlacedStitch & {
         parent: number | null;
@@ -72,25 +74,23 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
     // Direction multiplier: 1 if going to the right, and -1 if going to the left
     let direction = 1;
 
-    let index = 0;
-    let maxIndex = pattern.stitches.length - 1;
     let placementPoint = new Vector3();
     lines.forEach((line) => {
         line.forEach((stitch) => {
-            let stitchLinks : {
-                parent?: PlacedStitch,
-                children?: PlacedStitch
-            }= {};
+            let stitchLinks: {
+                parent?: PlacedStitch;
+                children?: PlacedStitch;
+            } = {};
             let placedStitch = {
                 ...stitch,
                 links: {},
                 position: placementPoint.clone(),
                 // Trust that this is either +x or -x
-                orientation: new Quaternion(0, 0, direction * -0.7071, 0.7071),
-            }
+                orientation: direction == 1 ? IDENITY_QUATERNION : INVERSE_X_DIRECTION,
+            };
             // Add parents and children to their respective link fields
             if (stitch.parent) {
-                stitchLinks.parent = out[stitch.parent]
+                stitchLinks.parent = out[stitch.parent];
                 stitchLinks.parent.links.children = placedStitch;
             }
             placedStitch.links = stitchLinks;
