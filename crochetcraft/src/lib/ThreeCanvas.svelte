@@ -9,7 +9,7 @@
 
     let wrapper: HTMLDivElement;
     let canvas: HTMLCanvasElement;
-    let ctrlKeyCheck: Boolean;
+    let ctrlKeyCheck: Boolean = false;
 
     /**
      * The function that initializes the scene. This is called once on component
@@ -115,7 +115,6 @@
                             if (index !== -1) {
                                 currentMaterial.emissiveIntensity = 0;
                                 multiSelectObjects.splice(index, 1);
-                                console.log('WHATSUP');
                             } else {
                                 currentMaterial.emissiveIntensity = 10;
                                 multiSelectObjects.push(currentIntersectedObject);
@@ -147,16 +146,18 @@
             );
             wrapper.addEventListener('click', (e: MouseEvent) => checkIntersection(e, 'click'));
             window.addEventListener('keydown', (e: KeyboardEvent) => {
-                if (e.repeat) return;
-                console.log('Down');
                 if (e.ctrlKey || e.metaKey) {
                     ctrlKeyCheck = true;
                 }
             });
             window.addEventListener('keyup', (e: KeyboardEvent) => {
-                if (e.repeat) return;
-                console.log('Up');
-                if (e.ctrlKey || e.metaKey) {
+                // Very hacky if statement for Firefox:
+                if (
+                    e.code.includes('Control') ||
+                    e.code.includes('Meta') ||
+                    e.ctrlKey ||
+                    e.metaKey
+                ) {
                     ctrlKeyCheck = false;
                 }
             });
