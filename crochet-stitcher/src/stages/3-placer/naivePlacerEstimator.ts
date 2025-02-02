@@ -77,12 +77,23 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
     let placementPoint = new Vector3();
     lines.forEach((line) => {
         line.forEach((stitch) => {
-            out.push({
+            let stitchLinks : {
+                parent?: PlacedStitch,
+                children?: PlacedStitch
+            }= {};
+            let placedStitch = {
                 ...stitch,
                 links: {},
                 position: placementPoint.clone(),
                 orientation: new Quaternion(0, 0, direction * -0.7071, 0.7071),
-            });
+            }
+            // Add parents and children to their respective link fields
+            if (stitch.parent) {
+                stitchLinks.parent = out[stitch.parent]
+                stitchLinks.parent.links.children = placedStitch;
+            }
+            placedStitch.links = stitchLinks;
+            out.push(placedStitch);
             // Update position for the next point to place
             placementPoint.x += stitchSpacing * direction;
         });
@@ -91,22 +102,6 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
         placementPoint.y += rowSpacing;
         // Swap direction when changing rows
         direction *= -1;
-    });
-
-    // Retain parents in links field
-    // Should probably be done somewhere else but idk.
-    out.forEach((stitch) => {
-        if (stitch.parent) {
-            stitch.links = {
-                parent: out[stitch.parent],
-            };
-        }
-    });
-    // Inverse mapping for children
-    out.forEach((stitch) => {
-        if (stitch.links.parent) {
-            stitch.links.parent.links.children = stitch;
-        }
     });
 
     return out;
