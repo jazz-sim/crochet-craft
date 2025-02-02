@@ -11,8 +11,8 @@
     let thickness = $state(5);
 </script>
 
-<Panel title="Properties" {position} shown={!!State.selectedMesh}>
-    {#if State.selectedMesh}
+<Panel title="Properties" {position} shown={State.selectedMeshes.length > 0}>
+    {#if State.selectedMeshes.length > 0}
         <label class="label">
             <span>Stitch Laxity</span>
             <NumericSlider

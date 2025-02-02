@@ -9,6 +9,7 @@
 
     let wrapper: HTMLDivElement;
     let canvas: HTMLCanvasElement;
+    let ctrlKeyCheck: Boolean;
 
     /**
      * The function that initializes the scene. This is called once on component
@@ -88,54 +89,77 @@
             composer.addPass(new RenderPass(scene, camera));
             composer.addPass(bloomPass);
 
-            let previousIntersectedObject = null as null | Three.Mesh;
+            let multiSelectObjects = [] as Three.Mesh[];
             function checkIntersection(e: MouseEvent, type: String) {
                 // get mouse coords:
                 mouse.x = (e.offsetX / wrapper.clientWidth) * 2 - 1;
                 mouse.y = -(e.offsetY / wrapper.clientHeight) * 2 + 1;
                 // Get intersection list:
                 const intersects = raycaster.intersectObjects(scene.children);
-                let sameIntersection = false;
                 let currentIntersectedObject = null as null | Three.Mesh;
                 // finding the current intersected mesh:
                 for (let i = 0; i < intersects.length; i++) {
                     if (intersects[i].object.type == 'Mesh') {
                         currentIntersectedObject = intersects[i].object as Three.Mesh;
-                        if (currentIntersectedObject == previousIntersectedObject) {
-                            sameIntersection = true;
-                        }
                         break;
                     }
                 }
-                if (type == 'move') {
-                    // If there is no intersection conflict, highlight, else remove hightlight:
-                    if (!sameIntersection) {
-                        wrapper.style.cursor = 'pointer';
-                        if (previousIntersectedObject) {
-                            let previousMaterial =
-                                previousIntersectedObject.material as Three.MeshLambertMaterial;
-                            previousMaterial.emissiveIntensity = 0;
-                        }
+                if (type == 'click') {
+                    if (ctrlKeyCheck == true) {
                         if (currentIntersectedObject) {
                             let currentMaterial =
                                 currentIntersectedObject.material as Three.MeshLambertMaterial;
-                            currentMaterial.emissiveIntensity = 10;
+                            let index = multiSelectObjects.findIndex(
+                                (x) => x == currentIntersectedObject,
+                            );
+                            if (index !== -1) {
+                                currentMaterial.emissiveIntensity = 0;
+                                multiSelectObjects.splice(index, 1);
+                                console.log('WHATSUP');
+                            } else {
+                                currentMaterial.emissiveIntensity = 10;
+                                multiSelectObjects.push(currentIntersectedObject);
+                            }
                         }
-                        previousIntersectedObject = currentIntersectedObject;
-                    }
-                } else {
-                    if (currentIntersectedObject) {
-                        State.selectedMesh = currentIntersectedObject;
                     } else {
-                        State.selectedMesh = null;
+                        for (let i = 0; i < multiSelectObjects.length; i++) {
+                            let currentMaterial = multiSelectObjects[i]
+                                .material as Three.MeshLambertMaterial;
+                            currentMaterial.emissiveIntensity = 0;
+                        }
+                        multiSelectObjects.length = 0;
+                        if (
+                            currentIntersectedObject &&
+                            !multiSelectObjects.includes(currentIntersectedObject)
+                        ) {
+                            let currentMaterial =
+                                currentIntersectedObject.material as Three.MeshLambertMaterial;
+                            currentMaterial.emissiveIntensity = 10;
+                            multiSelectObjects.push(currentIntersectedObject);
+                        }
                     }
                 }
+                State.selectedMeshes = multiSelectObjects;
             }
 
             wrapper.addEventListener('pointermove', (e: MouseEvent) =>
                 checkIntersection(e, 'move'),
             );
             wrapper.addEventListener('click', (e: MouseEvent) => checkIntersection(e, 'click'));
+            window.addEventListener('keydown', (e: KeyboardEvent) => {
+                if (e.repeat) return;
+                console.log('Down');
+                if (e.ctrlKey || e.metaKey) {
+                    ctrlKeyCheck = true;
+                }
+            });
+            window.addEventListener('keyup', (e: KeyboardEvent) => {
+                if (e.repeat) return;
+                console.log('Up');
+                if (e.ctrlKey || e.metaKey) {
+                    ctrlKeyCheck = false;
+                }
+            });
         }
 
         window.addEventListener(
