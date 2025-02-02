@@ -6,8 +6,8 @@ interface State {
     pattern: string;
     /** The current Three.js Scene object. */
     scene: Scene;
-    /** The currently-selected 3D object, if any. */
-    selectedMesh: Mesh | null;
+    /** The current selected meshes: */
+    selectedMeshes: Mesh[];
     /** The OrbitControls of the current scene. */
     controls: OrbitControls | null;
     /** The camera of the current scene (need to pop it out like this to manipulate elsewhere). */
@@ -17,7 +17,7 @@ interface State {
 const State: State = (() => {
     let pattern = $state('');
     let scene = $state(new Scene());
-    let selectedMesh: Mesh | null = $state(null);
+    let selectedMeshes: Mesh[] = $state(new Array());
     let controls: OrbitControls | null = $state(null);
     let camera: PerspectiveCamera | null = $state(null);
 
@@ -36,11 +36,11 @@ const State: State = (() => {
             scene = value;
         },
 
-        get selectedMesh() {
-            return selectedMesh;
+        get selectedMeshes() {
+            return selectedMeshes;
         },
-        set selectedMesh(value) {
-            selectedMesh = value;
+        set selectedMeshes(value) {
+            selectedMeshes = value;
         },
 
         get controls() {
