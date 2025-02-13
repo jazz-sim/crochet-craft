@@ -47,8 +47,25 @@
                     (p) => new Vector3(p.position.x, p.position.y, p.position.z),
                 ),
                 mainGroup,
+                0.5,
             );
+
+            // Draw directions of stitches
+            placedPoints.stitches.forEach((stitch) => {
+                mainGroup.add(
+                    new THREE.Line(
+                        new THREE.BufferGeometry().setFromPoints([
+                            stitch.position.clone(),
+                            stitch.position
+                                .clone()
+                                .add(new Vector3(1, 0, 0).applyQuaternion(stitch.orientation)),
+                        ]),
+                        new THREE.LineBasicMaterial({ color: 0xffffff }),
+                    ),
+                );
+            });
         }
+
         scene?.add(mainGroup);
     }
 </script>
