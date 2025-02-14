@@ -1,4 +1,11 @@
-import { Foundation, LinkedStitch, ParsedInstruction, Pattern, StitchType } from '../types.js';
+import {
+    Foundation,
+    LinkedStitch,
+    ParsedInstruction,
+    Pattern,
+    RowEnding,
+    StitchType,
+} from '../types.js';
 
 export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
     // Note that the input contains instructions other than stitches, like
@@ -20,7 +27,9 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
     // Whether or not we are currently crocheting into the magic ring.
     let isInMagicRing = input.foundation === Foundation.MagicRing;
 
-    let rows = []
+    const rows = [];
+    const endings: RowEnding[] = [];
+
     // The stitches in the previous row. Array of output indices.
     let previousRow: number[] = [];
     // The stitches in the current row. Array of output indices.
@@ -38,6 +47,7 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
             previousIndex = 0;
             previousRow = currentRow.reverse();
             rows.push(currentRowLS);
+            endings.push(RowEnding.Turn);
             currentRowLS = [];
             currentRow = [];
         } else if (instruction === 'eor') {
@@ -52,6 +62,9 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
                     // Overran the end of the previous row, so restart in the current row.
                     previousIndex -= previousRow.length;
                     previousRow = currentRow;
+                    rows.push(currentRowLS);
+                    endings.push(RowEnding.LoopAround);
+                    currentRowLS = [];
                     currentRow = [];
                     if (!previousRow.length) {
                         // Nothing in the previous row?!
@@ -81,10 +94,16 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
         }
     }
     rows.push(currentRowLS);
+    if (endings.length > 0) {
+        endings.push(endings[endings.length - 1]);
+    } else {
+        endings.push(RowEnding.Turn);
+    }
 
     return {
         foundation: input.foundation,
         stitches: output,
-        rows: rows
+        rows,
+        endings,
     };
 }
