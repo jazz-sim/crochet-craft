@@ -12,8 +12,7 @@
  */
 
 import { Quaternion, Vector3 } from 'three';
-import { Foundation, LinkedStitch, Pattern, PlacedStitch } from '../../types';
-import { evaluateForce } from './iterativeForcing';
+import { Foundation, LinkedStitch, Pattern, PlacedStitch, RowEnding } from '../../types';
 
 /**
  * Infers lines from a linked pattern.
@@ -45,32 +44,48 @@ function convertPatternToLines(pattern: Pattern<LinkedStitch>): LinkedStitch[][]
                     }
                     lines.push(currentRow);
                     currentRow = [];
-
-                    // Make the next set of stitches to reference the current row's stitches
-                    referenceSet = currentRowRefs;
-                    currentRowRefs = new Set<number | null>();
+    for (let i = 0; i < stitches.length; ++i) {
+        // If a stitch would reference something outside of our reference set,
+        // we assume that stitch is in a new row.
+        if (!(stitches[i].parents == null || (stitches[i].parents || []).length == 0)) {
+            let foundParent = false;
+            for (let p of (stitches[i].parents || [])) {
+                if (referenceSet.has(p)) {
+                    foundParent = true;
+                    break;   
                 }
-                currentRowRefs.add(i);
-                currentRow.push(stitches[i]);
             }
-            // Add last row, if non-empty
-            if (currentRow) {
-                lines.push(currentRow);
+            if (foundParent) {
+                continue;
             }
-            break;
-        case Foundation.MagicRing:
-            throw 'Magic Ring not yet supported by naive placer.';
+            lines.push(currentRow);
+            currentRow = [];
+        }
+        currentRowRefs.add(i);
+        currentRow.push(stitches[i]);
+    }
+    // Add last row, if non-empty
+    if (currentRow) {
+        lines.push(currentRow);
     }
     return lines;
 }
+
+const INVERSE_X_DIRECTION = new Quaternion().setFromAxisAngle(new Vector3(0, 0, 1), Math.PI);
+const IDENITY_QUATERNION = new Quaternion().identity();
 
 export function naivePlacer(pattern: Pattern<LinkedStitch>) {
     const out: (PlacedStitch & {
         parents: number[] | null;
         colour: string;
     })[] = [];
-    // const lines = convertPatternToLines(pattern);
     const lines = pattern.rows !== undefined ? pattern.rows : convertPatternToLines(pattern);
+    const endings = pattern.endings;
+
+    // Give up
+    if (endings == undefined) {
+        return out;
+    }
 
     // Eventually, we can include spacing based on settings.
     // For now, spacing shall be constant.
@@ -82,49 +97,99 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
     // Direction multiplier: 1 if going to the right, and -1 if going to the left
     let direction = 1;
 
-    let index = 0;
-    let maxIndex = pattern.stitches.length - 1;
     let placementPoint = new Vector3();
-    lines.forEach((line) => {
-        line.forEach((stitch) => {
-            let stitchLinks : {
-                parents?: PlacedStitch[],
-                children?: PlacedStitch[]
-            }= {};
-            let placedStitch = {
-                ...stitch,
-                links: {},
-                position: placementPoint.clone(),
-                orientation: new Quaternion(0, 0, direction * -0.7071, 0.7071),
-            }
-            // Add parents and children to their respective link fields
-            if (stitch.parents) {
-                console.log(stitch.parents);
-                stitchLinks.parents = stitch.parents.map((p_idx) => out[p_idx]);
-                for (let p of stitchLinks.parents) {
-                    if (p.links.children) {
-                        p.links.children.push(placedStitch);
+
+    // merged part is here
+    let firstStitchInRow: Vector3;
+    lines.forEach((line, index) => {
+        firstStitchInRow = placementPoint;
+        switch (endings[index]) {
+            case RowEnding.Last:
+            case RowEnding.Turn: {
+                line.forEach((stitch) => {
+                    let stitchLinks : {
+                        parents?: PlacedStitch[],
+                        children?: PlacedStitch[]
+                    }= {};
+                    let placedStitch = {
+                        ...stitch,
+                        links: {},
+                        position: placementPoint.clone(),
+                        // Trust that this is either +x or -x
+                        orientation: direction == 1 ? IDENITY_QUATERNION : INVERSE_X_DIRECTION,
+                    };
+                    // Add parents and children to their respective link fields
+                    // Add parents and children to their respective link fields
+                    if (stitch.parents) {
+                        console.log(stitch.parents);
+                        stitchLinks.parents = stitch.parents.map((p_idx) => out[p_idx]);
+                        for (let p of stitchLinks.parents) {
+                            if (p.links.children) {
+                                p.links.children.push(placedStitch);
+                            }
+                            else {
+                                p.links.children = [placedStitch];
+                            }
+                        }
+                        console.log(stitchLinks);
                     }
-                    else {
-                        p.links.children = [placedStitch];
+                    placedStitch.links = stitchLinks;
+                    out.push(placedStitch);
+                    // Update position for the next point to place
+                    placementPoint.x += stitchSpacing * direction;
+                });
+                // Update position for start of new row
+                placementPoint.x -= stitchSpacing * direction;
+                placementPoint.y += rowSpacing;
+                // Swap direction when changing rows
+                direction *= -1;
+                break;
+            }
+            case RowEnding.LoopAround: {
+                // Estimate the size of a ring
+                const stitchSize = 0.5;
+                const ringRadius = (line.length * stitchSize) / Math.PI;
+                // Move the ring center "away" from the camera, so the starting stitch lies right above
+                // the first stitch of the last row/ring
+                const ringCenter = placementPoint.clone().add(new Vector3(0, 0, ringRadius));
+                line.forEach((stitch, j) => {
+                    let stitchLinks: {
+                        parent?: PlacedStitch;
+                        children?: PlacedStitch;
+                    } = {};
+                    // Place stitch along a ring
+                    let placedStitch = {
+                        ...stitch,
+                        links: {},
+                        position: ringCenter
+                            .clone()
+                            .add(
+                                new Vector3(
+                                    Math.sin((2 * Math.PI * j) / line.length),
+                                    0,
+                                    Math.cos((2 * Math.PI * j) / line.length),
+                                ).multiplyScalar(ringRadius),
+                            ),
+                        // Trust that this is either +x or -x
+                        // (This will be overwritten anyways :/)
+                        orientation: direction == 1 ? IDENITY_QUATERNION : INVERSE_X_DIRECTION,
+                    };
+                    // Add parents and children to their respective link fields
+                    if (stitch.parent) {
+                        stitchLinks.parent = out[stitch.parent];
+                        stitchLinks.parent.links.children = placedStitch;
                     }
-                }
-                console.log(stitchLinks);
+                    placedStitch.links = stitchLinks;
+                    out.push(placedStitch);
+                });
+
+                // Update position for start of new row
+                placementPoint.x = firstStitchInRow.x;
+                placementPoint.y += rowSpacing;
+                // Direction remains the same
+                break;
             }
-            else {
-                console.log("stitch is parentless, printing stitch");
-                console.log(stitch);
-            }
-            placedStitch.links = stitchLinks;
-            out.push(placedStitch);
-            // Update position for the next point to place
-            placementPoint.x += stitchSpacing * direction;
-        });
-        // Update position for start of new row
-        placementPoint.x -= stitchSpacing * direction;
-        placementPoint.y += rowSpacing;
-        // Swap direction when changing rows
-        direction *= -1;
+        }
     });
 
     return out;

@@ -43,10 +43,17 @@ export class Location {
     }
 }
 
+export enum RowEnding {
+    Turn,
+    LoopAround,
+    Last,
+}
+
 export interface Pattern<S> {
     foundation: Foundation;
     stitches: S[];
     rows?: S[][];
+    endings?: RowEnding[];
 }
 
 export interface ParsedStitch {

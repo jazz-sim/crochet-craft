@@ -58,33 +58,31 @@ function substituteStitch(stitch: PlacedStitch): StitchModel {
     }
 }
 
+/**
+ * Returns a stitch with the points within a model rotated according to the stitch's orientation quaternion.
+ * This assumes the model is aligned along the +x axis prior to rotation.
+ */
 function rotatePoints(stitch: StitchIR): StitchIR {
-    // I really don't want to deal with severe rotation jank so
-    // I'll keep the quaternion as part of the interface...
-    // and just copy paste the Wikipedia conversion to a matrix.
-    // If anyone is willing to make quaternions work nicely, please do.
-    // Otherwise, I might just switch to Euler angles.
-    const { w: r, x: i, y: j, z: k } = stitch.orientation;
-    const mat = [
-        [1 - 2 * (j * j + k * k), 2 * (i * j - k * r), 2 * (i * k + j * r)],
-        [2 * (i * j + k * r), 1 - 2 * (i * i + k * k), 2 * (j * k - i * r)],
-        [2 * (i * k - j * r), 2 * (j * k + i * r), 1 - 2 * (i * i + j * j)],
-    ];
-
+    // Slight jank due to nested IR structure
+    // Basically, if there is a model, we rotate all of the points around the center position
     return {
         ...stitch,
         model: stitch.model
             ? {
                   ...stitch.model,
-                  points: stitch.model.points.map((p) => {
-                      const { x, y, z } = p;
-                      // handrolled matmul
-                      // Also, multiply by 2 to scale the stitches to what the placer thinks is right
-                      const rx = 2 * (x * mat[0][0] + y * mat[0][1] + z * mat[0][2]);
-                      const ry = 2 * (x * mat[1][0] + y * mat[1][1] + z * mat[1][2]);
-                      const rz = 2 * (x * mat[2][0] + y * mat[2][1] + z * mat[2][2]);
-
-                      return new Vector3(rx, ry, rz);
+                  points: stitch.model.points.map((point) => {
+                      return (
+                          point
+                              // Deep copy to prevent unexpected jank
+                              // If we're *certain* we won't be using the pre-rotation stitches for anything,
+                              // this can be safely removed for some extra performance.
+                              .clone()
+                              // FYI This is the only part that does the rotation,
+                              .applyQuaternion(stitch.orientation)
+                              // Cursed multiplication by 2 because the placer thinks stitches
+                              // are twice as big as the stitch model is
+                              .multiplyScalar(2)
+                      );
                   }),
               }
             : undefined,
