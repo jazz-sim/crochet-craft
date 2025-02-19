@@ -93,9 +93,18 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                         orientation: direction == 1 ? IDENITY_QUATERNION : INVERSE_X_DIRECTION,
                     };
                     // Add parents and children to their respective link fields
-                    if (stitch.parent) {
-                        stitchLinks.parent = out[stitch.parent];
-                        stitchLinks.parent.links.children = placedStitch;
+                    if (stitch.parents) {
+                        console.log(stitch.parents);
+                        stitchLinks.parents = stitch.parents.map((p_idx) => out[p_idx]);
+                        for (let p of stitchLinks.parents) {
+                            if (p.links.children) {
+                                p.links.children.push(placedStitch);
+                            }
+                            else {
+                                p.links.children = [placedStitch];
+                            }
+                        }
+                        console.log(stitchLinks);
                     }
                     placedStitch.links = stitchLinks;
                     out.push(placedStitch);
@@ -117,10 +126,10 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                 // the first stitch of the last row/ring
                 const ringCenter = placementPoint.clone().add(new Vector3(0, 0, ringRadius));
                 line.forEach((stitch, j) => {
-                    let stitchLinks: {
-                        parent?: PlacedStitch;
-                        children?: PlacedStitch;
-                    } = {};
+                    let stitchLinks : {
+                        parents?: PlacedStitch[],
+                        children?: PlacedStitch[]
+                    }= {};
                     // Place stitch along a ring
                     let placedStitch = {
                         ...stitch,
@@ -139,9 +148,18 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                         orientation: direction == 1 ? IDENITY_QUATERNION : INVERSE_X_DIRECTION,
                     };
                     // Add parents and children to their respective link fields
-                    if (stitch.parent) {
-                        stitchLinks.parent = out[stitch.parent];
-                        stitchLinks.parent.links.children = placedStitch;
+                    if (stitch.parents) {
+                        console.log(stitch.parents);
+                        stitchLinks.parents = stitch.parents.map((p_idx) => out[p_idx]);
+                        for (let p of stitchLinks.parents) {
+                            if (p.links.children) {
+                                p.links.children.push(placedStitch);
+                            }
+                            else {
+                                p.links.children = [placedStitch];
+                            }
+                        }
+                        console.log(stitchLinks);
                     }
                     placedStitch.links = stitchLinks;
                     out.push(placedStitch);
