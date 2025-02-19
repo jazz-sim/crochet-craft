@@ -141,7 +141,9 @@ export function iterateForces(
             applyForceIfLinkExists(lastPoint, prev, netForce);
             applyForceIfLinkExists(lastPoint, next, netForce);
             applyForceIfLinkExists(lastPoint, parent, netForce);
-            applyForceIfLinkExists(lastPoint, children, netForce);
+            for(let c of (children || [])) {
+                applyForceIfLinkExists(lastPoint, c, netForce);
+            }
             netForce.multiplyScalar(timeStep);
             forces[i] = netForce;
             totalMovement += netForce.lengthSq();
