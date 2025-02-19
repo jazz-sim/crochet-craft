@@ -86,7 +86,6 @@ export interface PlacedStitch {
         prev?: PlacedStitch;
         next?: PlacedStitch;
         parent?: PlacedStitch;
-        // Should be an array...
-        children?: PlacedStitch;
+        children?: PlacedStitch[];
     };
 }

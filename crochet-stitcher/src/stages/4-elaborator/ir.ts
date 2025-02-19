@@ -16,7 +16,7 @@ export interface StitchIR {
         prev?: StitchIR;
         next?: StitchIR;
         parent?: StitchIR;
-        children?: StitchIR;
+        children?: StitchIR[];
     };
     model?: {
         curveType: 'bezier';

@@ -90,7 +90,12 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
             // Add parents and children to their respective link fields
             if (stitch.parent) {
                 stitchLinks.parent = out[stitch.parent]
-                stitchLinks.parent.links.children = placedStitch;
+                if (stitchLinks.parent.links.children) {
+                    stitchLinks.parent.links.children.push(placedStitch);
+                }
+                else {
+                    stitchLinks.parent.links.children = [placedStitch];
+                }
             }
             placedStitch.links = stitchLinks;
             out.push(placedStitch);
