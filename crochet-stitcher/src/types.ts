@@ -71,7 +71,7 @@ export interface LinkedStitch {
      * Index of the stitch that this stitch is hooked to. Null for chain
      * stitches. Null for stitches that hook onto the magic ring foundation.
      */
-    parent: number | null;
+    parents: number[] | null;
     /** Indices of this stitch's children. */
     children: number[];
     colour: string;
@@ -85,7 +85,7 @@ export interface PlacedStitch {
     links: {
         prev?: PlacedStitch;
         next?: PlacedStitch;
-        parent?: PlacedStitch;
+        parents?: PlacedStitch[];
         children?: PlacedStitch[];
     };
 }

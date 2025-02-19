@@ -136,12 +136,15 @@ export function iterateForces(
         // Compute all forces
         for (let i = 0; i < numStitches; ++i) {
             const lastPoint = stitches[i].position;
-            const { prev, next, parent, children } = stitches[i].links;
+            const { prev, next, parents, children } = stitches[i].links;
+            console.log(stitches[i].links);
             let netForce = new Vector3(0, 0, 0);
             applyForceIfLinkExists(lastPoint, prev, netForce);
             applyForceIfLinkExists(lastPoint, next, netForce);
-            applyForceIfLinkExists(lastPoint, parent, netForce);
-            for(let c of (children || [])) {
+            for (let p of (parents || [])) {
+                applyForceIfLinkExists(lastPoint, p, netForce);
+            }
+            for (let c of (children || [])) {
                 applyForceIfLinkExists(lastPoint, c, netForce);
             }
             netForce.multiplyScalar(timeStep);

@@ -32,7 +32,17 @@ function convertPatternToLines(pattern: Pattern<LinkedStitch>): LinkedStitch[][]
             for (let i = 0; i < stitches.length; ++i) {
                 // If a stitch would reference something outside of our reference set,
                 // we assume that stitch is in a new row.
-                if (!(stitches[i].parent == null || referenceSet.has(stitches[i].parent))) {
+                if (!(stitches[i].parents == null || (stitches[i].parents || []).length == 0)) {
+                    let foundParent = false;
+                    for (let p of (stitches[i].parents || [])) {
+                        if (referenceSet.has(p)) {
+                            foundParent = true;
+                            break;   
+                        }
+                    }
+                    if (foundParent) {
+                        continue;
+                    }
                     lines.push(currentRow);
                     currentRow = [];
 
@@ -56,7 +66,7 @@ function convertPatternToLines(pattern: Pattern<LinkedStitch>): LinkedStitch[][]
 
 export function naivePlacer(pattern: Pattern<LinkedStitch>) {
     const out: (PlacedStitch & {
-        parent: number | null;
+        parents: number[] | null;
         colour: string;
     })[] = [];
     // const lines = convertPatternToLines(pattern);
@@ -78,8 +88,8 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
     lines.forEach((line) => {
         line.forEach((stitch) => {
             let stitchLinks : {
-                parent?: PlacedStitch,
-                children?: PlacedStitch
+                parents?: PlacedStitch[],
+                children?: PlacedStitch[]
             }= {};
             let placedStitch = {
                 ...stitch,
@@ -88,14 +98,22 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                 orientation: new Quaternion(0, 0, direction * -0.7071, 0.7071),
             }
             // Add parents and children to their respective link fields
-            if (stitch.parent) {
-                stitchLinks.parent = out[stitch.parent]
-                if (stitchLinks.parent.links.children) {
-                    stitchLinks.parent.links.children.push(placedStitch);
+            if (stitch.parents) {
+                console.log(stitch.parents);
+                stitchLinks.parents = stitch.parents.map((p_idx) => out[p_idx]);
+                for (let p of stitchLinks.parents) {
+                    if (p.links.children) {
+                        p.links.children.push(placedStitch);
+                    }
+                    else {
+                        p.links.children = [placedStitch];
+                    }
                 }
-                else {
-                    stitchLinks.parent.links.children = [placedStitch];
-                }
+                console.log(stitchLinks);
+            }
+            else {
+                console.log("stitch is parentless, printing stitch");
+                console.log(stitch);
             }
             placedStitch.links = stitchLinks;
             out.push(placedStitch);
