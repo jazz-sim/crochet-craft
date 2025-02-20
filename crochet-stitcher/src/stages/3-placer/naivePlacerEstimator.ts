@@ -94,7 +94,6 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                     };
                     // Add parents and children to their respective link fields
                     if (stitch.parents) {
-                        console.log(stitch.parents);
                         stitchLinks.parents = stitch.parents.map((p_idx) => out[p_idx]);
                         for (let p of stitchLinks.parents) {
                             if (p.links.children) {
@@ -104,7 +103,6 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                                 p.links.children = [placedStitch];
                             }
                         }
-                        console.log(stitchLinks);
                     }
                     placedStitch.links = stitchLinks;
                     out.push(placedStitch);
@@ -149,7 +147,6 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                     };
                     // Add parents and children to their respective link fields
                     if (stitch.parents) {
-                        console.log(stitch.parents);
                         stitchLinks.parents = stitch.parents.map((p_idx) => out[p_idx]);
                         for (let p of stitchLinks.parents) {
                             if (p.links.children) {
@@ -159,7 +156,6 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                                 p.links.children = [placedStitch];
                             }
                         }
-                        console.log(stitchLinks);
                     }
                     placedStitch.links = stitchLinks;
                     out.push(placedStitch);
