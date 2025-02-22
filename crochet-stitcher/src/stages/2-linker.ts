@@ -20,7 +20,7 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
             location: stitch.location,
             type: stitch.type,
             colour: stitch.colour,
-            parent: null,
+            parents: null,
             children: [],
         }));
 
@@ -83,8 +83,12 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
                         );
                     }
                 }
-
-                output[outputIndex].parent = previousRow[previousIndex];
+                if (output[outputIndex].parents == null) {
+                    output[outputIndex].parents = [previousRow[previousIndex]];
+                }
+                else {
+                    output[outputIndex].parents?.push(previousRow[previousIndex]);
+                }
                 output[previousRow[previousIndex]].children.push(outputIndex);
                 previousIndex += 1 + stitch.parentOffset;
             }
