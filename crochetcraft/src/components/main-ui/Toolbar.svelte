@@ -54,6 +54,8 @@
         State.camera?.updateProjectionMatrix();
         State.controls?.update();
     }
+
+    function selectAllStitches() {}
 </script>
 
 <div class="flex w-full flex-row flex-wrap items-center gap-3 px-4 py-3">
@@ -77,6 +79,14 @@
 
     <!-- Right side -->
     <a class="anchor" href="/">← Go Home</a>
+    <button
+        class="variant-filled-surface btn rounded-lg p-2"
+        aria-label="Select all stitches"
+        title="Select all stitches"
+        onclick={selectAllStitches}
+    >
+        <i class="fi fi-br-multiple"></i>
+    </button>
     <button
         class="variant-filled-surface btn rounded-lg p-2"
         aria-label="Re-center model"
