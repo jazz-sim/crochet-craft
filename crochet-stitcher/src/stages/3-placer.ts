@@ -1,6 +1,7 @@
 import { LinkedStitch, Pattern, PlacedStitch } from '../types.js';
 import { iterateForces } from './3-placer/iterativeForcing.js';
 import { naivePlacer } from './3-placer/naivePlacerEstimator.js';
+import { setOrientations } from './3-placer/orientationSetter.js';
 
 export function place(input: Pattern<LinkedStitch>): Pattern<PlacedStitch> {
     // Use naive placer for initial positioning of stitches
@@ -11,7 +12,9 @@ export function place(input: Pattern<LinkedStitch>): Pattern<PlacedStitch> {
         stitches: initialPlacement,
     });
 
-    return postForcePlacement;
+    const orientedPlacement = setOrientations(postForcePlacement);
+
+    return orientedPlacement;
 }
 
 // Scuffed export for use in experiments

@@ -15,8 +15,8 @@ export interface StitchIR {
     links: {
         prev?: StitchIR;
         next?: StitchIR;
-        parent?: StitchIR;
-        children?: StitchIR;
+        parents?: StitchIR[];
+        children?: StitchIR[];
     };
     model?: {
         curveType: 'bezier';

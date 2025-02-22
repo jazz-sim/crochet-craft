@@ -23,8 +23,10 @@ export function interpolatedShear(pattern: PatternIR) {
         shearTargets.set(stitch, {
             negX: stitch.links.prev ? stitch.links.prev.position : new Vector3(-1, 0, 0),
             posX: stitch.links.next ? stitch.links.next.position : new Vector3(1, 0, 0),
-            negY: stitch.links.parent ? stitch.links.parent.position : new Vector3(0, -1, 0),
-            posY: stitch.links.children ? stitch.links.children.position : new Vector3(0, 1, 0),
+            // Only takes the first parent's position into account
+            negY: stitch.links.parents && stitch.links.parents.length > 0 ? stitch.links.parents[0].position : new Vector3(0, -1, 0),
+            // Only takes the first child's position into account
+            posY: stitch.links.children && stitch.links.children.length > 0 ? stitch.links.children[0].position : new Vector3(0, 1, 0),
         });
     });
 }
