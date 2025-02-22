@@ -11,34 +11,10 @@
     let thickness = $state(5);
 </script>
 
-<Panel title="Properties" {position} shown={State.selectedMeshes.length > 0}>
+<Panel title="Post-Processing" {position} shown={State.selectedMeshes.length > 0}>
     {#if State.selectedMeshes.length > 0}
         <label class="label">
-            <span>Stitch Laxity</span>
-            <NumericSlider
-                bind:value={laxity}
-                min={0}
-                max={20}
-                sliderMin={0}
-                sliderMax={2}
-                sliderStep={0.1}
-            />
-        </label>
-
-        <label class="label">
-            <span>Hook Size (mm)</span>
-            <NumericSlider
-                bind:value={hookSize}
-                min={1}
-                max={20}
-                sliderMin={2}
-                sliderMax={10}
-                sliderStep={0.5}
-            />
-        </label>
-
-        <label class="label">
-            <span>Stitch Thickness (mm)</span>
+            <span>Render Scale</span>
             <NumericSlider
                 bind:value={thickness}
                 min={1}
