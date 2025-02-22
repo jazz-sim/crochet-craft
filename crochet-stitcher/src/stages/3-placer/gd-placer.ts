@@ -3,7 +3,7 @@ import { LinkedStitch, Pattern, PlacedStitch, StitchType } from '../../types';
 import { place } from '../3-placer';
 
 export function gdPlace(pattern: Pattern<LinkedStitch>, maxIterations = 20): Pattern<PlacedStitch> {
-    // Disables GD Placer and uses IF placer instead until GD Placer supports sextech
+    // Disables GD Placer and uses IF placer instead until GD Placer supports multiple parents
     return place(pattern);
     /*
     const positions: Vector3[] = [];
