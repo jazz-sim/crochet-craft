@@ -90,6 +90,8 @@
             composer.addPass(bloomPass);
 
             let multiSelectObjects = [] as Three.Mesh[];
+            let hoverObject: null | Three.Mesh = null;
+
             function checkIntersection(e: MouseEvent, type: String) {
                 // get mouse coords:
                 mouse.x = (e.offsetX / wrapper.clientWidth) * 2 - 1;
@@ -137,21 +139,39 @@
                             multiSelectObjects.push(currentIntersectedObject);
                         }
                     }
+                } else if (type == 'move') {
+                    let index = multiSelectObjects.findIndex((x) => x == hoverObject);
+                    if (index == -1 && hoverObject?.isMesh) {
+                        let currentMaterial = hoverObject.material as Three.MeshLambertMaterial;
+                        currentMaterial.emissiveIntensity = 0;
+                    }
+                    hoverObject = null;
+                    if (currentIntersectedObject) {
+                        let currentMaterial =
+                            currentIntersectedObject.material as Three.MeshLambertMaterial;
+                        currentMaterial.emissiveIntensity = 10;
+                        hoverObject = currentIntersectedObject;
+                    }
                 }
+                // At the end of checking the interaction, update the state for the selectedMeshes:
                 State.selectedMeshes = multiSelectObjects;
             }
-
             wrapper.addEventListener('pointermove', (e: MouseEvent) =>
                 checkIntersection(e, 'move'),
             );
             wrapper.addEventListener('click', (e: MouseEvent) => checkIntersection(e, 'click'));
             window.addEventListener('keydown', (e: KeyboardEvent) => {
-                if (e.ctrlKey || e.metaKey) {
+                if (
+                    e.code.includes('Control') ||
+                    e.code.includes('Meta') ||
+                    e.ctrlKey ||
+                    e.metaKey
+                ) {
                     ctrlKeyCheck = true;
                 }
             });
             window.addEventListener('keyup', (e: KeyboardEvent) => {
-                // Very hacky if statement for Firefox:
+                // Very hacky if statement to support all kinds of browser situations:
                 if (
                     e.code.includes('Control') ||
                     e.code.includes('Meta') ||
