@@ -2,7 +2,7 @@ import { link } from '../src/stages/2-linker.js';
 import { LinkedStitch, ParsedInstruction, StitchType } from '../src/types';
 import { lst } from './linker-util.js';
 import { st } from './parser-util.js';
-import { mc as rawMc, slkt as rawSlkt } from './util.js';
+import { mcL as rawMc, slktL as rawSlkt } from './util.js';
 
 const mc = rawMc<ParsedInstruction>;
 const slkt = rawSlkt<ParsedInstruction>;
@@ -34,8 +34,8 @@ describe('basic linking', () => {
                 lst(StitchType.Chain, null, [3]),
                 lst(StitchType.Chain),
                 lst(StitchType.Chain, null, [4]),
-                lst(StitchType.Single, 0),
-                lst(StitchType.Single, 2),
+                lst(StitchType.Single, [0]),
+                lst(StitchType.Single, [2]),
             ),
         );
     });
@@ -48,9 +48,9 @@ describe('multiple row linking', () => {
                 lst(StitchType.Chain, null, [3]),
                 lst(StitchType.Chain, null, [4]),
                 lst(StitchType.Chain, null, [5]),
-                lst(StitchType.Single, 0),
-                lst(StitchType.Single, 1),
-                lst(StitchType.Single, 2),
+                lst(StitchType.Single, [0]),
+                lst(StitchType.Single, [1]),
+                lst(StitchType.Single, [2]),
             ),
         );
     });
@@ -61,8 +61,8 @@ describe('multiple row linking', () => {
                 lst(StitchType.Chain, null, [4]),
                 lst(StitchType.Chain, null, [3]),
                 lst(StitchType.Chain),
-                lst(StitchType.Single, 1),
-                lst(StitchType.Single, 0),
+                lst(StitchType.Single, [1]),
+                lst(StitchType.Single, [0]),
             ),
         );
     });
@@ -73,13 +73,13 @@ describe('multiple row linking', () => {
                 lst(StitchType.Single, null, [3]),
                 lst(StitchType.Single, null, [4]),
                 lst(StitchType.Single, null, [5]),
-                lst(StitchType.Single, 0, [6]),
-                lst(StitchType.Single, 1, [7]),
-                lst(StitchType.Single, 2, [8]),
-                lst(StitchType.Single, 3, [9]),
-                lst(StitchType.Single, 4),
-                lst(StitchType.Single, 5),
-                lst(StitchType.Single, 6),
+                lst(StitchType.Single, [0], [6]),
+                lst(StitchType.Single, [1], [7]),
+                lst(StitchType.Single, [2], [8]),
+                lst(StitchType.Single, [3], [9]),
+                lst(StitchType.Single, [4]),
+                lst(StitchType.Single, [5]),
+                lst(StitchType.Single, [6]),
             ),
         );
     });
@@ -102,11 +102,11 @@ describe('multiple row linking', () => {
                 lst(StitchType.Chain, null, [5]),
                 lst(StitchType.Chain, null, [4]),
                 lst(StitchType.Chain),
-                lst(StitchType.Single, 2, [8]),
-                lst(StitchType.Single, 1, [7]),
-                lst(StitchType.Single, 0),
-                lst(StitchType.Single, 5),
-                lst(StitchType.Single, 4),
+                lst(StitchType.Single, [2], [8]),
+                lst(StitchType.Single, [1], [7]),
+                lst(StitchType.Single, [0]),
+                lst(StitchType.Single, [5]),
+                lst(StitchType.Single, [4]),
             ),
         );
         /* Visually, we should get something like:
@@ -133,10 +133,10 @@ describe('edge cases', () => {
                 lst(StitchType.Single, null, [3]),
                 lst(StitchType.Single, null, [4]),
                 lst(StitchType.Single, null, [5]),
-                lst(StitchType.Single, 0),
-                lst(StitchType.Single, 1, [6]),
-                lst(StitchType.Single, 2),
-                lst(StitchType.Single, 4),
+                lst(StitchType.Single, [0]),
+                lst(StitchType.Single, [1], [6]),
+                lst(StitchType.Single, [2]),
+                lst(StitchType.Single, [4]),
             ),
         );
     });
@@ -148,7 +148,7 @@ describe('edge cases', () => {
                 lst(StitchType.Chain),
                 lst(StitchType.Chain, null, [4]),
                 lst(StitchType.Chain),
-                lst(StitchType.Single, 2),
+                lst(StitchType.Single, [2]),
             ),
         );
     });

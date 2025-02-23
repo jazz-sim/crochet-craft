@@ -13,6 +13,14 @@ export function mc<T>(...stitches: MaybeArray<NoLocation<T>>[]): Pattern<T> {
     return { foundation: Foundation.MagicRing, stitches: formatStitches(stitches) };
 }
 
+export function slktL<T>(...stitches: MaybeArray<NoLocation<T>>[]): Pattern<T> {
+    return { ...slkt(...stitches), endings: expect.anything(), rows: expect.anything() };
+}
+
+export function mcL<T>(...stitches: MaybeArray<NoLocation<T>>[]): Pattern<T> {
+    return { ...mc(...stitches), endings: expect.anything(), rows: expect.anything() };
+}
+
 function formatStitches<T>(stitches: MaybeArray<NoLocation<T>>[]): T[] {
     return (stitches as any[]).flat(Infinity).map((stitch) => {
         if (typeof stitch !== 'object') return stitch;
