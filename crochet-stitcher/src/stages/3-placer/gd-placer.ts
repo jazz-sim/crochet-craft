@@ -1,15 +1,23 @@
 import { Quaternion, Vector3 } from 'three';
-import { LinkedStitch, Pattern, PlacedStitch, StitchType } from '../../types';
-import { place } from '../3-placer';
+import { LinkedStitch, Pattern, PlacedStitch } from '../../types';
 
-export function gdPlace(pattern: Pattern<LinkedStitch>, maxIterations = 20): Pattern<PlacedStitch> {
-    // Disables GD Placer and uses IF placer instead until GD Placer supports multiple parents
-    return place(pattern);
-    /*
+export function gdPlace(
+    pattern: Pattern<LinkedStitch>,
+    maxIterations = 500,
+): Pattern<PlacedStitch> {
     const positions: Vector3[] = [];
     const orientations: Quaternion[] = [];
 
-    for (const stitch of pattern.stitches) {
+    const pushPullConstraints: number[] = [];
+    const pushConstraints: number[] = [];
+    const flatConstraints: number[] = [];
+
+    let iterations = 0;
+
+    for (let i = 0; i < pattern.stitches.length; i++) {
+        const stitch = pattern.stitches[i];
+
+        // Estimate the position of this stitch!
         const lastPosition = positions.at(-1);
         const lastOrientation = orientations.at(-1);
 
@@ -27,14 +35,14 @@ export function gdPlace(pattern: Pattern<LinkedStitch>, maxIterations = 20): Pat
         let position: Vector3;
         let orientation: Quaternion;
 
-        if (stitch.parent === null) {
+        if (!stitch.parents?.length) {
             // No parent -- position based on previous stitch's position
             position = naivePosition;
             orientation = lastOrientation.clone().multiply(new Quaternion(0, 0.01745, 0, 0.99985));
         } else {
             // Has parent -- position based on parent and naive position
-            const parentPosition = positions[stitch.parent];
-            const parentOrientation = orientations[stitch.parent];
+            const parentPosition = positions[stitch.parents[0]];
+            const parentOrientation = orientations[stitch.parents[0]];
             position = parentPosition
                 .clone()
                 .add(new Vector3(0, 1, 0).applyQuaternion(parentOrientation));
@@ -56,9 +64,36 @@ export function gdPlace(pattern: Pattern<LinkedStitch>, maxIterations = 20): Pat
 
         positions.push(position);
         orientations.push(orientation);
-    }
 
-    descend();
+        // Add constraints!
+        if (i > 0) {
+            pushPullConstraints.push(i - 1, i, i, i - 1);
+        }
+        if (i > 1) {
+            flatConstraints.push(i - 2, i - 1, i, i, i - 1, i - 2);
+            pushConstraints.push(i - 2, i, i, i - 2);
+        }
+        if (stitch.parents) {
+            const minParent = Math.min(...stitch.parents);
+            const maxParent = Math.max(...stitch.parents);
+            if (minParent > 0) {
+                pushConstraints.push(minParent - 1, i, i, minParent - 1);
+            }
+            pushConstraints.push(maxParent + 1, i, i, maxParent + 1);
+            for (const parent of stitch.parents) {
+                pushPullConstraints.push(parent, i, i, parent);
+                if (pattern.stitches[parent].parents) {
+                    for (const grandparent of pattern.stitches[parent].parents) {
+                        flatConstraints.push(grandparent, parent, i, i, parent, grandparent);
+                        pushConstraints.push(grandparent, i, i, grandparent);
+                    }
+                }
+            }
+        }
+
+        // Apply constraints!
+        descend(0.005, 0.2);
+    }
 
     return {
         foundation: pattern.foundation,
@@ -70,92 +105,62 @@ export function gdPlace(pattern: Pattern<LinkedStitch>, maxIterations = 20): Pat
         })),
     };
 
-    function descend() {
-        let previousError = Infinity;
-        for (let iterations = 1; ; ++iterations) {
+    function descend(minChange: number, alpha = 0.05) {
+        if (iterations > maxIterations) return;
+        while (true) {
             if (iterations > maxIterations) {
                 console.warn(`gradient descent exceeded maximum ${maxIterations} iterations`);
                 break;
             }
 
-            let error = 0;
-
-            for (let i = 0; i < positions.length; ++i) {
-                const stitch = pattern.stitches[i];
-
-                // Push and pull with its connecting stitches.
-                const connections = new Set([...stitch.children, stitch.parent, i + 1, i - 1]);
-                for (const connector of connections) {
-                    if (connector !== null && positions[connector]) {
-                        error += pushPull(positions[i], positions[connector], 0.5, 0.25);
-                        for (const nonConnector of [connector - 1, connector + 1]) {
-                            if (!connections.has(nonConnector) && positions[nonConnector]) {
-                                error += pushPull(positions[i], positions[nonConnector], 0.5, 0);
-                            }
-                        }
-                    }
-                }
-
-                // Prevent this stitch from bending too much with its
-                // neighbours. Chain stitches are weaker in this regard.
-                if (i !== 0 && i !== positions.length - 1) {
-                    error += bend(
-                        positions[i],
-                        positions[i - 1],
-                        positions[i + 1],
-                        stitch.type === StitchType.Chain ? 0.02 : 0.08,
-                    );
-                }
-
-                // Prevent this stitch from bending too much with its parent and
-                // children.
-                if (stitch.parent !== null) {
-                    for (const child of stitch.children) {
-                        error += bend(
-                            positions[i],
-                            positions[stitch.parent],
-                            positions[child],
-                            0.08,
-                        );
-                    }
-                }
-            }
-
-            // Check for convergence.
-            if (Math.abs(previousError - error) < 1e-6) {
+            const change = descendOnce(alpha);
+            if (change < minChange) {
                 console.log(`gradient descent converged in ${iterations} iteration(s)`);
                 break;
             }
-            previousError = error;
+            iterations++;
         }
     }
 
-    function pushPull(target: Vector3, source: Vector3, push: number, pull: number): number {
-        const direction = target.clone().sub(source);
-        const distanceSq = direction.lengthSq();
-        direction.normalize();
-        const ideal = source.clone().add(direction);
-        return pushToward(target, ideal, distanceSq > 1 ? pull : push);
-    }
+    /** Descend for one iteration, returning the sum of squared lengths of deltas */
+    function descendOnce(alpha = 0.05): number {
+        const deltas = [...Array(positions.length)].map(() => new Vector3());
+        for (let i = 0; i < pushPullConstraints.length; i += 2) {
+            const target = pushPullConstraints[i];
+            const neighbor = pushPullConstraints[i + 1];
+            const delta = positions[neighbor].clone().sub(positions[target]);
+            delta.setLength(delta.length() - 1);
+            deltas[target].add(delta);
+        }
 
-    function bend(target: Vector3, source1: Vector3, source2: Vector3, strength: number): number {
-        const direction1 = target.clone().sub(source1).normalize();
-        const direction2 = target.clone().sub(source2).normalize();
-        const ideal1 = target.clone().add(direction2);
-        const ideal2 = target.clone().add(direction1);
-        const ideal3 = source1.clone().add(source2).multiplyScalar(0.5);
+        for (let i = 0; i < pushConstraints.length; i += 2) {
+            const target = pushConstraints[i];
+            const neighbor = pushConstraints[i + 1];
+            const delta = positions[neighbor].clone().sub(positions[target]);
+            const len = delta.length() - 1;
+            if (len >= 0) continue;
+            delta.setLength(len);
+            deltas[target].add(delta);
+        }
 
-        return (
-            pushToward(source1, ideal1, strength) +
-            pushToward(source2, ideal2, strength) +
-            pushToward(target, ideal3, strength * 2)
-        );
-    }
+        for (let i = 0; i < flatConstraints.length; i += 3) {
+            const target1 = flatConstraints[i];
+            const pivot = flatConstraints[i + 1];
+            const target2 = flatConstraints[i + 2];
+            const v1 = positions[target1].clone().sub(positions[pivot]);
+            const v2 = positions[target2].clone().sub(positions[pivot]);
+            const dividend = v1.length() * v2.length();
+            const normal = v2.cross(v1).divideScalar(dividend);
+            const delta = normal.cross(v1);
+            deltas[target1].add(delta.multiplyScalar(0.25));
+        }
 
-    function pushToward(pushee: Vector3, to: Vector3, ratio: number): number {
-        const change = to.clone().sub(pushee).multiplyScalar(ratio);
-        pushee.add(change);
-        return change.lengthSq();
+        let maxChange = 0;
+        for (let i = 0; i < deltas.length; i++) {
+            positions[i].add(deltas[i].multiplyScalar(alpha));
+            maxChange = Math.max(maxChange, deltas[i].lengthSq());
+        }
+
+        return Math.sqrt(maxChange);
     }
-    */
 }
