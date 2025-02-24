@@ -22,6 +22,7 @@
         '5x10 cylinder': 'ch 10, sc 40',
         '10x20 cylinder': 'ch 20, sc 180',
         '20x30 cylinder': 'ch 30, sc 570',
+        '30 ring': 'ch 30, sc 1',
         'increase test': 'ch 5, turn, sc 2, inc 1, sc 2',
         'decrease test': 'ch 7, turn, sc 2, dec 1, sc 2',
     };
