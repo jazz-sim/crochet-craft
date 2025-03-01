@@ -8,6 +8,8 @@ interface State {
     scene: Scene;
     /** The current selected meshes: */
     selectedMeshes: Mesh[];
+    /** The current mesh being hovered on: */
+    hoverMesh: Mesh | null;
     /** The OrbitControls of the current scene. */
     controls: OrbitControls | null;
     /** The camera of the current scene (need to pop it out like this to manipulate elsewhere). */
@@ -18,6 +20,7 @@ const State: State = (() => {
     let pattern = $state('');
     let scene = $state(new Scene());
     let selectedMeshes: Mesh[] = $state(new Array());
+    let hoverMesh: Mesh | null = $state(null);
     let controls: OrbitControls | null = $state(null);
     let camera: PerspectiveCamera | null = $state(null);
 
@@ -41,6 +44,13 @@ const State: State = (() => {
         },
         set selectedMeshes(value) {
             selectedMeshes = value;
+        },
+
+        get hoverMesh() {
+            return hoverMesh;
+        },
+        set hoverMesh(value) {
+            hoverMesh = value;
         },
 
         get controls() {

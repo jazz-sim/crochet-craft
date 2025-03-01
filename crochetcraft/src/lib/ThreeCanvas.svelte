@@ -11,27 +11,55 @@
     let canvas: HTMLCanvasElement;
     let ctrlKeyCheck: Boolean = false;
 
+    interface Props {
+        init: (scene: Three.Scene) => void;
+        scene?: Three.Scene;
+        renderer?: Three.WebGLRenderer;
+        cameraPosition: Three.Vector3;
+        toggleBloom: Boolean;
+    }
+    let {
+        init = () => {},
+        scene = new Three.Scene(),
+        renderer,
+        cameraPosition = new Three.Vector3(0, 0, 60),
+        toggleBloom = false,
+    }: Props = $props();
+
     /**
      * The function that initializes the scene. This is called once on component
      * mount:
      */
-    export let init: (scene: Three.Scene) => void = () => {};
+    // export let init: (scene: Three.Scene) => void = () => {};
 
     /**
      * The Three.js Scene object. Bind this prop if you want to use it:
      */
-    export let scene: Three.Scene = new Three.Scene();
+    // export let scene: Three.Scene = new Three.Scene();
 
     /**
      * The Three.js Renderer object. Bind this prop if you want to use it:
      */
-    let renderer: Three.WebGLRenderer;
+    // let renderer: Three.WebGLRenderer;
 
     /** The initial position of the camera: */
-    export let cameraPosition: Three.Vector3 = new Three.Vector3(0, 0, 60);
+    // export let cameraPosition: Three.Vector3 = new Three.Vector3(0, 0, 60);
 
     /** For toggling whether to have hover and select bloom + emission effect: */
-    export let toggleBloom = false;
+    // export let toggleBloom = false;
+
+    $effect(() => {
+        let selectedObjs = State.selectedMeshes;
+        let hoverObj = State.hoverMesh;
+        if (hoverObj) {
+            let hoverMaterial = hoverObj.material as Three.MeshLambertMaterial;
+            hoverMaterial.emissiveIntensity = 10;
+        }
+        for (let i = 0; i < selectedObjs.length; i++) {
+            let meshMaterial = selectedObjs[i].material as Three.MeshLambertMaterial;
+            meshMaterial.emissiveIntensity = 10;
+        }
+    });
 
     onMount(() => {
         console.assert(canvas);
@@ -41,7 +69,6 @@
         const height = wrapper.clientHeight;
         const camera = new Three.PerspectiveCamera(70, width / height, 0.01, 100);
         camera.name = 'camera';
-
         // SET UP SCENE:
         // add soft white light:
         const ambientLight = new Three.AmbientLight(0x404040, 10);
@@ -65,6 +92,10 @@
         // FIX UP CAMERA:
         const controls = new OrbitControls(camera, renderer.domElement);
         camera.position.set(cameraPosition.x, cameraPosition.y, cameraPosition.z);
+        let dragState = false;
+        if (controls.domElement) {
+            controls.domElement.style.cursor = 'grab';
+        }
         controls.update(); // Must be called after manually updating camera position
         State.controls = controls;
         State.camera = camera;
@@ -89,10 +120,8 @@
             composer.addPass(new RenderPass(scene, camera));
             composer.addPass(bloomPass);
 
-            let multiSelectObjects = [] as Three.Mesh[];
-            let hoverObject: null | Three.Mesh = null;
-
             function checkIntersection(e: MouseEvent, type: String) {
+                let newCursor = null;
                 // get mouse coords:
                 mouse.x = (e.offsetX / wrapper.clientWidth) * 2 - 1;
                 mouse.y = -(e.offsetY / wrapper.clientHeight) * 2 + 1;
@@ -109,52 +138,58 @@
                 if (type == 'click') {
                     if (ctrlKeyCheck == true) {
                         if (currentIntersectedObject) {
+                            // Set cursor to pointer:
+                            newCursor = 'pointer';
+                            // Update brightness of mesh:
                             let currentMaterial =
                                 currentIntersectedObject.material as Three.MeshLambertMaterial;
-                            let index = multiSelectObjects.findIndex(
+                            let index = State.selectedMeshes.findIndex(
                                 (x) => x == currentIntersectedObject,
                             );
                             if (index !== -1) {
                                 currentMaterial.emissiveIntensity = 0;
-                                multiSelectObjects.splice(index, 1);
+                                State.selectedMeshes.splice(index, 1);
                             } else {
-                                currentMaterial.emissiveIntensity = 10;
-                                multiSelectObjects.push(currentIntersectedObject);
+                                // Will change to 10 in effect hook
+                                State.selectedMeshes.push(currentIntersectedObject);
                             }
                         }
                     } else {
-                        for (let i = 0; i < multiSelectObjects.length; i++) {
-                            let currentMaterial = multiSelectObjects[i]
+                        for (let i = 0; i < State.selectedMeshes.length; i++) {
+                            let currentMaterial = State.selectedMeshes[i]
                                 .material as Three.MeshLambertMaterial;
                             currentMaterial.emissiveIntensity = 0;
                         }
-                        multiSelectObjects.length = 0;
+                        State.selectedMeshes.length = 0;
                         if (
                             currentIntersectedObject &&
-                            !multiSelectObjects.includes(currentIntersectedObject)
+                            !State.selectedMeshes.includes(currentIntersectedObject)
                         ) {
-                            let currentMaterial =
-                                currentIntersectedObject.material as Three.MeshLambertMaterial;
-                            currentMaterial.emissiveIntensity = 10;
-                            multiSelectObjects.push(currentIntersectedObject);
+                            // Set cursor to pointer:
+                            newCursor = 'pointer';
+                            // will change to 10 in effect hook
+                            State.selectedMeshes.push(currentIntersectedObject);
                         }
                     }
                 } else if (type == 'move') {
-                    let index = multiSelectObjects.findIndex((x) => x == hoverObject);
-                    if (index == -1 && hoverObject?.isMesh) {
-                        let currentMaterial = hoverObject.material as Three.MeshLambertMaterial;
+                    let index = State.selectedMeshes.findIndex((x) => x == State.hoverMesh);
+                    if (index == -1 && State.hoverMesh?.isMesh) {
+                        let currentMaterial = State.hoverMesh.material as Three.MeshLambertMaterial;
                         currentMaterial.emissiveIntensity = 0;
                     }
-                    hoverObject = null;
+                    State.hoverMesh = null;
                     if (currentIntersectedObject) {
-                        let currentMaterial =
-                            currentIntersectedObject.material as Three.MeshLambertMaterial;
-                        currentMaterial.emissiveIntensity = 10;
-                        hoverObject = currentIntersectedObject;
+                        newCursor = 'pointer';
+                        // will change to 10 in effect hook
+                        State.hoverMesh = currentIntersectedObject;
                     }
                 }
-                // At the end of checking the interaction, update the state for the selectedMeshes:
-                State.selectedMeshes = multiSelectObjects;
+                // Update cursor:
+                if (controls.domElement) {
+                    controls.domElement.style.cursor =
+                        newCursor == null ? (dragState == false ? 'grab' : 'grabbing') : newCursor;
+                }
+                controls.update();
             }
             wrapper.addEventListener('pointermove', (e: MouseEvent) =>
                 checkIntersection(e, 'move'),
@@ -188,18 +223,37 @@
             () => {
                 camera.aspect = wrapper.clientWidth / wrapper.clientHeight;
                 camera.updateProjectionMatrix();
-
-                renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+                if (typeof renderer !== 'undefined') {
+                    renderer.setSize(wrapper.clientWidth, wrapper.clientHeight);
+                }
             },
             false,
         );
+
+        controls.addEventListener('start', () => {
+            if (controls.domElement) {
+                controls.domElement.style.cursor = 'grabbing';
+            }
+            controls.update();
+            dragState = true;
+        });
+
+        controls.addEventListener('end', () => {
+            if (controls.domElement) {
+                controls.domElement.style.cursor = 'grab';
+            }
+            controls.update();
+            dragState = false;
+        });
 
         function animation() {
             if (toggleBloom) {
                 raycaster.setFromCamera(mouse, camera);
                 composer.render();
             } else {
-                renderer.render(scene, camera);
+                if (typeof renderer !== 'undefined') {
+                    renderer.render(scene, camera);
+                }
             }
         }
     });
