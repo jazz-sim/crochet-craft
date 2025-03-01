@@ -8,6 +8,7 @@
         type ModalComponent,
     } from '@skeletonlabs/skeleton';
     import * as Modals from '$components/modals/index';
+    import * as THREE from 'three';
 
     const modalStore = getModalStore();
     const aboutModalComponent: ModalComponent = { ref: Modals.AboutModal };
@@ -55,7 +56,16 @@
         State.controls?.update();
     }
 
-    function selectAllStitches() {}
+    function selectAllStitches() {
+        // Remove mesh from the hover state:
+        State.hoverMesh = null;
+        // Every mesh in the scene needs to be added to the selectedMeshes state:
+        State.scene.traverse(function (item) {
+            if (item instanceof THREE.Mesh && !State.selectedMeshes.includes(item)) {
+                State.selectedMeshes.push(item);
+            }
+        });
+    }
 </script>
 
 <div class="flex w-full flex-row flex-wrap items-center gap-3 px-4 py-3">
