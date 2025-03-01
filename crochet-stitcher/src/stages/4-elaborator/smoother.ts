@@ -2,6 +2,7 @@ import { Vector3 } from 'three';
 import { PatternIR, StitchIR } from './ir';
 
 export function smoothConnections(pattern: PatternIR): PatternIR {
+    console.log('Smoother Start!');
     return {
         foundation: pattern.foundation,
         stitches: pattern.stitches.map((stitch, index, arr) => {
@@ -30,17 +31,24 @@ export function smoothConnections(pattern: PatternIR): PatternIR {
 function startToEndFixer(nextStitch: StitchIR, prevStitch: StitchIR): StitchIR {
     // If for some reason, we don't have a model attached, give up.
     if (!nextStitch.model || !prevStitch.model) {
+        console.error(
+            '[elaborator/smoother] No model associated with at least one of the following stitches!',
+            nextStitch,
+            prevStitch,
+        );
         return nextStitch;
     }
 
-    // Move start of next stitch to end of next
     const endOfPrevStitch = prevStitch.model.points[prevStitch.model.points.length - 1];
-    // Deep copy to prevent reference jank
-    nextStitch.model.points[0] = new Vector3(
-        prevStitch.position.x - nextStitch.position.x + endOfPrevStitch.x,
-        prevStitch.position.y - nextStitch.position.y + endOfPrevStitch.y,
-        prevStitch.position.z - nextStitch.position.z + endOfPrevStitch.z,
-    );
+    const prevAnchor = prevStitch.model.points[prevStitch.model.points.length - 2];
+    const startOfNextStitch = nextStitch.model.points[0];
+    const nextAnchor = nextStitch.model.points[1];
+
+    // Move start of next stitch to end of next
+    nextStitch.model.points[0] = prevStitch.position
+        .clone()
+        .sub(nextStitch.position)
+        .add(endOfPrevStitch);
 
     // Reorient first anchor for continuity
     // On the one hand, this does make the chain stitch look much better.
@@ -48,38 +56,14 @@ function startToEndFixer(nextStitch: StitchIR, prevStitch: StitchIR): StitchIR {
     // (...which is my fault for the record - Allen)
     // But on the other other hand, it's unreasonable for every base model to end in the same direction.
 
-    // Project the first pivot along the line that the last stitch's final point and pivot lie on.
-    const prevAnchor = prevStitch.model.points[prevStitch.model.points.length - 2];
-    const prevAnchorDiff = {
-        x: endOfPrevStitch.x - prevAnchor.x,
-        y: endOfPrevStitch.y - prevAnchor.y,
-        z: endOfPrevStitch.z - prevAnchor.z,
-    };
-    const nextAnchorDiff = {
-        x: nextStitch.model.points[1].x - nextStitch.model.points[0].x,
-        y: nextStitch.model.points[1].y - nextStitch.model.points[0].y,
-        z: nextStitch.model.points[1].z - nextStitch.model.points[0].z,
-    };
-    const distSquared = Math.sqrt(
-        prevAnchorDiff.x * prevAnchorDiff.x +
-            prevAnchorDiff.y * prevAnchorDiff.y +
-            prevAnchorDiff.z * prevAnchorDiff.z,
-    );
-    const dotProduct =
-        prevAnchorDiff.x * nextAnchorDiff.x +
-        prevAnchorDiff.y * nextAnchorDiff.y +
-        prevAnchorDiff.z * nextAnchorDiff.z;
-    // If the dot product is negative, this leads to... weird results
-    // (i.e. non-smooth zigzags)
-    const multiplier = distSquared / Math.abs(dotProduct);
+    // Get relative difference between the points at the end/start of the pre/next stitch, and the prev/next anchor
+    const prevAnchorDiff = endOfPrevStitch.clone().sub(prevAnchor);
+    const nextAnchorDiff = nextAnchor.clone().sub(startOfNextStitch);
 
-    // Modify the first anchor to be aligned in the same direction as the
-    // last anchor of the previous stitch.
-    nextStitch.model.points[1] = new Vector3(
-        nextStitch.model.points[0].x + prevAnchorDiff.x * multiplier,
-        nextStitch.model.points[0].y + prevAnchorDiff.y * multiplier,
-        nextStitch.model.points[0].z + prevAnchorDiff.z * multiplier,
-    );
+    // Project the first pivot along the line that the last stitch's final point and pivot lie on.
+    nextStitch.model.points[1] = nextStitch.model.points[0]
+        .clone()
+        .add(nextAnchorDiff.projectOnVector(prevAnchorDiff));
 
     return nextStitch;
 }
