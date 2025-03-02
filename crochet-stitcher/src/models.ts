@@ -3,6 +3,7 @@ import slipKnot from './models/slip-knot.json';
 import single from './models/single.json';
 import magicCircle from './models/magic-circle.json';
 import halfDoubleCrochet from './models/half-double-crochet.json';
+import trebleCrochet from './models/treble-crochet.json';
 
 interface StitchModel {
     curveType: 'bezier';
@@ -15,6 +16,7 @@ const StitchModel = {
     SINGLE_CROCHET: single as StitchModel,
     MAGIC_CIRCLE: magicCircle as StitchModel,
     HALF_DOUBLE_CROCHET: halfDoubleCrochet as StitchModel,
+    TREBLE_CROCHET: trebleCrochet as StitchModel,
 };
 
 export default StitchModel;
