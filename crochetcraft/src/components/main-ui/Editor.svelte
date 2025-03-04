@@ -83,8 +83,12 @@
         <input
             type="color"
             class="input block !rounded-full"
-            value="#d281fb"
-            onchange={(event) => appendToPattern(event.currentTarget.value + ':')}
+            value={State.nextStitchColour}
+            onchange={(event) => {
+                let colourValue = event.currentTarget.value;
+                appendToPattern(colourValue + ':');
+                State.nextStitchColour = colourValue;
+            }}
         />
     </label>
 </Panel>

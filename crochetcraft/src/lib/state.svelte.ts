@@ -10,6 +10,8 @@ interface State {
     selectedMeshes: Mesh[];
     /** The current mesh being hovered on: */
     hoverMesh: Mesh | null;
+    /** The current next stitch colour (chosen by the user): */
+    nextStitchColour: string;
     /** The OrbitControls of the current scene. */
     controls: OrbitControls | null;
     /** The camera of the current scene (need to pop it out like this to manipulate elsewhere). */
@@ -21,6 +23,7 @@ const State: State = (() => {
     let scene = $state(new Scene());
     let selectedMeshes: Mesh[] = $state(new Array());
     let hoverMesh: Mesh | null = $state(null);
+    let nextStitchColour: string = $state('#ffffff');
     let controls: OrbitControls | null = $state(null);
     let camera: PerspectiveCamera | null = $state(null);
 
@@ -51,6 +54,13 @@ const State: State = (() => {
         },
         set hoverMesh(value) {
             hoverMesh = value;
+        },
+
+        get nextStitchColour() {
+            return nextStitchColour;
+        },
+        set nextStitchColour(value) {
+            nextStitchColour = value;
         },
 
         get controls() {
