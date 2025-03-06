@@ -29,13 +29,19 @@ function convertPatternToLines(pattern: Pattern<LinkedStitch>): LinkedStitch[][]
     for (let i = 0; i < stitches.length; ++i) {
         // If a stitch would reference something outside of our reference set,
         // we assume that stitch is in a new row.
-        if (!(stitches[i].parent == null || referenceSet.has(stitches[i].parent))) {
+        if (!(stitches[i].parents == null || (stitches[i].parents || []).length == 0)) {
+            let foundParent = false;
+            for (let p of (stitches[i].parents || [])) {
+                if (referenceSet.has(p)) {
+                    foundParent = true;
+                    break;   
+                }
+            }
+            if (foundParent) {
+                continue;
+            }
             lines.push(currentRow);
             currentRow = [];
-
-            // Make the next set of stitches to reference the current row's stitches
-            referenceSet = currentRowRefs;
-            currentRowRefs = new Set<number | null>();
         }
         currentRowRefs.add(i);
         currentRow.push(stitches[i]);
@@ -74,6 +80,7 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
     let direction = 1;
 
     let placementPoint = new Vector3();
+
     let firstStitchInRow: Vector3;
     lines.forEach((line, index) => {
         firstStitchInRow = placementPoint;
@@ -81,10 +88,10 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
             case RowEnding.Last:
             case RowEnding.Turn: {
                 line.forEach((stitch) => {
-                    let stitchLinks: {
-                        parent?: PlacedStitch;
-                        children?: PlacedStitch;
-                    } = {};
+                    let stitchLinks : {
+                        parents?: PlacedStitch[],
+                        children?: PlacedStitch[]
+                    }= {};
                     let placedStitch = {
                         ...stitch,
                         links: {},
