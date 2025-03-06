@@ -7,7 +7,7 @@
     let { position }: { position: PanelPosition } = $props();
 
     // Initializing variables:
-    let thickness = $state(5);
+    let scale = $state(1);
 
     // Checking if all stitch meshes have been selected:
     function checkAllMeshesSelected() {
@@ -32,20 +32,31 @@
             currentMaterial.emissive.setHex(newColour);
         }
     }
+
+    function updateModelScale(updateValue: number) {
+        State.scene.traverse(function (item) {
+            if (item instanceof THREE.Mesh) {
+                item.scale.x = updateValue;
+                item.scale.y = updateValue;
+                item.scale.z = updateValue;
+            }
+        });
+    }
 </script>
 
 <Panel title="Post-Processing" {position} shown={State.selectedMeshes.length > 0}>
     {#if State.selectedMeshes.length > 0}
         {#if checkAllMeshesSelected() == true}
             <label class="label">
-                <span>Render Scale</span>
+                <span>(Messy) Render Scale</span>
                 <NumericSlider
-                    bind:value={thickness}
+                    bind:value={scale}
                     min={1}
-                    max={20}
-                    sliderMin={2}
+                    max={10}
+                    sliderMin={1}
                     sliderMax={10}
                     sliderStep={0.5}
+                    onchange={updateModelScale}
                 />
             </label>
         {/if}

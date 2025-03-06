@@ -6,6 +6,7 @@
         sliderMin,
         sliderMax,
         sliderStep,
+        onchange,
     }: {
         value: number;
         min: number;
@@ -13,6 +14,7 @@
         sliderMin: number;
         sliderMax: number;
         sliderStep: number;
+        onchange: Function;
     } = $props();
 
     $effect(() => {
@@ -31,7 +33,13 @@
         min={sliderMin}
         step={sliderStep}
         max={sliderMax}
+        onchange={(event) => onchange(event.currentTarget.value)}
         bind:value
     />
-    <input type="number" class="input w-20 flex-none" bind:value />
+    <input
+        type="number"
+        class="input w-20 flex-none"
+        onchange={(event) => onchange(event.currentTarget.value)}
+        bind:value
+    />
 </div>
