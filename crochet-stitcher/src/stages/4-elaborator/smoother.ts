@@ -61,9 +61,16 @@ function startToEndFixer(nextStitch: StitchIR, prevStitch: StitchIR): StitchIR {
     const nextAnchorDiff = nextAnchor.clone().sub(startOfNextStitch);
 
     // Project the first pivot along the line that the last stitch's final point and pivot lie on.
-    nextStitch.model.points[1] = nextStitch.model.points[0]
-        .clone()
-        .add(nextAnchorDiff.projectOnVector(prevAnchorDiff));
+    const projection = nextAnchorDiff.projectOnVector(prevAnchorDiff);
+
+    // Move anchor based on projection and dot product between anchor differences
+    // The dot product if statement prevents sharp bends from ocurring (i.e. 180 degree turns)
+    nextStitch.model.points[1] = nextStitch.model.points[0].clone();
+    if (nextAnchorDiff.dot(prevAnchorDiff) > 0) {
+        nextStitch.model.points[1].add(projection);
+    } else {
+        nextStitch.model.points[1].sub(projection);
+    }
 
     return nextStitch;
 }

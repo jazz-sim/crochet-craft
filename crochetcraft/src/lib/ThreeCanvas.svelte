@@ -15,8 +15,8 @@
         init: (scene: Three.Scene) => void;
         scene?: Three.Scene;
         renderer?: Three.WebGLRenderer;
-        cameraPosition: Three.Vector3;
-        toggleBloom: Boolean;
+        cameraPosition?: Three.Vector3;
+        toggleBloom?: Boolean;
     }
     let {
         init = () => {},
