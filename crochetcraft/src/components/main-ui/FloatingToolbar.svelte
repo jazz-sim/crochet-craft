@@ -5,6 +5,9 @@
     let axesToggleTitle = 'Toggle axes helper (turn off)';
     let axesToggleIcon = 'fi fi-br-cube';
 
+    let algoToggleTitle = 'Toggle placer algorithm (change to GD - gradient descent)';
+    let algoToggleText = 'IF';
+
     function selectAllStitches() {
         // Remove mesh from the hover state:
         State.hoverMesh = null;
@@ -34,6 +37,8 @@
                 : 'fi fi-br-model-cube-arrows';
         }
     }
+
+    // function togglePlacerAlgorithm() {}
 </script>
 
 <div class="absolute bottom-2 right-2 z-10 flex flex-row gap-4 rounded-lg">
@@ -61,4 +66,12 @@
     >
         <i class={axesToggleIcon}></i>
     </button>
+    <!-- <button
+        class="variant-filled-surface btn btn-xl rounded-lg p-2"
+        aria-label="Toggle placer algorithm"
+        title={algoToggleTitle}
+        onclick={togglePlacerAlgorithm}
+    >
+        <b class="pl-1 pr-1 text-base">{algoToggleText}</b>
+    </button> -->
 </div>
