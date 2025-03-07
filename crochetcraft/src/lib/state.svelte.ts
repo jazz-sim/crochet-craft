@@ -16,16 +16,19 @@ interface State {
     controls: OrbitControls | null;
     /** The camera of the current scene (need to pop it out like this to manipulate elsewhere). */
     camera: PerspectiveCamera | null;
+    /** The LightSwitch component for the most part handles darkmode, but here's a state for Three.js: */
+    darkMode: Boolean;
 }
 
 const State: State = (() => {
-    let pattern = $state('');
-    let scene = $state(new Scene());
+    let pattern: string = $state('ch 10');
+    let scene: Scene = $state(new Scene());
     let selectedMeshes: Mesh[] = $state(new Array());
     let hoverMesh: Mesh | null = $state(null);
     let nextStitchColour: string = $state('#ffffff');
     let controls: OrbitControls | null = $state(null);
     let camera: PerspectiveCamera | null = $state(null);
+    let darkMode: Boolean = true;
 
     return {
         get pattern() {
@@ -75,6 +78,13 @@ const State: State = (() => {
         },
         set camera(value) {
             camera = value;
+        },
+
+        get darkMode() {
+            return darkMode;
+        },
+        set darkMode(value) {
+            darkMode = value;
         },
     };
 })();

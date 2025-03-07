@@ -74,9 +74,6 @@
             const directionalLight = new Three.DirectionalLight(0x404040, 10);
             directionalLight.name = 'directionalLight';
             scene.add(directionalLight);
-            // Add an axes helper:
-            const axesHelper = new Three.AxesHelper(100);
-            scene.add(axesHelper);
             // start scene:
             init(scene);
 
@@ -98,6 +95,12 @@
             controls.update(); // Must be called after manually updating camera position
             State.controls = controls;
             State.camera = camera;
+
+            // Add an axes helper:
+            let axesHelper = new Three.AxesHelper(100);
+            axesHelper.name = 'axesHelper';
+            // State for axes render?
+            scene.add(axesHelper);
 
             let raycaster: Three.Raycaster;
             let mouse: Three.Vector2;

@@ -8,7 +8,7 @@
         type ModalComponent,
     } from '@skeletonlabs/skeleton';
     import * as Modals from '$components/modals/index';
-    import * as THREE from 'three';
+    import { Color } from 'three';
 
     const modalStore = getModalStore();
     const aboutModalComponent: ModalComponent = { ref: Modals.AboutModal };
@@ -48,23 +48,12 @@
         modalStore.trigger(aboutModal);
     }
 
-    // Triggering the re-centering for the Three.js canvas:
-    function reCenterModel() {
-        // We just need to move the camera to the original position:
-        State.camera?.position.set(0, 0, 10);
-        State.camera?.updateProjectionMatrix();
-        State.controls?.update();
-    }
-
-    function selectAllStitches() {
-        // Remove mesh from the hover state:
-        State.hoverMesh = null;
-        // Every mesh in the scene needs to be added to the selectedMeshes state:
-        State.scene.traverse(function (item) {
-            if (item instanceof THREE.Mesh && !State.selectedMeshes.includes(item)) {
-                State.selectedMeshes.push(item);
-            }
-        });
+    function toggleDarkModeForRender() {
+        State.darkMode = !State.darkMode;
+        let backgroundColour = new Color().setColorName(State.darkMode ? 'black' : 'white');
+        let nextColour = State.darkMode ? '#ffffff' : '#000000';
+        State.scene.background = backgroundColour;
+        State.nextStitchColour = nextColour;
     }
 </script>
 
@@ -89,21 +78,5 @@
 
     <!-- Right side -->
     <a class="anchor" href="/">← Go Home</a>
-    <button
-        class="variant-filled-surface btn rounded-lg p-2"
-        aria-label="Select all stitches"
-        title="Select all stitches"
-        onclick={selectAllStitches}
-    >
-        <i class="fi fi-br-multiple"></i>
-    </button>
-    <button
-        class="variant-filled-surface btn rounded-lg p-2"
-        aria-label="Re-center model"
-        title="Re-center model"
-        onclick={reCenterModel}
-    >
-        <i class="fi fi-br-expand"></i>
-    </button>
-    <LightSwitch rounded="rounded-lg" />
+    <LightSwitch rounded="rounded-lg" on:click={toggleDarkModeForRender} />
 </div>
