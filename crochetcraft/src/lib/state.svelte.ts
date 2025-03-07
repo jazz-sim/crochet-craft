@@ -1,4 +1,4 @@
-import { Scene, type Mesh, PerspectiveCamera } from 'three';
+import { Scene, type Mesh, PerspectiveCamera, AxesHelper } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 interface State {
@@ -6,18 +6,18 @@ interface State {
     pattern: string;
     /** The current Three.js Scene object. */
     scene: Scene;
-    /** The current selected meshes: */
+    /** The current selected meshes. */
     selectedMeshes: Mesh[];
-    /** The current mesh being hovered on: */
+    /** The current mesh being hovered on. */
     hoverMesh: Mesh | null;
-    /** The current next stitch colour (chosen by the user): */
+    /** The current next stitch colour (chosen by the user). */
     nextStitchColour: string;
     /** The OrbitControls of the current scene. */
     controls: OrbitControls | null;
     /** The camera of the current scene (need to pop it out like this to manipulate elsewhere). */
     camera: PerspectiveCamera | null;
-    /** The LightSwitch component for the most part handles darkmode, but here's a state for Three.js: */
-    darkMode: Boolean;
+    /** The AxesHelper of the current scene. */
+    axesHelper: AxesHelper | null;
 }
 
 const State: State = (() => {
@@ -25,10 +25,10 @@ const State: State = (() => {
     let scene: Scene = $state(new Scene());
     let selectedMeshes: Mesh[] = $state(new Array());
     let hoverMesh: Mesh | null = $state(null);
-    let nextStitchColour: string = $state('#ffffff');
+    let nextStitchColour: string = $state('#cf80fb'); // default purple colour
     let controls: OrbitControls | null = $state(null);
     let camera: PerspectiveCamera | null = $state(null);
-    let darkMode: Boolean = true;
+    let axesHelper: AxesHelper | null = $state(null);
 
     return {
         get pattern() {
@@ -80,11 +80,11 @@ const State: State = (() => {
             camera = value;
         },
 
-        get darkMode() {
-            return darkMode;
+        get axesHelper() {
+            return axesHelper;
         },
-        set darkMode(value) {
-            darkMode = value;
+        set axesHelper(value) {
+            axesHelper = value;
         },
     };
 })();

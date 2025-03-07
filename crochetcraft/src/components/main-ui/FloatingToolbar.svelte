@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { SlideToggle } from '@skeletonlabs/skeleton';
     import State from '$lib/state.svelte';
     import { Mesh, AxesHelper } from 'three';
 
-    let currAxesHelper = State.scene.getObjectByName('axesHelper') as AxesHelper;
+    let axesToggleTitle = 'Toggle axes helper (turn off)';
+    let axesToggleIcon = 'fi fi-br-cube';
 
     function selectAllStitches() {
         // Remove mesh from the hover state:
@@ -24,7 +24,15 @@
     }
 
     function toggleAxesHelperVisibility() {
-        currAxesHelper.visible = !currAxesHelper.visible;
+        if (State.axesHelper !== null) {
+            State.axesHelper.visible = !State.axesHelper.visible;
+            axesToggleTitle = 'Toggle axes helper '.concat(
+                State.axesHelper.visible ? '(turn off)' : '(turn on)',
+            );
+            axesToggleIcon = State.axesHelper.visible
+                ? 'fi fi-br-cube'
+                : 'fi fi-br-model-cube-arrows';
+        }
     }
 </script>
 
@@ -48,17 +56,9 @@
     <button
         class="variant-filled-surface btn btn-xl rounded-lg p-2"
         aria-label="Toggle axes helper"
-        title={'Toggle axes helper '.concat(
-            typeof currAxesHelper !== 'undefined' && currAxesHelper.visible
-                ? '(turn off)'
-                : '(turn on)',
-        )}
+        title={axesToggleTitle}
         onclick={toggleAxesHelperVisibility}
     >
-        <i
-            class={typeof currAxesHelper !== 'undefined' && currAxesHelper.visible
-                ? 'fi fi-br-cube'
-                : 'fi fi-br-model-cube-arrows'}
-        ></i>
+        <i class={axesToggleIcon}></i>
     </button>
 </div>

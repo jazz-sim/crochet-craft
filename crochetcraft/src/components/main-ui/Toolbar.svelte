@@ -47,14 +47,6 @@
     function showAboutModal() {
         modalStore.trigger(aboutModal);
     }
-
-    function toggleDarkModeForRender() {
-        State.darkMode = !State.darkMode;
-        let backgroundColour = new Color().setColorName(State.darkMode ? 'black' : 'white');
-        let nextColour = State.darkMode ? '#ffffff' : '#000000';
-        State.scene.background = backgroundColour;
-        State.nextStitchColour = nextColour;
-    }
 </script>
 
 <div class="flex w-full flex-row flex-wrap items-center gap-3 px-4 py-3">
@@ -78,5 +70,5 @@
 
     <!-- Right side -->
     <a class="anchor" href="/">← Go Home</a>
-    <LightSwitch rounded="rounded-lg" on:click={toggleDarkModeForRender} />
+    <LightSwitch rounded="rounded-lg" />
 </div>

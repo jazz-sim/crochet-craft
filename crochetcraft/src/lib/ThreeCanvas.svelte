@@ -62,7 +62,8 @@
         // const height = window.innerHeight;
         const width = wrapper.clientWidth;
         const height = wrapper.clientHeight;
-        const camera = new Three.PerspectiveCamera(70, width / height, 0.01, 100);
+        // If the camera is still blocking, increase fustrum far plane to 5000 (meters):
+        const camera = new Three.PerspectiveCamera(70, width / height, 0.01);
         camera.name = 'camera';
         // SET UP SCENE:
         if (typeof scene !== 'undefined') {
@@ -99,8 +100,10 @@
             // Add an axes helper:
             let axesHelper = new Three.AxesHelper(100);
             axesHelper.name = 'axesHelper';
-            // State for axes render?
             scene.add(axesHelper);
+            State.axesHelper = axesHelper;
+
+            scene.background = new Three.Color('rgb(85, 85, 89)');
 
             let raycaster: Three.Raycaster;
             let mouse: Three.Vector2;
