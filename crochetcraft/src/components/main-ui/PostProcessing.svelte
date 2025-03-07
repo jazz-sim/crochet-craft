@@ -53,7 +53,7 @@
     {#if State.selectedMeshes.length > 0}
         {#if checkAllMeshesSelected() == true}
             <label class="label">
-                <span>(Messy) Render Scale</span>
+                <span>Render Scale</span>
                 <NumericSlider
                     bind:value={scale}
                     min={1}

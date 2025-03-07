@@ -4,8 +4,8 @@
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
     import * as THREE from 'three';
 
-    // TO-DO: RENDER AFTER PIPELINE IS DONE (see comments)
-    const ChainStitchParts = makeMultiBezier([
+    // Sample hard-coded basic stitch example:
+    const ChainStitchExampleParts = makeMultiBezier([
         new THREE.Vector3(0.0, 0.0, 0.0),
         new THREE.Vector3(0.03989, -0.1529, 0.4265),
         new THREE.Vector3(-0.1251, 0.1748, 0.4262),
@@ -18,8 +18,11 @@
         new THREE.Vector3(-0.01001, 0.4943, -0.007016),
     ]);
 
-    function makeChainStitch(scene: THREE.Scene, pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0)) {
-        ChainStitchParts.map((curve) => {
+    function makeChainStitchExample(
+        scene: THREE.Scene,
+        pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
+    ) {
+        ChainStitchExampleParts.map((curve) => {
             const geometry = new THREE.TubeGeometry(curve, 50, 0.1, 10);
             // NOTE: May need to close TubeGeometries so that the stitch looks better...
             const material = new THREE.MeshLambertMaterial();
@@ -33,6 +36,7 @@
             scene.add(mesh);
         });
     }
+    // Actual processing for E2E:
 </script>
 
 <ThreeCanvas
@@ -42,7 +46,7 @@
     init={(scene: THREE.Scene) => {
         State.scene = scene;
         for (let i = 0; i < 10; ++i) {
-            makeChainStitch(scene, new THREE.Vector3(0, 0.5 * i, 0));
+            makeChainStitchExample(scene, new THREE.Vector3(0, 0.5 * i, 0));
         }
     }}
 />
