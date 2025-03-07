@@ -74,7 +74,11 @@
 </script>
 
 <div id="wrapper">
-    <ThreeCanvas bind:scene />
+    <ThreeCanvas
+        init={(s: THREE.Scene) => {
+            scene = s;
+        }}
+    />
 
     <div id="input-wrapper">
         <a class="anchor" href={`/demos`}>📺 Back To Demos</a>
