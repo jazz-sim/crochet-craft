@@ -8,6 +8,7 @@
 
     // Initializing variables:
     let scale = $state(1);
+    let previousUpdateValue = 1;
 
     // Checking if all stitch meshes have been selected:
     function checkAllMeshesSelected() {
@@ -39,8 +40,12 @@
                 item.scale.x = updateValue;
                 item.scale.y = updateValue;
                 item.scale.z = updateValue;
+                item.position.x = (item.position.x / previousUpdateValue) * updateValue;
+                item.position.y = (item.position.y / previousUpdateValue) * updateValue;
+                item.position.z = (item.position.z / previousUpdateValue) * updateValue;
             }
         });
+        previousUpdateValue = updateValue;
     }
 </script>
 
@@ -48,7 +53,7 @@
     {#if State.selectedMeshes.length > 0}
         {#if checkAllMeshesSelected() == true}
             <label class="label">
-                <span>(Messy) Render Scale</span>
+                <span>Render Scale</span>
                 <NumericSlider
                     bind:value={scale}
                     min={1}
