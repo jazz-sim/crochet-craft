@@ -6,7 +6,7 @@
     import GLTFLogo from '$lib/assets/GlTF_logo.png';
     import { OBJExporter } from 'three/addons/exporters/OBJExporter.js';
     import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
-    import * as THREE from 'three';
+    import { AxesHelper, AmbientLight, Mesh, MeshLambertMaterial, MeshBasicMaterial } from 'three';
 
     import * as TextureUtils from 'three/addons/utils/WebGLTextureUtils.js';
 
@@ -16,6 +16,8 @@
     const cForm = 'border border-surface-500 p-4 space-y-4 rounded-lg';
     export let parent: SvelteComponent;
     let isOBJ: boolean = true;
+
+    let currAxesHelper = State.scene.getObjectByName('axesHelper') as AxesHelper;
 
     /** Downloads the 3D model in OBJ format. */
     function downloadModel(isOBJ: Boolean) {
@@ -34,23 +36,21 @@
             downloadBlob(objBlob, 'pattern.obj');
         } else {
             // First, only directional, point, and spot lights are supported, so we need to remove the ambient light in the scene before saving:
-            const currAmbientLight = State.scene.getObjectByName(
-                'ambientLight',
-            ) as THREE.AmbientLight;
-            let saveAmbientLight: null | THREE.AmbientLight = null;
+            const currAmbientLight = State.scene.getObjectByName('ambientLight') as AmbientLight;
+            let saveAmbientLight: null | AmbientLight = null;
             if (currAmbientLight) {
                 saveAmbientLight = currAmbientLight.clone();
                 State.scene.remove(currAmbientLight);
             }
+
             // Next, turn meshes into the MeshBasicMaterial type:
             let saveMeshInfo = new Map();
             State.scene.traverse(function (object) {
-                const objCast = object as THREE.Mesh;
-                if (objCast.isMesh) {
-                    let prevMaterial = objCast.material as THREE.MeshLambertMaterial;
-                    objCast.material = new THREE.MeshBasicMaterial();
-                    objCast.material.copy(prevMaterial);
-                    saveMeshInfo.set(objCast.id, prevMaterial);
+                if (object instanceof Mesh) {
+                    let prevMaterial = object.material as MeshLambertMaterial;
+                    object.material = new MeshBasicMaterial();
+                    object.material.copy(prevMaterial);
+                    saveMeshInfo.set(object.id, prevMaterial);
                 }
             });
             // Then, export the copied scene:
@@ -66,14 +66,14 @@
                 },
                 options,
             );
-            // Finally, reset the lights and meshes:
+            // Finally, reset the lights and meshes (and axes helper):
             if (saveAmbientLight) {
                 State.scene.add(saveAmbientLight);
             }
             State.scene.traverse(function (object) {
-                const objCast = object as THREE.Mesh;
+                const objCast = object as Mesh;
                 if (objCast.isMesh) {
-                    objCast.material = new THREE.MeshLambertMaterial();
+                    objCast.material = new MeshLambertMaterial();
                     objCast.material.copy(saveMeshInfo.get(objCast.id));
                 }
             });
@@ -88,7 +88,7 @@
         <RadioGroup rounded="rounded-lg">
             <RadioItem bind:group={isOBJ} name="OBJ" value={true}>
                 <div class="flex flex-row items-center space-x-1">
-                    <i class="fi fi-br-cube"></i>
+                    <i class="fi fi-br-cubes"></i>
                     <p>OBJ</p>
                 </div>
             </RadioItem>
@@ -104,6 +104,11 @@
                 ? 'OBJ is a geometry data file format. Material (and therefore colour data) is not supported.'
                 : 'glTF is a 3D scene / model file format. Also stores material and lights data.'}
         </p>
+        {#if isOBJ == false && currAxesHelper.visible}<div
+                class="card variant-ghost-warning rounded-lg p-4"
+            >
+                Turn off the axes helper if you do not want it appearing in your render.
+            </div>{/if}
     </div>
     <footer class={parent.regionFooter}>
         <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>Cancel</button>
