@@ -126,7 +126,8 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
             case RowEnding.LoopAround: {
                 // Estimate the size of a ring
                 const stitchSize = 0.5;
-                const ringRadius = (line.length * stitchSize) / Math.PI;
+                const ringRadius = (index === lines.length - 1 && lines.length > 1) ? ((lines[lines.length - 2].length * stitchSize) / Math.PI) : 
+                    ((line.length * stitchSize) / Math.PI) ;
                 // Move the ring center "away" from the camera, so the starting stitch lies right above
                 // the first stitch of the last row/ring
                 const ringCenter = placementPoint.clone().add(new Vector3(0, 0, ringRadius));
@@ -136,6 +137,7 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                         children?: PlacedStitch[]
                     }= {};
                     // Place stitch along a ring
+                    let effectiveLL = (index === lines.length - 1 && lines.length > 1) ? lines[lines.length - 2].length : line.length;
                     let placedStitch = {
                         ...stitch,
                         links: {},
@@ -143,9 +145,9 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                             .clone()
                             .add(
                                 new Vector3(
-                                    Math.sin((2 * Math.PI * j) / line.length),
+                                    Math.sin((2 * Math.PI * j) / effectiveLL),//line.length),
                                     0,
-                                    Math.cos((2 * Math.PI * j) / line.length),
+                                    -Math.cos((2 * Math.PI * j) / effectiveLL),//line.length),
                                 ).multiplyScalar(ringRadius),
                             ),
                         // Trust that this is either +x or -x
