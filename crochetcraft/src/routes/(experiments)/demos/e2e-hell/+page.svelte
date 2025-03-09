@@ -17,6 +17,7 @@
     import { parse, link, place, elaborate, gdPlace } from 'crochet-stitcher';
     import { placeDebugSpheres } from '$lib/render/debug';
     import type { LinkedStitch, Pattern } from 'crochet-stitcher/types';
+    import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
     // Example hard-coded chain stitch:
     const ChainStitchExampleParts = makeMultiBezier([
@@ -88,9 +89,18 @@
         }[placerAlgorithm];
 
         if (doElaboration) {
-            const elaboratedPoints = elaborate(placer(link(parse(currentSample))));
-            console.log(elaboratedPoints);
-            elaboratedPoints.forEach((mesh) => mainGroup.add(mesh));
+            const elaboratedMeshes = elaborate(placer(link(parse(currentSample))));
+            // Before adding the meshes to the scene, merge each curve to comprise a stitch:
+            const mergedMeshes = elaboratedMeshes.map((stitch) => {
+                let stitchMeshMaterial = stitch[0].material as MeshLambertMaterial;
+                let stitchGeometryCollection = stitch.map((mesh) => {
+                    mesh.updateMatrix();
+                    return mesh.geometry;
+                });
+                let singleGeometry = mergeGeometries(stitchGeometryCollection);
+                return new Mesh(singleGeometry, stitchMeshMaterial);
+            });
+            mergedMeshes.forEach((mesh) => mainGroup.add(mesh));
         } else {
             const placedPoints = placer(link(parse(currentSample)));
 

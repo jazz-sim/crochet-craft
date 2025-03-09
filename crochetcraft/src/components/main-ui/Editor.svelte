@@ -4,7 +4,8 @@
     import { ListBox, ListBoxItem, popup, type PopupSettings } from '@skeletonlabs/skeleton';
     import { parse, link, place, elaborate, gdPlace } from 'crochet-stitcher';
     import type { LinkedStitch, ParsedInstruction, Pattern } from 'crochet-stitcher/types';
-    import { Group } from 'three';
+    import { BufferGeometry, Group, MeshLambertMaterial, Mesh } from 'three';
+    import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
     let { position }: { position: PanelPosition } = $props();
 
@@ -70,8 +71,19 @@
             const placer = State.placerAlgo
                 ? place
                 : (pat: Pattern<LinkedStitch>) => gdPlace(pat, placerMaxIterations);
-            const elaboratedPoints = elaborate(placer(link(parse(State.pattern))));
-            elaboratedPoints.forEach((mesh) => mainGroup.add(mesh));
+            const elaboratedMeshes = elaborate(placer(link(parse(State.pattern))));
+            // Before adding the meshes to the scene, merge each curve to comprise a stitch:
+            const mergedMeshes = elaboratedMeshes.map((stitch) => {
+                let stitchMeshMaterial = stitch[0].material as MeshLambertMaterial;
+                let stitchGeometryCollection = stitch.map((mesh) => {
+                    mesh.updateMatrix();
+                    return mesh.geometry;
+                });
+                let singleGeometry = mergeGeometries(stitchGeometryCollection);
+                return new Mesh(singleGeometry, stitchMeshMaterial);
+            });
+
+            mergedMeshes.forEach((mesh) => mainGroup.add(mesh));
             State.scene.add(mainGroup);
         }
     }

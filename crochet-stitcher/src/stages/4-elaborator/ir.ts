@@ -9,6 +9,7 @@ export interface PatternIR {
 
 export interface StitchIR {
     // Pretty much the placed stitch data
+    colour: string;
     type: StitchType;
     position: Vector3;
     orientation: Quaternion;
