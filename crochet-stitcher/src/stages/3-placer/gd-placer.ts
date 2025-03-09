@@ -14,7 +14,6 @@ export function gdPlace(
 
     const offsets = computePlacementOffsets(pattern);
     let currentOffset = DEFAULT_OFFSET;
-    console.log({ offsets });
 
     let iterations = 0;
 
