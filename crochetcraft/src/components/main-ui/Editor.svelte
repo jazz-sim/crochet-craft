@@ -1,7 +1,9 @@
 <script lang="ts">
     import Panel, { type PanelPosition } from '$components/option-panel/Panel.svelte';
     import State from '$lib/state.svelte';
-    import { parse } from 'crochet-stitcher';
+    import { parse, link, place, elaborate, gdPlace } from 'crochet-stitcher';
+    import type { LinkedStitch, ParsedInstruction, Pattern } from 'crochet-stitcher/types';
+    import { Group } from 'three';
 
     let { position }: { position: PanelPosition } = $props();
 
@@ -10,7 +12,6 @@
         hovertext: string;
         disabled: boolean;
     }
-
     const ADD_STITCH_BUTTONS: AddStitchButtonData[] = [
         { name: 'ch', hovertext: 'chain', disabled: false },
         { name: 'slst', hovertext: 'slip stitch', disabled: true },
@@ -21,15 +22,45 @@
         { name: 'inc', hovertext: 'increase', disabled: true },
         { name: 'dec', hovertext: 'decrease', disabled: true },
     ];
-
     let errorMessage: string | null = $state(null);
 
-    function runParser() {
+    const examplePatterns: { [key: string]: string } = {
+        'default chain': 'ch 10',
+        '3x3 square': 'ch 4, turn, sc 3, ch1, turn, sc3',
+        '3x10 rectangle': 'ch 11, turn, sc 10, ch1, turn, sc10',
+        '5x10 cylinder': 'ch 10, sc 40',
+        '10x20 cylinder': 'ch 20, sc 180',
+        '30 ring': 'ch 30, sc 1',
+    };
+    const examplePatternNames = Object.keys(examplePatterns);
+    let selectedExampleName = 'default chain';
+
+    let placerMaxIterations = 50;
+    let mainGroup: Group = new Group();
+
+    $effect(() => {
+        runPipeline();
+    });
+
+    function runPipeline() {
+        let parseResult: Pattern<ParsedInstruction>;
+        // First, attempt to parse the input pattern:
         try {
-            parse(State.pattern);
+            parseResult = parse(State.pattern);
             errorMessage = null;
         } catch (error) {
             errorMessage = '❌ ' + error;
+        }
+        if (errorMessage == null) {
+            // If the input pattern is ok, clear the rendered group of meshes:
+            mainGroup.clear();
+            State.scene.remove(mainGroup);
+            const placer = State.placerAlgo
+                ? place
+                : (pat: Pattern<LinkedStitch>) => gdPlace(pat, placerMaxIterations);
+            const elaboratedPoints = elaborate(placer(link(parse(State.pattern))));
+            elaboratedPoints.forEach((mesh) => mainGroup.add(mesh));
+            State.scene.add(mainGroup);
         }
     }
 
@@ -40,7 +71,7 @@
             State.pattern += ' ';
         }
         State.pattern += stitch;
-        runParser();
+        runPipeline();
     }
 </script>
 
@@ -52,8 +83,8 @@
         rows="6"
         placeholder="Enter your crochet pattern here"
         bind:value={State.pattern}
-        oninput={runParser}
-        onchange={runParser}
+        oninput={runPipeline}
+        onchange={runPipeline}
     ></textarea>
 
     <!-- Output feedback -->
