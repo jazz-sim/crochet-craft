@@ -12,10 +12,15 @@ export function gdPlace(
     const pushConstraints: number[] = [];
     const flatConstraints: number[] = [];
 
+    const offsets = computePlacementOffsets(pattern);
+    let currentOffset = DEFAULT_OFFSET;
+    console.log({ offsets });
+
     let iterations = 0;
 
     for (let i = 0; i < pattern.stitches.length; i++) {
         const stitch = pattern.stitches[i];
+        currentOffset = offsets[i - 1] ?? currentOffset;
 
         // Estimate the position of this stitch!
         const lastPosition = positions.at(-1);
@@ -28,9 +33,10 @@ export function gdPlace(
             continue;
         }
 
+        const naiveOrientation = lastOrientation.clone().multiply(currentOffset.rotation);
         const naivePosition = lastPosition
             .clone()
-            .add(new Vector3(1, 0, 0).applyQuaternion(lastOrientation));
+            .add(new Vector3(1, currentOffset.rise, 0).applyQuaternion(naiveOrientation));
 
         let position: Vector3;
         let orientation: Quaternion;
@@ -38,7 +44,7 @@ export function gdPlace(
         if (!stitch.parents?.length) {
             // No parent -- position based on previous stitch's position
             position = naivePosition;
-            orientation = lastOrientation.clone().multiply(new Quaternion(0, 0.01745, 0, 0.99985));
+            orientation = naiveOrientation;
         } else {
             // Has parent -- position based on parent and naive position
             const parentPosition = positions[stitch.parents[0]];
@@ -56,9 +62,7 @@ export function gdPlace(
                     .clone()
                     .multiply(new Quaternion(0, 0.707, 0, 0.707));
             } else {
-                orientation = parentOrientation
-                    .clone()
-                    .multiply(new Quaternion(0, 0.01745, 0, 0.99985));
+                orientation = parentOrientation.clone();
             }
         }
 
@@ -92,7 +96,7 @@ export function gdPlace(
         }
 
         // Apply constraints!
-        descend(0.005, 0.2);
+        descend(0.01, 0.12);
     }
 
     return {
@@ -105,7 +109,7 @@ export function gdPlace(
         })),
     };
 
-    function descend(minChange: number, alpha = 0.05) {
+    function descend(minChange: number, alpha: number) {
         if (iterations > maxIterations) return;
         while (true) {
             if (iterations > maxIterations) {
@@ -123,7 +127,7 @@ export function gdPlace(
     }
 
     /** Descend for one iteration, returning the sum of squared lengths of deltas */
-    function descendOnce(alpha = 0.05): number {
+    function descendOnce(alpha: number): number {
         const deltas = [...Array(positions.length)].map(() => new Vector3());
         for (let i = 0; i < pushPullConstraints.length; i += 2) {
             const target = pushPullConstraints[i];
@@ -151,8 +155,9 @@ export function gdPlace(
             const v2 = positions[target2].clone().sub(positions[pivot]);
             const dividend = v1.length() * v2.length();
             const normal = v2.cross(v1).divideScalar(dividend);
-            const delta = normal.cross(v1);
-            deltas[target1].add(delta.multiplyScalar(0.25));
+            const delta = normal.cross(v1).multiplyScalar(0.2);
+            deltas[target1].add(delta);
+            deltas[pivot].sub(delta);
         }
 
         let maxChange = 0;
@@ -164,3 +169,39 @@ export function gdPlace(
         return Math.sqrt(maxChange);
     }
 }
+
+function computePlacementOffsets({
+    stitches,
+}: Pattern<LinkedStitch>): Record<number, PlacementOffset> {
+    const angles: Record<number, PlacementOffset> = {};
+
+    let reference = 0;
+    for (let i = 1; i < stitches.length; i++) {
+        const parent = stitches[i].parents?.[0];
+        if (parent != null && parent >= reference) {
+            const loopLength = i - parent;
+            if (loopLength > 2) {
+                const halfAngle = Math.PI / loopLength;
+                angles[parent] = {
+                    rise: 1 / loopLength,
+                    rotation: new Quaternion(0, Math.sin(halfAngle), 0, Math.cos(halfAngle)),
+                };
+            } else {
+                angles[parent] = DEFAULT_OFFSET;
+            }
+            reference = i;
+        }
+    }
+
+    return angles;
+}
+
+interface PlacementOffset {
+    rise: number;
+    rotation: Quaternion;
+}
+
+const DEFAULT_OFFSET: PlacementOffset = {
+    rise: 0,
+    rotation: new Quaternion(0, 0.0175, 0, 0.99985), // pi/180 radians
+};
