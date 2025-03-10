@@ -142,7 +142,7 @@
 
     <!-- Example patterns combobox -->
     <select
-        class="select rounded-lg"
+        class="custom-select select rounded-lg"
         bind:value={selectedExampleName}
         onchange={exampleUpdatePattern}
     >
@@ -167,3 +167,9 @@
         />
     </label>
 </Panel>
+
+<style>
+    .custom-select:hover {
+        cursor: pointer;
+    }
+</style>
