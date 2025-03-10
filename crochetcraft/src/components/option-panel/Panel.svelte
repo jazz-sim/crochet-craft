@@ -43,13 +43,13 @@
             </button>
         {/if}
     </div>
-    <div class="flex-1 space-y-4 overflow-y-auto p-4" class:hidden={!expanded}>
+    <div class="flex-1 shrink space-y-4 overflow-y-scroll p-4" class:hidden={!expanded}>
         {@render children()}
     </div>
 {/snippet}
 
 {#if position === 'docked'}
-    <div class="card z-10 flex w-96 flex-none flex-col">
+    <div class="card z-10 flex max-h-svh w-96 flex-none flex-col">
         {@render cardContent()}
     </div>
 {:else}

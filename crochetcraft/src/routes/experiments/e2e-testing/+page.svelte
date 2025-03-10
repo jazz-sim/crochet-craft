@@ -18,6 +18,7 @@
     import { placeDebugSpheres } from '$lib/render/debug';
     import type { LinkedStitch, Pattern } from 'crochet-stitcher/types';
     import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+    import Panel from '$components/option-panel/Panel.svelte';
 
     // Example hard-coded chain stitch:
     const ChainStitchExampleParts = makeMultiBezier([
@@ -132,55 +133,44 @@
     }
 </script>
 
-<div id="wrapper">
-    <ThreeCanvas
-        init={(s: Scene) => {
-            scene = s;
-        }}
-    />
+<Panel title="E2E Testing - Options" position="docked">
+    <a class="anchor" href={`/experiments`}>🛠️ Back To Experiments</a>
+    <label class="label">
+        <span><i>Placer algorithm:</i></span>
+        <select class="select rounded-lg" bind:value={placerAlgorithm}>
+            <option value="if">IF (Iterative Forces)</option>
+            <option value="gd">GD (Gradient Descent)</option>
+        </select>
+    </label>
 
-    <div id="input-wrapper">
-        <a class="anchor" href={`/demos`}>📺 Back To Demos</a>
-        <br /><br />
+    <label class="label">
+        <span><i>Maximum iterations for placer:</i> {placerMaxIterations}</span>
+        <input
+            class="rounded-lg"
+            type="range"
+            bind:value={placerMaxIterations}
+            min={0}
+            max={1000}
+            step={1}
+        />
+    </label>
 
-        <label class="label">
-            <span>Placer algorithm</span>
-            <select class="select" bind:value={placerAlgorithm}>
-                <option value="if">IF</option>
-                <option value="gd">GD</option>
-            </select>
-        </label>
-
-        <label class="label">
-            <span>Maximum iterations for placer: {placerMaxIterations}</span>
-            <input type="range" bind:value={placerMaxIterations} min={0} max={1000} step={1} />
-        </label>
-
-        <p><i>Demonstrations:</i></p>
-        <select class="select" bind:value={selectedSampleName}>
+    <label class="label">
+        <span><i>Test case:</i></span>
+        <select class="select rounded-lg" bind:value={selectedSampleName}>
             {#each sampleNames as sampleStr}
                 <option value={sampleStr}>{sampleStr}</option>
             {/each}
         </select>
-        <br /><br />
-        <label
-            ><i>Do elaboration?</i>
-            <input type="checkbox" bind:checked={doElaboration} />
-        </label>
-    </div>
-</div>
-
-<style>
-    #wrapper {
-        display: flex;
-    }
-
-    #input-wrapper {
-        padding: 0.5em;
-        min-width: 350px;
-        flex: 0 0;
-        max-height: 100vh;
-        overflow-y: scroll;
-        scroll-behavior: auto;
-    }
-</style>
+    </label>
+    <label>
+        <input class="rounded-lg" type="checkbox" bind:checked={doElaboration} />
+        <i>Do elaboration?</i>
+    </label>
+</Panel>
+<ThreeCanvas
+    --height="100%"
+    init={(s: Scene) => {
+        scene = s;
+    }}
+/>

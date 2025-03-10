@@ -40,7 +40,8 @@
 {#snippet experiments()}
     While building the first version of CrochetCraft, the team made some <a
         class="anchor"
-        href="https://crochetcraft.jtai.ca/experiments">demos and tools</a
+        href="/experiments"
+        onclick={parent.onClose}>demos and tools</a
     >. These "mini-programs" are not production-ready.
 {/snippet}
 
@@ -80,6 +81,6 @@
         </div>
     </div>
     <footer class={parent.regionFooter}>
-        <button class="btn {parent.buttonNeutral}" on:click={parent.onClose}>Close</button>
+        <button class="btn {parent.buttonNeutral}" onclick={parent.onClose}>Close</button>
     </footer>
 </div>

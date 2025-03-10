@@ -1,14 +1,24 @@
 <script lang="ts">
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
-    import * as THREE from 'three';
-    import { Vector3 } from 'three';
+    import {
+        Scene,
+        Vector3,
+        Group,
+        MeshLambertMaterial,
+        SphereGeometry,
+        Mesh,
+        Line,
+        BufferGeometry,
+        LineBasicMaterial,
+    } from 'three';
     import { evaluateForces } from 'crochet-stitcher';
+    import Panel from '$components/option-panel/Panel.svelte';
 
     // Scene objects
-    let scene: THREE.Scene;
-    const group = new THREE.Group();
-    const linkGroup = new THREE.Group();
-    const pathGroup = new THREE.Group();
+    let scene: Scene;
+    const group = new Group();
+    const linkGroup = new Group();
+    const pathGroup = new Group();
 
     // Settings for this demo
     let iterations = 1;
@@ -203,16 +213,16 @@
     let pointEvolutions: Vector3[][] = [];
 
     function buildSphere(pos: Vector3, radius: number) {
-        const material = new THREE.MeshLambertMaterial();
-        const sphere = new THREE.SphereGeometry(radius).translate(pos.x, pos.y, pos.z);
-        const mesh = new THREE.Mesh(sphere, material);
+        const material = new MeshLambertMaterial();
+        const sphere = new SphereGeometry(radius).translate(pos.x, pos.y, pos.z);
+        const mesh = new Mesh(sphere, material);
         return mesh;
     }
 
     function buildLine(points: Vector3[], color: number = 0xffffff) {
-        return new THREE.Line(
-            new THREE.BufferGeometry().setFromPoints(points),
-            new THREE.LineBasicMaterial({ color }),
+        return new Line(
+            new BufferGeometry().setFromPoints(points),
+            new LineBasicMaterial({ color }),
         );
     }
 
@@ -288,47 +298,40 @@
     }
 </script>
 
-<div id="wrapper">
-    <ThreeCanvas bind:scene />
-
-    <div id="input-wrapper">
-        <a class="anchor" href={`/demos`}>📺 Back To Demos</a>
-        <br /><br />
-        <p><i>Demonstrations:</i></p>
-        <select class="select" bind:value={selectedSample}>
+<Panel title="Iterative Forces Example - Options" position="docked">
+    <a class="anchor" href={`/experiments`}>🛠️ Back To Experiments</a>
+    <label class="label">
+        <span><i>Demonstrations:</i></span>
+        <select class="select rounded-lg" bind:value={selectedSample}>
             {#each sampleNames as sampleStr}
                 <option value={sampleStr}>{sampleStr}</option>
             {/each}
         </select>
-        <br />
-        <p><i>Number of Iterations:</i></p>
-        <input class="input" type="number" bind:value={iterations} />
-        <br />
-        <p><i>Iteration Number:</i></p>
-        <input class="input" type="number" bind:value={iterNumber} max={iterations} />
-        <br />
-        <p><i>Timestep:</i></p>
-        <input class="input" type="number" bind:value={timeStep} />
-        <br />
-        <p><i>Show links between stitches:</i></p>
-        <input class="input" type="checkbox" bind:checked={showLinks} />
-        <br />
-        <p><i>Show stitch paths through time:</i></p>
-        <input class="input" type="checkbox" bind:checked={showPaths} />
-    </div>
-</div>
-
-<style>
-    #wrapper {
-        display: flex;
-    }
-
-    #input-wrapper {
-        padding: 0.5em;
-        min-width: 350px;
-        flex: 0 0;
-        max-height: 100vh;
-        overflow-y: scroll;
-        scroll-behavior: auto;
-    }
-</style>
+    </label>
+    <label class="label">
+        <span><i>Number of Iterations:</i></span>
+        <input class="input rounded-lg" type="number" bind:value={iterations} />
+    </label>
+    <label class="label">
+        <span><i>Iteration Number:</i></span>
+        <input class="input rounded-lg" type="number" bind:value={iterNumber} max={iterations} />
+    </label>
+    <label class="label">
+        <span><i>Timestep:</i></span>
+        <input class="input rounded-lg" type="number" bind:value={timeStep} />
+    </label>
+    <label>
+        <input class="rounded-lg" type="checkbox" bind:checked={showLinks} />
+        <i>Show links between stitches?</i>
+    </label>
+    <label>
+        <input class="rounded-lg" type="checkbox" bind:checked={showPaths} />
+        <i>Show stitch paths through time? </i></label
+    >
+</Panel>
+<ThreeCanvas
+    --height="100%"
+    init={(s: Scene) => {
+        scene = s;
+    }}
+/>
