@@ -41,6 +41,14 @@
         '5x10 cylinder': 'ch 10, sc 40',
         '10x20 cylinder': 'ch 20, sc 180',
         '30 ring': 'ch 30, sc 1',
+        bowl: `\
+1. MR, sc 6
+2. inc 6
+3. 6 (sc 1, inc 1)
+4. 2 (sc 2, inc 1), sc 3, 3 (sc 2, inc 1)
+5. sc 7, 2 (inc 1, sc 7)
+6. sc 25
+7. sc 25`,
     };
     const examplePatternNames = Object.keys(examplePatterns);
     let selectedExampleName = $state('default chain');
