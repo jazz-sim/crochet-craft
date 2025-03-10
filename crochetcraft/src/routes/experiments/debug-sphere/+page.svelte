@@ -2,16 +2,16 @@
     import { page } from '$app/stores';
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
     import { placeDebugSpheres } from '$lib/render/debug';
-    import PointsTable from '$components/PointsTable.svelte';
+    import PointsTable from '$components/points-table/PointsTable.svelte';
     import { onMount } from 'svelte';
-    import * as THREE from 'three';
-    import { Vector3 } from 'three';
+    import { Vector3, Scene, Group } from 'three';
+    import Panel from '$components/option-panel/Panel.svelte';
 
-    let scene: THREE.Scene;
+    let scene: Scene;
 
     let points: Vector3[] = [new Vector3(0, 0, 0)];
 
-    const group = new THREE.Group();
+    const group = new Group();
     let quicklink = '';
 
     onMount(() => {
@@ -31,7 +31,7 @@
         }
     });
 
-    // Inefficient. On change, removes all spheres and then adds them back to the scene
+    // Inefficient. On change, removes all spheres and then adds them back to the scene:
     $: {
         group.clear();
         placeDebugSpheres(points, group);
@@ -42,31 +42,19 @@
     }
 </script>
 
-<div id="wrapper">
-    <ThreeCanvas bind:scene />
-
-    <div id="input-wrapper">
-        <a class="anchor" href={`/demos`}>📺 Back To Demos</a>
-        <br />
-        <a class="anchor" href={quicklink}>🔗 Link to point set</a>
-        <br /><br />
-        <p>
-            Enter points below. Coordinates can be freely edited. Add a point using the + cell, and
-            delete points using the - cell.
-        </p>
-        <br />
-        <PointsTable bind:points />
-    </div>
-</div>
-
-<style>
-    #wrapper {
-        display: flex;
-    }
-
-    #input-wrapper {
-        padding: 0.5em;
-        width: 250px;
-        flex: 0 0;
-    }
-</style>
+<Panel title="Debug Spheres - Options" position="docked">
+    <a class="anchor" href={`/experiments`}>🛠️ Back To Experiments</a>
+    <br />
+    <a class="anchor" href={quicklink}>🔗 Link to point set</a>
+    <p>
+        Enter points below. Coordinates can be freely edited. Add a point using the + cell, and
+        delete points using the - cell.
+    </p>
+    <PointsTable bind:points />
+</Panel>
+<ThreeCanvas
+    --height="100%"
+    init={(s: Scene) => {
+        scene = s;
+    }}
+/>

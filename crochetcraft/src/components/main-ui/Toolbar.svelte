@@ -8,7 +8,6 @@
         type ModalComponent,
     } from '@skeletonlabs/skeleton';
     import * as Modals from '$components/modals/index';
-    import { Color } from 'three';
 
     const modalStore = getModalStore();
     const aboutModalComponent: ModalComponent = { ref: Modals.AboutModal };
@@ -69,6 +68,5 @@
     <div class="flex-1"></div>
 
     <!-- Right side -->
-    <a class="anchor" href="/">← Go Home</a>
     <LightSwitch rounded="rounded-lg" />
 </div>

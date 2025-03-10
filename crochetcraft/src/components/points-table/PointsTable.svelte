@@ -4,7 +4,7 @@
 </script>
 
 <div>
-    <table id="points-table">
+    <table id="points-table" class="rounded-lg">
         <thead>
             <tr>
                 <th>X</th>
@@ -71,6 +71,7 @@
                     >
                     <td
                         ><button
+                            disabled={points.length == 1 ? true : false}
                             on:click={() => {
                                 points = [...points.slice(0, index), ...points.slice(index + 1)];
                             }}>-</button
@@ -82,7 +83,7 @@
     </table>
     <br />
     <button
-        class="variant-filled-primary btn"
+        class="variant-filled-primary btn rounded-lg"
         on:click={() => {
             points = [new Vector3(0, 0, 0), ...points];
         }}>Add point to start</button

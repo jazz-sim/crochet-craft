@@ -1,8 +1,8 @@
 <script lang="ts">
+    import Panel from '$components/option-panel/Panel.svelte';
     import { placeDebugSpheres } from '$lib/render/debug';
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
-    import * as THREE from 'three';
-    import { Vector3 } from 'three';
+    import { Vector3, Scene, Group, Line, BufferGeometry, LineBasicMaterial } from 'three';
 
     type Mat2 = {
         xx: number;
@@ -11,9 +11,9 @@
         yy: number;
     };
 
-    let scene: THREE.Scene;
+    let scene: Scene;
 
-    let group: THREE.Group = new THREE.Group();
+    let group: Group = new Group();
     let mat1 = {
         xx: 1,
         xy: 0,
@@ -88,85 +88,47 @@
     }
 </script>
 
-<div id="wrapper">
-    <ThreeCanvas
-        bind:scene
-        init={(scene) => {
-            // Create x axis in xy plane
-            scene.add(
-                new THREE.Line(
-                    new THREE.BufferGeometry().setFromPoints([
-                        new Vector3(-30, 0, 0),
-                        new Vector3(30, 0, 0),
-                    ]),
-                    new THREE.LineBasicMaterial(),
-                ),
-            );
-            // Create y axis in xy plane
-            scene.add(
-                new THREE.Line(
-                    new THREE.BufferGeometry().setFromPoints([
-                        new Vector3(0, -30, 0),
-                        new Vector3(0, 30, 0),
-                    ]),
-                    new THREE.LineBasicMaterial(),
-                ),
-            );
-        }}
-    />
+<Panel title="2D Shear Example - Options" position="docked">
+    <a class="anchor" href={`/experiments`}>🛠️ Back To Experiments</a>
+    <p>
+        For display mode: 0 to only use mat1, 1 to only use mat2, and 2 to interpolate between the
+        two.
+    </p>
+    <label class="label">
+        <span><i>Display mode:</i></span>
+        <input class="input rounded-lg" type="number" bind:value={displayMode} />
+    </label>
+    <p><i>mat1:</i></p>
+    <table class="w-3xs">
+        <tbody>
+            <tr>
+                <td>{mat1.xx}</td>
+                <td><input class="input w-3xs rounded-lg" type="number" bind:value={mat1.xy} /></td>
+            </tr>
+            <tr>
+                <td><input class="input w-3xs rounded-lg" type="number" bind:value={mat1.yx} /></td>
+                <td>{mat1.yy}</td>
+            </tr>
+        </tbody>
+    </table>
+    <p><i>mat2:</i></p>
+    <table class="w-3xs">
+        <tbody>
+            <tr>
+                <td>{mat2.xx}</td>
+                <td><input class="input w-3xs rounded-lg" type="number" bind:value={mat2.xy} /></td>
+            </tr>
+            <tr>
+                <td><input class="input w-3xs rounded-lg" type="number" bind:value={mat2.yx} /></td>
+                <td>{mat2.yy}</td>
+            </tr>
+        </tbody>
+    </table>
+</Panel>
 
-    <div id="input-wrapper">
-        <a class="anchor" href={`/demos`}>📺 Back To Demos</a>
-        <br /><br />
-        <p>
-            Display mode input - 0 to only use mat1, 1 to only use mat2, and 2 to interpolate
-            between the two.
-        </p>
-        <br />
-        <input class="input" type="number" bind:value={displayMode} />
-        <br />
-        <br />
-        mat1
-        <br />
-        <table>
-            <tbody>
-                <tr>
-                    <td>{mat1.xx}</td>
-                    <td><input class="input" type="number" bind:value={mat1.xy} /></td>
-                </tr>
-                <tr>
-                    <td><input class="input" type="number" bind:value={mat1.yx} /></td>
-                    <td>{mat1.yy}</td>
-                </tr>
-            </tbody>
-        </table>
-        <br />
-        <br />
-        mat2
-        <br />
-        <table>
-            <tbody>
-                <tr>
-                    <td>{mat2.xx}</td>
-                    <td><input class="input" type="number" bind:value={mat2.xy} /></td>
-                </tr>
-                <tr>
-                    <td><input class="input" type="number" bind:value={mat2.yx} /></td>
-                    <td>{mat2.yy}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<style>
-    #wrapper {
-        display: flex;
-    }
-
-    #input-wrapper {
-        padding: 0.5em;
-        width: 250px;
-        flex: 0 0;
-    }
-</style>
+<ThreeCanvas
+    --height="100%"
+    init={(s: Scene) => {
+        scene = s;
+    }}
+/>
