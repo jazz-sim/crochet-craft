@@ -76,6 +76,23 @@
         '30 ring': 'ch 30, sc 1',
         'increase test': 'ch 5, turn, sc 2, inc 1, sc 2',
         'decrease test': 'ch 7, turn, sc 2, dec 1, sc 2',
+        bowl: `\
+1. MR, sc 6
+2. inc 6
+3. 6 (sc 1, inc 1)
+4. 2 (sc 2, inc 1), sc 3, 3 (sc 2, inc 1)
+5. sc 7, 2 (inc 1, sc 7)
+6. sc 25
+7. sc 25`,
+        sphere: `\
+1. MR, sc 6
+2. inc 6
+3. 6 (sc, inc)
+4. sc 18
+5. sc 18
+6. sc 18
+7. 6 (sc, dec)
+8. 6 dec`,
     };
     const sampleNames = Object.keys(sampleInputs);
     let selectedSampleName = 'default chain';
