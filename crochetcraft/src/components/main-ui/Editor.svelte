@@ -49,6 +49,15 @@
 5. sc 7, 2 (inc 1, sc 7)
 6. sc 25
 7. sc 25`,
+        sphere: `\
+1. MR, sc 6
+2. inc 6
+3. 6 (sc, inc)
+4. sc 18
+5. sc 18
+6. sc 18
+7. 6 (sc, dec)
+8. 6 dec`,
     };
     const examplePatternNames = Object.keys(examplePatterns);
     let selectedExampleName = $state('default chain');
