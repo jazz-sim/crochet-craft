@@ -101,6 +101,7 @@ export function gdPlace(
     return {
         foundation: pattern.foundation,
         stitches: pattern.stitches.map((stitch, i) => ({
+            colour: stitch.colour,
             type: stitch.type,
             position: positions[i],
             orientation: orientations[i],

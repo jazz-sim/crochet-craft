@@ -1,20 +1,32 @@
 <script lang="ts">
+    import Panel from '$components/option-panel/Panel.svelte';
     import { makeMultiBezier } from '$lib/builder/bezier';
     import { arrayToVector3List } from '$lib/geometry/vectorHelper';
     import ThreeCanvas from '$lib/ThreeCanvas.svelte';
     import StitchModel from 'crochet-stitcher/models';
-    import * as THREE from 'three';
-    import { Vector3 } from 'three';
+    import {
+        Vector3,
+        Scene,
+        Group,
+        Line,
+        BufferGeometry,
+        MeshLambertMaterial,
+        TubeGeometry,
+        CubicBezierCurve3,
+        Color,
+        Mesh,
+    } from 'three';
 
-    let scene: THREE.Scene;
-    const group = new THREE.Group();
+    let scene: Scene;
+    const group = new Group();
     let whichModel: keyof typeof StitchModel = 'CHAIN';
     let repetitions = 1;
 
     let doRotationJank = false;
-    const ROTATION_JANK_EXPLANATION = `
-Enables a bunch of extra math to try to align the stitch model to the x-axis for normalization. 
+    const ROTATION_JANK_EXPLANATION = `Enables a bunch of extra math to try to align the stitch model to the x-axis for normalization. 
+
 Ideally, this should do nothing to the stitch model, but while in development, this can help fix denormalized models.
+
 Enabling this will also:
     - render a helper x-axis
     - render an unrotated copy of the stitch above the rotated one
@@ -26,12 +38,12 @@ Enabling this will also:
      * Moves a set of points so the first point lies on the origin.
      * @param points
      */
-    function moveToOrigin(points: THREE.Vector3[]) {
+    function moveToOrigin(points: Vector3[]) {
         const first = points[0];
         return points.map((p) => p.clone().sub(first));
     }
 
-    function multiplyByScale(points: THREE.Vector3[]) {
+    function multiplyByScale(points: Vector3[]) {
         return points.map((p) => p.clone().multiplyScalar(scale));
     }
 
@@ -48,7 +60,7 @@ Enabling this will also:
      * Assumes the first point is at the origin.
      * @param points
      */
-    function rotateToXAxis(points: THREE.Vector3[]) {
+    function rotateToXAxis(points: Vector3[]) {
         const n = points.length;
         // The axis to rotate around is given by the cross produce of the vectors to
         // the end point and the x-axis point.
@@ -84,7 +96,7 @@ Enabling this will also:
 
         const parts = makeMultiBezier(rotatedPoints);
         for (let i = 0; i < repetitions; ++i) {
-            addStitch(parts, new THREE.Vector3(0.5 * i * scale, 0, 0));
+            addStitch(parts, new Vector3(0.5 * i * scale, 0, 0));
         }
 
         if (doRotationJank) {
@@ -92,38 +104,25 @@ Enabling this will also:
                 'Modified point list: ',
                 rotatedPoints.map((v) => [v.x, v.y, v.z]),
             );
-
-            // Show X-axis
-            const xAxis = new THREE.Line(
-                new THREE.BufferGeometry().setFromPoints([
-                    new Vector3(0, 0, 0),
-                    new Vector3(10, 0, 0),
-                ]),
-                new THREE.MeshLambertMaterial(),
-            );
-            group.add(xAxis);
             addStitch(makeMultiBezier(points), UP_SHIFT);
         }
 
         scene?.add(group);
     }
 
-    function addStitch(
-        parts: THREE.CubicBezierCurve3[],
-        pos: THREE.Vector3 = new THREE.Vector3(0, 0, 0),
-    ) {
+    function addStitch(parts: CubicBezierCurve3[], pos: Vector3 = new Vector3(0, 0, 0)) {
         const partLengthP1 = parts.length + 1;
 
         parts.map((curve, index) => {
-            const geometry = new THREE.TubeGeometry(curve, 50, 0.1, 10);
-            const material = new THREE.MeshLambertMaterial({
-                color: new THREE.Color(
+            const geometry = new TubeGeometry(curve, 50, 0.1, 10);
+            const material = new MeshLambertMaterial({
+                color: new Color(
                     0.2 + (0.8 * (index + 1)) / partLengthP1,
                     0.0,
                     0.2 + (0.8 * (index + 1)) / partLengthP1,
                 ),
             });
-            const mesh = new THREE.Mesh(geometry, material);
+            const mesh = new Mesh(geometry, material);
             mesh.translateX(pos.x);
             mesh.translateY(pos.y);
             mesh.translateZ(pos.z);
@@ -132,45 +131,33 @@ Enabling this will also:
     }
 </script>
 
-<div id="wrapper">
-    <ThreeCanvas bind:scene cameraPosition={new Vector3(0, 0, 3)} />
-    <div id="input-wrapper">
-        <a class="anchor" href={`/demos`}>📺 Back To Demos</a>
-        <br />
-        <label class="label">
-            <span>Which model?</span>
-            <select class="select" bind:value={whichModel}>
-                {#each Object.keys(StitchModel) as key (key)}
-                    <option value={key}>{key}</option>
-                {/each}
-            </select>
-        </label>
-        <label class="label">
-            <span>Repetitions</span>
-            <input class="input" type="number" bind:value={repetitions} />
-        </label>
-        <label class="label">
-            <span title={ROTATION_JANK_EXPLANATION}>Do rotation jank?</span>
-            <input type="checkbox" bind:checked={doRotationJank} />
-        </label>
-        <label class="label">
-            <span>Scale Slider</span>
-            <input type="number" bind:value={scale} />
-        </label>
-    </div>
-</div>
-
-<style>
-    #wrapper {
-        display: flex;
-    }
-
-    #input-wrapper {
-        padding: 0.5em;
-        min-width: 350px;
-        flex: 0 0;
-        max-height: 100vh;
-        overflow-y: scroll;
-        scroll-behavior: auto;
-    }
-</style>
+<Panel title="Stitch Models Viewer - Options" position="docked">
+    <a class="anchor" href={`/experiments`}>🛠️ Back To Experiments</a>
+    <label class="label">
+        <span><i>Which model?</i></span>
+        <select class="select rounded-lg" bind:value={whichModel}>
+            {#each Object.keys(StitchModel) as key (key)}
+                <option value={key}>{key}</option>
+            {/each}
+        </select>
+    </label>
+    <label class="label">
+        <span><i>Repetitions</i></span>
+        <input class="input rounded-lg" type="number" bind:value={repetitions} />
+    </label>
+    <label>
+        <input class="rounded-lg" type="checkbox" bind:checked={doRotationJank} />
+        <span title={ROTATION_JANK_EXPLANATION}>Do rotation jank?</span>
+    </label>
+    <label class="label">
+        <span><i>Scale:</i></span>
+        <input class="input rounded-lg" type="number" bind:value={scale} />
+    </label>
+</Panel>
+<ThreeCanvas
+    --height="100%"
+    init={(s: Scene) => {
+        scene = s;
+    }}
+    cameraPosition={new Vector3(0, 0, 3)}
+/>

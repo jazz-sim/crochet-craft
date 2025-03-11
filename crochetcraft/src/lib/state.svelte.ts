@@ -18,6 +18,8 @@ interface State {
     camera: PerspectiveCamera | null;
     /** The AxesHelper of the current scene. */
     axesHelper: AxesHelper | null;
+    /** The selected placer algorithm: (true for IF, false for GD). */
+    placerAlgo: Boolean;
 }
 
 const State: State = (() => {
@@ -29,6 +31,7 @@ const State: State = (() => {
     let controls: OrbitControls | null = $state(null);
     let camera: PerspectiveCamera | null = $state(null);
     let axesHelper: AxesHelper | null = $state(null);
+    let placerAlgo: Boolean = $state(true);
 
     return {
         get pattern() {
@@ -85,6 +88,13 @@ const State: State = (() => {
         },
         set axesHelper(value) {
             axesHelper = value;
+        },
+
+        get placerAlgo() {
+            return placerAlgo;
+        },
+        set placerAlgo(value) {
+            placerAlgo = value;
         },
     };
 })();

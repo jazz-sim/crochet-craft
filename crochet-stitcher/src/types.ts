@@ -86,6 +86,7 @@ export interface LinkedStitch {
 }
 
 export interface PlacedStitch {
+    colour: string;
     type: StitchType;
     position: Vector3;
     orientation: Quaternion;
