@@ -5,7 +5,7 @@ export function st(
     type: StitchType,
     repeat = 1,
     parentOffset = 0,
-    colour = 'white',
+    colour = '#cf80fb',
 ): ParsedStitch[] {
     return Array(repeat).fill({
         type,

@@ -157,3 +157,31 @@ describe('edge cases', () => {
         expect(() => link(slkt(st(StitchType.Chain), 'turn', st(StitchType.Single)))).toThrow();
     });
 });
+
+describe('increases', () => {
+    test('two increases', () => {
+        expect(
+            link(
+                slkt(
+                    st(StitchType.Chain, 4),
+                    'turn',
+                    st(StitchType.Single),
+                    st(StitchType.Single, 1, -1),
+                    st(StitchType.Single),
+                    st(StitchType.Single, 1, -1),
+                ),
+            ),
+        ).toEqual(
+            linkedSlkt(
+                lst(StitchType.Chain),
+                lst(StitchType.Chain, null, [6, 7]),
+                lst(StitchType.Chain, null, [4, 5]),
+                lst(StitchType.Chain),
+                lst(StitchType.Single, [2]),
+                lst(StitchType.Single, [2]),
+                lst(StitchType.Single, [1]),
+                lst(StitchType.Single, [1]),
+            ),
+        );
+    });
+});
