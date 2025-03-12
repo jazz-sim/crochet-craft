@@ -96,6 +96,7 @@ export function gdPlace(
         }
 
         // Apply constraints!
+        maxIterations += 25;
         descend(0.01, 0.12);
     }
 
