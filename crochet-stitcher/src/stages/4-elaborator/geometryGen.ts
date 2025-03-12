@@ -73,6 +73,7 @@ function curveToGeometries(
                 material.side = DoubleSide;
                 material.color = new Color(stitch.colour);
                 material.emissive = material.color;
+                material.emissiveIntensity = 0;
                 const mesh = new Mesh(geometry, material);
                 return mesh;
             });
