@@ -50,8 +50,9 @@ export function gdPlace(
             const parentOrientation = orientations[stitch.parents[0]];
             position = parentPosition
                 .clone()
-                .add(new Vector3(0, 1, 0).applyQuaternion(parentOrientation));
-            // Now drag the position toward the new position
+                .add(new Vector3(0, 1, 0).applyQuaternion(parentOrientation))
+                .add(naivePosition)
+                .multiplyScalar(0.5);
 
             // Update the quaternion so that the orientation is correct
             const distance1 = lastPosition.clone().sub(position).normalize();
