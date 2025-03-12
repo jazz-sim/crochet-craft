@@ -6,7 +6,7 @@ export function lst(
     type: StitchType,
     parents: number[] | null = null,
     children: number[] = [],
-    colour = 'white',
+    colour = '#cf80fb',
 ): NoLocation<LinkedStitch> {
     return { type, parents, children, colour };
 }

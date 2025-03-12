@@ -85,12 +85,11 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
                 }
                 if (output[outputIndex].parents == null) {
                     output[outputIndex].parents = [previousRow[previousIndex]];
-                }
-                else {
+                } else {
                     output[outputIndex].parents?.push(previousRow[previousIndex]);
                 }
                 output[previousRow[previousIndex]].children.push(outputIndex);
-                previousIndex += 1 + stitch.parentOffset;
+                previousIndex += 1;
             }
             currentRowLS.push(output[outputIndex]);
             currentRow.push(outputIndex);
