@@ -74,8 +74,19 @@
         '10x20 cylinder': 'ch 20, sc 180',
         '20x30 cylinder': 'ch 30, sc 570',
         '30 ring': 'ch 30, sc 1',
-        'increase test': 'ch 5, turn, sc 2, inc 1, sc 2',
+        'increase test': 'ch 6, turn, sc 5, ch 1, turn, sc 3, inc, sc 2',
         'decrease test': 'ch 7, turn, sc 2, dec 1, sc 2',
+        circle: `\
+1. MR, 6 sc
+2. 6 inc
+3. 6 (inc, 1 sc)
+4. 1 sc, 5 (inc, 2 sc), inc, sc
+5. 6 (inc, 3sc)
+6. 3 sc, 5 (inc, 4 sc), inc, sc
+7. 6 (inc, 5 sc)
+8. 4 sc, 5 (inc, 6 sc), inc, 2 sc
+9. 6 (inc, 7 sc)
+10. 5 sc, 5 (inc, 8 sc), inc, 3 sc`,
         bowl: `\
 1. MR, sc 6
 2. inc 6
