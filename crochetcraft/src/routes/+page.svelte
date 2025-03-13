@@ -8,7 +8,7 @@
     import { Scene, Vector3 } from 'three';
 </script>
 
-<div class="flex h-full flex-col">
+<div class="cover flex h-full flex-col">
     <Toolbar />
     <div id="render-div" class="relative flex min-h-0 flex-1 flex-row">
         <Editor position="docked" />
@@ -24,3 +24,11 @@
         <FloatingToolbar />
     </div>
 </div>
+
+<style>
+    @media (orientation: portrait) {
+        .cover {
+            visibility: hidden;
+        }
+    }
+</style>
