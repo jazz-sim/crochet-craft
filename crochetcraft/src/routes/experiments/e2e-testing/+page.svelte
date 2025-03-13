@@ -42,6 +42,7 @@
             material.side = DoubleSide; // NOTE: The side value of the material has to be double-sided for effective intersection checking.
             material.color = new Color().setHex(Math.random() * 0xffffff);
             material.emissive = material.color;
+            material.emissiveIntensity = 0;
             const mesh = new Mesh(geometry, material);
             mesh.translateX(pos.x);
             mesh.translateY(pos.y);

@@ -92,6 +92,7 @@
             // Before adding the meshes to the scene, merge each curve to comprise a stitch:
             const mergedMeshes = elaboratedMeshes.map((stitch) => {
                 let stitchMeshMaterial = stitch[0].material as MeshLambertMaterial;
+                stitchMeshMaterial.emissiveIntensity = 0;
                 let stitchGeometryCollection = stitch.map((mesh) => {
                     mesh.updateMatrix();
                     return mesh.geometry;

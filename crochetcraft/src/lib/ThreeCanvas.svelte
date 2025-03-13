@@ -11,7 +11,7 @@
     let canvas: HTMLCanvasElement;
     let ctrlKeyCheck: Boolean = false;
 
-    const DEFAULT_EMISSIVE_INTENSITY = 1.0;
+    const DEFAULT_EMISSIVE_INTENSITY = 0;
     const HOVER_EMISSIVE_INTENSITY = 10;
 
     interface Props {
