@@ -1,5 +1,6 @@
 import { Quaternion, Vector3 } from 'three';
 import { LinkedStitch, Pattern, PlacedStitch } from '../../types';
+import { setOrientations } from './orientationSetter';
 
 export function gdPlace(
     pattern: Pattern<LinkedStitch>,
@@ -100,7 +101,7 @@ export function gdPlace(
         descend(0.01, 0.12);
     }
 
-    return {
+    const result = {
         foundation: pattern.foundation,
         stitches: pattern.stitches.map((stitch, i) => ({
             colour: stitch.colour,
@@ -110,6 +111,7 @@ export function gdPlace(
             links: {}, // TODO
         })),
     };
+    return setOrientations(result);
 
     function descend(minChange: number, alpha: number) {
         if (iterations > maxIterations) return;
@@ -205,5 +207,5 @@ interface PlacementOffset {
 
 const DEFAULT_OFFSET: PlacementOffset = {
     rise: 0,
-    rotation: new Quaternion(0, 0.0175, 0, 0.99985), // pi/180 radians
+    rotation: new Quaternion(0, 0.00175, 0, 0.9999985), // 0.1 * pi/180 radians
 };
