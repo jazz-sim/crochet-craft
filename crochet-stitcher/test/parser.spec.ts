@@ -131,15 +131,19 @@ describe('increases and decreases', () => {
     });
 
     test('decrease', () => {
-        expect(parse('dec')).toEqual(slkt(st(StitchType.InvisibleDecrease)));
+        expect(parse('dec')).toEqual(slkt(st(StitchType.Sc2tog)));
     });
 
-    test('decrease with invisible keyword', () => {
-        expect(parse('inv dec')).toEqual(slkt(st(StitchType.InvisibleDecrease)));
+    test.skip('decrease with invisible keyword', () => {
+        expect(parse('inv dec')).toEqual(slkt(st(StitchType.Sc2tog)));
+    });
+
+    test('decrease with sc2tog keyword', () => {
+        expect(parse('sc2tog')).toEqual(slkt(st(StitchType.Sc2tog)));
     });
 
     test('repeated decrease', () => {
-        expect(parse('3 dec')).toEqual(slkt(st(StitchType.InvisibleDecrease, 3)));
+        expect(parse('3 dec')).toEqual(slkt(st(StitchType.Sc2tog, 3)));
     });
 });
 

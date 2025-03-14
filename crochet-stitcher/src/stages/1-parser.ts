@@ -268,7 +268,7 @@ export function parse(input: string): Pattern<ParsedInstruction> {
                 ];
             } else if (tokens[i]?.value === Keyword.Decrease) {
                 location = tokens[i].location;
-                stitchType = StitchType.InvisibleDecrease;
+                stitchType = StitchType.Sc2tog;
                 i += 1;
             }
             // Stitch?

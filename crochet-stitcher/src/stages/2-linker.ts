@@ -56,40 +56,43 @@ export function link(input: Pattern<ParsedInstruction>): Pattern<LinkedStitch> {
             const stitch = instruction;
 
             if (stitch.type !== StitchType.Chain && !isInMagicRing) {
-                // This stitch needs a parent
+                // This stitch needs parent(s)
                 previousIndex += stitch.parentOffset;
-                if (previousIndex >= previousRow.length) {
-                    // Overran the end of the previous row, so restart in the current row.
-                    previousIndex -= previousRow.length;
-                    previousRow = currentRow;
-                    rows.push(currentRowLS);
-                    endings.push(RowEnding.LoopAround);
-                    currentRowLS = [];
-                    currentRow = [];
-                    if (!previousRow.length) {
-                        // Nothing in the previous row?!
-                        throw new Error(`No stitch to link to, for stitch ${outputIndex + 1}`);
-                    }
-                } else if (previousIndex < 0) {
-                    throw new Error(`No previous stitch to link to, for stitch ${outputIndex + 1}`);
-                }
+                output[outputIndex].parents ??= [];
 
-                if (previousRow[previousIndex] === outputIndex - 1) {
-                    // Cannot link a stitch to its previous one. Skip this parent.
-                    previousIndex += 1;
+                const numParents = stitch.type === StitchType.Sc2tog ? 2 : 1;
+                for (let whichParent = 0; whichParent < numParents; ++whichParent) {
                     if (previousIndex >= previousRow.length) {
+                        // Overran the end of the previous row, so restart in the current row.
+                        previousIndex -= previousRow.length;
+                        previousRow = currentRow;
+                        rows.push(currentRowLS);
+                        endings.push(RowEnding.LoopAround);
+                        currentRowLS = [];
+                        currentRow = [];
+                        if (!previousRow.length) {
+                            // Nothing in the previous row?!
+                            throw new Error(`No stitch to link to, for stitch ${outputIndex + 1}`);
+                        }
+                    } else if (previousIndex < 0) {
                         throw new Error(
-                            `Cannot link a stitch to its previous, for stitch ${outputIndex + 1}`,
+                            `No previous stitch to link to, for stitch ${outputIndex + 1}`,
                         );
                     }
+
+                    if (previousRow[previousIndex] === outputIndex - 1) {
+                        // Cannot link a stitch to its previous one. Skip this parent.
+                        previousIndex += 1;
+                        if (previousIndex >= previousRow.length) {
+                            throw new Error(
+                                `Cannot link a stitch to its previous, for stitch ${outputIndex + 1}`,
+                            );
+                        }
+                    }
+                    output[outputIndex].parents!.push(previousRow[previousIndex]);
+                    output[previousRow[previousIndex]].children.push(outputIndex);
+                    previousIndex += 1;
                 }
-                if (output[outputIndex].parents == null) {
-                    output[outputIndex].parents = [previousRow[previousIndex]];
-                } else {
-                    output[outputIndex].parents?.push(previousRow[previousIndex]);
-                }
-                output[previousRow[previousIndex]].children.push(outputIndex);
-                previousIndex += 1;
             }
             currentRowLS.push(output[outputIndex]);
             currentRow.push(outputIndex);
