@@ -1,3 +1,4 @@
+import { DEFAULT_COLOUR } from '../constants.js';
 import {
     Foundation,
     Location,
@@ -14,7 +15,7 @@ export function parse(input: string): Pattern<ParsedInstruction> {
         stitches: [],
     };
 
-    let currentColour = '#cf80fb';
+    let currentColour = DEFAULT_COLOUR;
 
     const lines = input.split(/\r?\n/);
     let nextRowNumber = 1; // The next row number if it's not specified

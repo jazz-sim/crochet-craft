@@ -6,6 +6,8 @@ export enum Foundation {
 }
 
 export enum StitchType {
+    SlipKnot = 'SlipKnot',
+    MagicRing = 'MagicRing',
     Chain = 'Chain',
     Slip = 'Slip',
     Single = 'Single',
