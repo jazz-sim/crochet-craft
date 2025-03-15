@@ -5,6 +5,7 @@ import magicCircle from './models/magic-circle.json';
 import halfDoubleCrochet from './models/half-double-crochet.json';
 import trebleCrochet from './models/treble-crochet.json';
 import doubleCrochet from './models/double-crochet.json';
+import sc2tog from './models/sc2tog.json';
 
 interface StitchModel {
     curveType: 'bezier';
@@ -19,6 +20,7 @@ const StitchModel = {
     HALF_DOUBLE_CROCHET: halfDoubleCrochet as StitchModel,
     TREBLE_CROCHET: trebleCrochet as StitchModel,
     DOUBLE_CROCHET: doubleCrochet as StitchModel,
+    SC2TOG: sc2tog as StitchModel,
 };
 
 export default StitchModel;
