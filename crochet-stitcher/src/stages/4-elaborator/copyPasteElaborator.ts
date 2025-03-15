@@ -5,12 +5,13 @@
  *
  * No additional work is done to make the resulting stitches look "nice".
  */
-import { Vector3 } from 'three';
+import { Quaternion, Vector3 } from 'three';
 
 import StitchModel from '../../models';
-import { Pattern, PlacedStitch, StitchType } from '../../types';
+import { Foundation, Pattern, PlacedStitch, StitchType } from '../../types';
 import { PatternIR, StitchIR } from './ir';
 import { arrayToVector3List } from './vectorHelper';
+import { DEFAULT_COLOUR } from '../../constants';
 
 /**
  * Replaces placed stitches with a set of geometries corresponding to
@@ -22,22 +23,43 @@ import { arrayToVector3List } from './vectorHelper';
  * @returns
  */
 export function copyPasteStitches(placedStitches: Pattern<PlacedStitch>): PatternIR {
+    const placedFoundationStitch = {
+        type: foundationToStitch(placedStitches.foundation),
+        colour: placedStitches.stitches.length ? placedStitches.stitches[0].colour : DEFAULT_COLOUR,
+        position: placedStitches.stitches.length
+            ? placedStitches.stitches[0].position.clone().sub(new Vector3(0, 1, 0))
+            : new Vector3(0, 0, 0),
+        orientation: new Quaternion(),
+        links: {},
+    };
+    const foundationModel = substituteStitch(placedFoundationStitch);
+    const foundationStitch: StitchIR = {
+        ...placedFoundationStitch,
+        model: {
+            curveType: foundationModel.curveType,
+            points: arrayToVector3List(foundationModel.points),
+        },
+    };
+
     return {
         foundation: placedStitches.foundation,
-        stitches: placedStitches.stitches
-            // "Copy-paste" step; for each placed stitch,
-            // add the points from the base model corresponding to its type
-            .map((stitch) => {
-                const model = substituteStitch(stitch);
-                return {
-                    ...stitch,
-                    model: {
-                        curveType: model.curveType,
-                        points: arrayToVector3List(model.points),
-                    },
-                };
-            })
-            .map(rotatePoints),
+        stitches: [
+            foundationStitch,
+            ...placedStitches.stitches
+                // "Copy-paste" step; for each placed stitch,
+                // add the points from the base model corresponding to its type
+                .map((stitch) => {
+                    const model = substituteStitch(stitch);
+                    return {
+                        ...stitch,
+                        model: {
+                            curveType: model.curveType,
+                            points: arrayToVector3List(model.points),
+                        },
+                    };
+                })
+                .map(rotatePoints),
+        ],
     };
 }
 
@@ -53,6 +75,10 @@ function substituteStitch(stitch: PlacedStitch): StitchModel {
             return StitchModel.CHAIN;
         case StitchType.Single:
             return StitchModel.SINGLE_CROCHET;
+        case StitchType.SlipKnot:
+            return StitchModel.SLIP_KNOT;
+        case StitchType.MagicRing:
+            return StitchModel.MAGIC_CIRCLE;
         default:
             throw 'Unsupported stitch!';
     }
@@ -87,4 +113,13 @@ function rotatePoints(stitch: StitchIR): StitchIR {
               }
             : undefined,
     };
+}
+
+function foundationToStitch(foundation: Foundation) {
+    switch (foundation) {
+        case Foundation.SlipKnot:
+            return StitchType.SlipKnot;
+        case Foundation.MagicRing:
+            return StitchType.MagicRing;
+    }
 }
