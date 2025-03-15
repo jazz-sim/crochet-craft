@@ -39,7 +39,9 @@ export type Token = TokenData & { location: Location };
 export function lex(input: string, line = 0): Token[] {
     const tokens: Token[] = [];
 
-    const regex = /[A-Za-z_]+|\d+|#[0-9a-fA-F]{6}|\S/g;
+    // sc2tog would normally be parsed as 3 tokens (sc, 2, tog), but we add a
+    // special case in for this
+    const regex = /sc2tog\b|[a-z_]+|\d+|#[0-9a-f]{6}|\S/gi;
     while (true) {
         const match = regex.exec(input);
         if (!match) break;
@@ -74,8 +76,8 @@ const KEYWORD_NAMES: Record<Keyword, string[]> = {
     [Keyword.HalfDouble]: ['hdc'],
     [Keyword.Treble]: ['treble', 'triple', 'tr', 'tc'],
     [Keyword.Increase]: ['increase', 'inc'],
-    [Keyword.Invisible]: ['invisible', 'inv'],
-    [Keyword.Decrease]: ['decrease', 'dec'],
+    [Keyword.Invisible]: [],
+    [Keyword.Decrease]: ['decrease', 'dec', 'sc2tog'],
     [Keyword.Turn]: ['turn'],
     [Keyword.Into]: ['into', 'in'],
     [Keyword.Next]: ['next'],
