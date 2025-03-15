@@ -11,6 +11,9 @@
     let canvas: HTMLCanvasElement;
     let ctrlKeyCheck: Boolean = false;
 
+    const DEFAULT_EMISSIVE_INTENSITY = 0;
+    const HOVER_EMISSIVE_INTENSITY = 10;
+
     interface Props {
         /**
          * The function that initializes the scene. This is called once on component
@@ -48,11 +51,11 @@
         let hoverObj = State.hoverMesh;
         if (hoverObj) {
             let hoverMaterial = hoverObj.material as Three.MeshLambertMaterial;
-            hoverMaterial.emissiveIntensity = 10;
+            hoverMaterial.emissiveIntensity = HOVER_EMISSIVE_INTENSITY;
         }
         for (let i = 0; i < selectedObjs.length; i++) {
             let meshMaterial = selectedObjs[i].material as Three.MeshLambertMaterial;
-            meshMaterial.emissiveIntensity = 10;
+            meshMaterial.emissiveIntensity = HOVER_EMISSIVE_INTENSITY;
         }
     });
 
@@ -154,7 +157,7 @@
                                     (x) => x == currentIntersectedObject,
                                 );
                                 if (index !== -1) {
-                                    currentMaterial.emissiveIntensity = 0;
+                                    currentMaterial.emissiveIntensity = DEFAULT_EMISSIVE_INTENSITY;
                                     State.selectedMeshes.splice(index, 1);
                                 } else {
                                     // Will change to 10 in effect hook
@@ -165,7 +168,7 @@
                             for (let i = 0; i < State.selectedMeshes.length; i++) {
                                 let currentMaterial = State.selectedMeshes[i]
                                     .material as Three.MeshLambertMaterial;
-                                currentMaterial.emissiveIntensity = 0;
+                                currentMaterial.emissiveIntensity = DEFAULT_EMISSIVE_INTENSITY;
                             }
                             State.selectedMeshes.length = 0;
                             if (
@@ -183,7 +186,7 @@
                         if (index == -1 && State.hoverMesh?.isMesh) {
                             let currentMaterial = State.hoverMesh
                                 .material as Three.MeshLambertMaterial;
-                            currentMaterial.emissiveIntensity = 0;
+                            currentMaterial.emissiveIntensity = DEFAULT_EMISSIVE_INTENSITY;
                         }
                         State.hoverMesh = null;
                         if (currentIntersectedObject) {

@@ -7,20 +7,22 @@ import {
     TubeGeometry,
     MeshLambertMaterial,
     Vector3,
+    DoubleSide,
+    Color,
 } from 'three';
 import { makeMultiBezier } from './bezier';
 import { PatternIR, StitchIR } from './ir';
 
 export function generateGeometry(
     pattern: PatternIR,
-): Mesh<BufferGeometry<NormalBufferAttributes>, Material | Material[], Object3DEventMap>[] {
+): Mesh<BufferGeometry<NormalBufferAttributes>, Material | Material[], Object3DEventMap>[][] {
     return (
         pattern.stitches
             // Move points to absolute position instead of relative to center position
             .map(movePointsToPlacement)
             // Generate geometries
             // (This could be moved to crochetcraft)
-            .flatMap(curveToGeometries)
+            .map(curveToGeometries)
     );
 }
 
@@ -68,6 +70,10 @@ function curveToGeometries(
             return curveParts.map((curve) => {
                 const geometry = new TubeGeometry(curve, 50, 0.1, 10);
                 const material = new MeshLambertMaterial();
+                material.side = DoubleSide;
+                material.color = new Color(stitch.colour);
+                material.emissive = material.color;
+                material.emissiveIntensity = 0;
                 const mesh = new Mesh(geometry, material);
                 return mesh;
             });

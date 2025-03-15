@@ -14,7 +14,7 @@ export function parse(input: string): Pattern<ParsedInstruction> {
         stitches: [],
     };
 
-    let currentColour = 'white';
+    let currentColour = '#cf80fb';
 
     const lines = input.split(/\r?\n/);
     let nextRowNumber = 1; // The next row number if it's not specified

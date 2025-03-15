@@ -1,12 +1,12 @@
 <script lang="ts">
     import State from '$lib/state.svelte';
-    import { Mesh, AxesHelper } from 'three';
+    import { Mesh } from 'three';
 
     let axesToggleTitle = 'Toggle axes helper (turn off)';
-    let axesToggleIcon = 'fi fi-br-cube';
+    let axesToggleClass = 'variant-soft-primary';
 
     let algoToggleTitle = 'Toggle placer algorithm (change to GD - gradient descent)';
-    let algoToggleText = 'IF';
+    let algoToggleClass = 'variant-soft-primary';
 
     function selectAllStitches() {
         // Remove mesh from the hover state:
@@ -32,13 +32,21 @@
             axesToggleTitle = 'Toggle axes helper '.concat(
                 State.axesHelper.visible ? '(turn off)' : '(turn on)',
             );
-            axesToggleIcon = State.axesHelper.visible
-                ? 'fi fi-br-cube'
-                : 'fi fi-br-model-cube-arrows';
+            axesToggleClass = State.axesHelper.visible
+                ? 'variant-soft-primary'
+                : 'variant-filled-surface';
         }
     }
 
-    // function togglePlacerAlgorithm() {}
+    function togglePlacerAlgorithm() {
+        State.placerAlgo = !State.placerAlgo;
+        algoToggleTitle = 'Toggle placer algorithm '.concat(
+            State.placerAlgo
+                ? '(change to GD - gradient descent)'
+                : '(change to IF - iterative forces)',
+        );
+        algoToggleClass = State.placerAlgo ? 'variant-soft-primary' : 'variant-filled-surface';
+    }
 </script>
 
 <div class="absolute bottom-2 right-2 z-10 flex flex-row gap-4 rounded-lg">
@@ -59,19 +67,19 @@
         <i class="fi fi-br-expand"></i>
     </button>
     <button
-        class="variant-filled-surface btn btn-xl rounded-lg p-2"
+        class={'btn btn-xl rounded-lg p-2 '.concat(axesToggleClass)}
         aria-label="Toggle axes helper"
         title={axesToggleTitle}
         onclick={toggleAxesHelperVisibility}
     >
-        <i class={axesToggleIcon}></i>
+        <i class="fi fi-br-model-cube-arrows"></i>
     </button>
-    <!-- <button
-        class="variant-filled-surface btn btn-xl rounded-lg p-2"
+    <button
+        class={'btn btn-xl rounded-lg p-2 '.concat(algoToggleClass)}
         aria-label="Toggle placer algorithm"
         title={algoToggleTitle}
         onclick={togglePlacerAlgorithm}
     >
-        <b class="pl-1 pr-1 text-base">{algoToggleText}</b>
-    </button> -->
+        <b class="pl-1 pr-1 text-base">IF</b>
+    </button>
 </div>

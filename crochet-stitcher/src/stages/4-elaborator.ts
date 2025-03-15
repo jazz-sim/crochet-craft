@@ -9,7 +9,7 @@ const pipelineSteps: ((pre: PatternIR) => PatternIR)[] = [smoothConnections];
 
 export function elaborate(
     input: Pattern<PlacedStitch>,
-): Mesh<BufferGeometry<NormalBufferAttributes>, Material | Material[], Object3DEventMap>[] {
+): Mesh<BufferGeometry<NormalBufferAttributes>, Material | Material[], Object3DEventMap>[][] {
     // Inital Step: Convert placed patterns into Elaborator IR
     let intermediateRepresentation = copyPasteStitches(input);
 
