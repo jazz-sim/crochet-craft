@@ -11,7 +11,7 @@ export enum StitchType {
     Single = 'Single',
     Double = 'Double',
     Treble = 'Treble',
-    InvisibleDecrease = 'InvisibleDecrease',
+    Sc2tog = 'Sc2tog',
 }
 
 /**

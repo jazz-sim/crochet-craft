@@ -158,7 +158,7 @@ describe('edge cases', () => {
     });
 });
 
-describe('increases', () => {
+describe('increases and decreases', () => {
     test('two increases', () => {
         expect(
             link(
@@ -181,6 +181,32 @@ describe('increases', () => {
                 lst(StitchType.Single, [2]),
                 lst(StitchType.Single, [1]),
                 lst(StitchType.Single, [1]),
+            ),
+        );
+    });
+
+    test('two decreases', () => {
+        expect(
+            link(
+                slkt(
+                    st(StitchType.Chain, 6),
+                    'turn',
+                    st(StitchType.Sc2tog),
+                    st(StitchType.Sc2tog),
+                    st(StitchType.Single),
+                ),
+            ),
+        ).toEqual(
+            linkedSlkt(
+                lst(StitchType.Chain, null, [8]),
+                lst(StitchType.Chain, null, [7]),
+                lst(StitchType.Chain, null, [7]),
+                lst(StitchType.Chain, null, [6]),
+                lst(StitchType.Chain, null, [6]),
+                lst(StitchType.Chain),
+                lst(StitchType.Sc2tog, [4, 3]),
+                lst(StitchType.Sc2tog, [2, 1]),
+                lst(StitchType.Single, [0]),
             ),
         );
     });
