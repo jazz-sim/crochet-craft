@@ -10,20 +10,9 @@ const IDENTITY = new Quaternion();
  * This will mutate the input pattern.
  */
 export function setOrientations(pattern: Pattern<PlacedStitch>): Pattern<PlacedStitch> {
-    const numStitches = pattern.stitches.length;
-
-    for (let i = 0; i < numStitches - 1; ++i) {
+    for (let i = 0; i < pattern.stitches.length; ++i) {
         pattern.stitches[i].orientation = computeOrientation(pattern, i);
-        // rotationToDirection(
-        //     X_AXIS,
-        //     pattern.stitches[i + 1].position.clone().sub(pattern.stitches[i].position),
-        // );
     }
-    if (numStitches > 1) {
-        pattern.stitches[numStitches - 1].orientation =
-            pattern.stitches[numStitches - 2].orientation;
-    }
-
     return pattern;
 }
 
