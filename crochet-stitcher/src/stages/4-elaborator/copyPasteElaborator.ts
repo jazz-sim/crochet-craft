@@ -23,12 +23,14 @@ import { DEFAULT_COLOUR } from '../../constants';
  * @returns
  */
 export function copyPasteStitches(placedStitches: Pattern<PlacedStitch>): PatternIR {
+    const { foundation, stitches } = placedStitches;
     const placedFoundationStitch = {
-        type: foundationToStitch(placedStitches.foundation),
-        colour: placedStitches.stitches.length ? placedStitches.stitches[0].colour : DEFAULT_COLOUR,
-        position: placedStitches.stitches.length
-            ? placedStitches.stitches[0].position.clone().sub(new Vector3(0, 1, 0))
-            : new Vector3(0, 0, 0),
+        type: foundationToStitch(foundation),
+        colour: stitches.length ? stitches[0].colour : DEFAULT_COLOUR,
+        position: foundationOffset(
+            foundation,
+            stitches.length ? stitches[0].position : new Vector3(0, 0, 0),
+        ),
         orientation: new Quaternion(),
         links: {},
     };
@@ -42,10 +44,10 @@ export function copyPasteStitches(placedStitches: Pattern<PlacedStitch>): Patter
     };
 
     return {
-        foundation: placedStitches.foundation,
+        foundation,
         stitches: [
             foundationStitch,
-            ...placedStitches.stitches
+            ...stitches
                 // "Copy-paste" step; for each placed stitch,
                 // add the points from the base model corresponding to its type
                 .map((stitch) => {
@@ -115,11 +117,20 @@ function rotatePoints(stitch: StitchIR): StitchIR {
     };
 }
 
-function foundationToStitch(foundation: Foundation) {
+function foundationToStitch(foundation: Foundation): StitchType {
     switch (foundation) {
         case Foundation.SlipKnot:
             return StitchType.SlipKnot;
         case Foundation.MagicRing:
             return StitchType.MagicRing;
+    }
+}
+
+function foundationOffset(foundation: Foundation, firstStitchPos: Vector3): Vector3 {
+    switch (foundation) {
+        case Foundation.SlipKnot:
+            return firstStitchPos.clone().add(new Vector3(0, -1, 0));
+        case Foundation.MagicRing:
+            return new Vector3(0, -0.3, 0);
     }
 }
