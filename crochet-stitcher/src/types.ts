@@ -90,6 +90,8 @@ export interface PlacedStitch {
     type: StitchType;
     position: Vector3;
     orientation: Quaternion;
+    parents: number[] | null;
+    children: number[];
     links: {
         prev?: PlacedStitch;
         next?: PlacedStitch;

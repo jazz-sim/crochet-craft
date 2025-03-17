@@ -108,7 +108,9 @@ export function gdPlace(
             type: stitch.type,
             position: positions[i],
             orientation: orientations[i],
-            links: {}, // TODO
+            parents: stitch.parents,
+            children: stitch.children,
+            links: {},
         })),
     };
     return setOrientations(result);
