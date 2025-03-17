@@ -129,7 +129,7 @@ function foundationToStitch(foundation: Foundation): StitchType {
 function foundationOffset(foundation: Foundation, firstStitchPos: Vector3): Vector3 {
     switch (foundation) {
         case Foundation.SlipKnot:
-            return firstStitchPos.clone().add(new Vector3(0, -1, 0));
+            return firstStitchPos.clone().add(new Vector3(-0.3, -0.2, 0));
         case Foundation.MagicRing:
             return new Vector3(0, -0.3, 0);
     }
