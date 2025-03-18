@@ -41,6 +41,7 @@
         '5x10 cylinder': 'ch 10, sc 40',
         '10x20 cylinder': 'ch 20, sc 180',
         '30 ring': 'ch 30, sc 1',
+        'decrease test': 'ch 11, turn, sc 10, ch 1, turn, sc 1, sc2tog, sc 6',
         bowl: `\
 1. MR, sc 6
 2. inc 6
