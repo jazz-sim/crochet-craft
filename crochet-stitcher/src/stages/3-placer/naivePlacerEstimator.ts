@@ -31,10 +31,10 @@ function convertPatternToLines(pattern: Pattern<LinkedStitch>): LinkedStitch[][]
         // we assume that stitch is in a new row.
         if (!(stitches[i].parents == null || (stitches[i].parents || []).length == 0)) {
             let foundParent = false;
-            for (let p of (stitches[i].parents || [])) {
+            for (let p of stitches[i].parents || []) {
                 if (referenceSet.has(p)) {
                     foundParent = true;
-                    break;   
+                    break;
                 }
             }
             if (foundParent) {
@@ -57,10 +57,7 @@ const INVERSE_X_DIRECTION = new Quaternion().setFromAxisAngle(new Vector3(0, 0, 
 const IDENITY_QUATERNION = new Quaternion().identity();
 
 export function naivePlacer(pattern: Pattern<LinkedStitch>) {
-    const out: (PlacedStitch & {
-        parents: number[] | null;
-        colour: string;
-    })[] = [];
+    const out: PlacedStitch[] = [];
     const lines = pattern.rows !== undefined ? pattern.rows : convertPatternToLines(pattern);
     console.log(lines);
     const endings = pattern.endings;
@@ -90,11 +87,11 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
             case RowEnding.Last:
             case RowEnding.Turn: {
                 line.forEach((stitch) => {
-                    let stitchLinks : {
-                        parents?: PlacedStitch[],
-                        children?: PlacedStitch[]
-                    }= {};
-                    let placedStitch = {
+                    let stitchLinks: {
+                        parents?: PlacedStitch[];
+                        children?: PlacedStitch[];
+                    } = {};
+                    let placedStitch: PlacedStitch = {
                         ...stitch,
                         links: {},
                         position: placementPoint.clone(),
@@ -107,8 +104,7 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                         for (let p of stitchLinks.parents) {
                             if (p.links.children) {
                                 p.links.children.push(placedStitch);
-                            }
-                            else {
+                            } else {
                                 p.links.children = [placedStitch];
                             }
                         }
@@ -129,40 +125,42 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
             case RowEnding.LoopAround: {
                 // Estimate the size of a ring
                 const stitchSize = 0.5;
-                const ringRadius = (index === lines.length - 1 && lines.length > 1) ? ((lines[lines.length - 2].length * stitchSize) / Math.PI) : 
-                    ((line.length * stitchSize) / Math.PI) ;
+                const ringRadius =
+                    index === lines.length - 1 && lines.length > 1
+                        ? (lines[lines.length - 2].length * stitchSize) / Math.PI
+                        : (line.length * stitchSize) / Math.PI;
                 let radDiff = Math.abs(ringRadius - prevRadius);
                 if (prevRadius > 0) {
                     if (radDiff > 1) {
-                        placementPoint.y -= 1
-                    }
-                    else if (radDiff > 0.001) {
-                        placementPoint.y -= Math.sqrt(1 - radDiff * radDiff / 4);
+                        placementPoint.y -= 1;
+                    } else if (radDiff > 0.001) {
+                        placementPoint.y -= Math.sqrt(1 - (radDiff * radDiff) / 4);
                     }
                 }
-                
+
                 // Move the ring center "away" from the camera, so the starting stitch lies right above
                 // the first stitch of the last row/ring
-                const ringCenter = placementPoint.clone()//.add(new Vector3(0, 0, ringRadius));
+                const ringCenter = placementPoint.clone(); //.add(new Vector3(0, 0, ringRadius));
                 line.forEach((stitch, j) => {
-                    let stitchLinks : {
-                        parents?: PlacedStitch[],
-                        children?: PlacedStitch[]
-                    }= {};
+                    let stitchLinks: {
+                        parents?: PlacedStitch[];
+                        children?: PlacedStitch[];
+                    } = {};
                     // Place stitch along a ring
-                    let effectiveLL = (index === lines.length - 1 && lines.length > 1) ? lines[lines.length - 2].length : line.length;
+                    let effectiveLL =
+                        index === lines.length - 1 && lines.length > 1
+                            ? lines[lines.length - 2].length
+                            : line.length;
                     let placedStitch = {
                         ...stitch,
                         links: {},
-                        position: ringCenter
-                            .clone()
-                            .add(
-                                new Vector3(
-                                    Math.sin((2 * Math.PI * j) / effectiveLL),//line.length),
-                                    0,
-                                    -Math.cos((2 * Math.PI * j) / effectiveLL),//line.length),
-                                ).multiplyScalar(ringRadius),
-                            ),
+                        position: ringCenter.clone().add(
+                            new Vector3(
+                                Math.sin((2 * Math.PI * j) / effectiveLL), //line.length),
+                                0,
+                                -Math.cos((2 * Math.PI * j) / effectiveLL), //line.length),
+                            ).multiplyScalar(ringRadius),
+                        ),
                         // Trust that this is either +x or -x
                         // (This will be overwritten anyways :/)
                         orientation: direction == 1 ? IDENITY_QUATERNION : INVERSE_X_DIRECTION,
@@ -173,8 +171,7 @@ export function naivePlacer(pattern: Pattern<LinkedStitch>) {
                         for (let p of stitchLinks.parents) {
                             if (p.links.children) {
                                 p.links.children.push(placedStitch);
-                            }
-                            else {
+                            } else {
                                 p.links.children = [placedStitch];
                             }
                         }

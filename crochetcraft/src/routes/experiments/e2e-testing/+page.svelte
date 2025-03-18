@@ -20,44 +20,6 @@
     import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
     import Panel from '$components/option-panel/Panel.svelte';
 
-    // Example hard-coded chain stitch:
-    const ChainStitchExampleParts = makeMultiBezier([
-        new Vector3(0.0, 0.0, 0.0),
-        new Vector3(0.03989, -0.1529, 0.4265),
-        new Vector3(-0.1251, 0.1748, 0.4262),
-        new Vector3(-0.286, 0.4362, -0.05045),
-        new Vector3(-0.4751, 0.7433, -0.6106),
-        new Vector3(-0.8814, 1.054, 0.3796),
-        new Vector3(-0.1089, 1.246, 0.1362),
-        new Vector3(0.6817, 1.442, -0.1128),
-        new Vector3(-0.4605, 0.585, -0.5125),
-        new Vector3(-0.01001, 0.4943, -0.007016),
-    ]);
-
-    function makeChainStitchExample(scene: Scene, pos: Vector3 = new Vector3(0, 0, 0)) {
-        ChainStitchExampleParts.map((curve) => {
-            const geometry = new TubeGeometry(curve, 50, 0.1, 10);
-            // NOTE: May need to close TubeGeometries so that the stitch looks better...
-            const material = new MeshLambertMaterial();
-            material.side = DoubleSide; // NOTE: The side value of the material has to be double-sided for effective intersection checking.
-            material.color = new Color().setHex(Math.random() * 0xffffff);
-            material.emissive = material.color;
-            material.emissiveIntensity = 0;
-            const mesh = new Mesh(geometry, material);
-            mesh.translateX(pos.x);
-            mesh.translateY(pos.y);
-            mesh.translateZ(pos.z);
-            scene.add(mesh);
-        });
-    }
-    // Actual processing for E2E happens in the Editor.svelte file
-    // Hardcode test:
-    /*  
-        for (let i = 0; i < 10; ++i) {
-            makeChainStitchExample(scene, new THREE.Vector3(0, 0.5 * i, 0));
-        }
-    */
-
     // Scene objects
     let scene: Scene;
     let mainGroup: Group = new Group();
@@ -150,9 +112,20 @@
                             stitch.position.clone(),
                             stitch.position
                                 .clone()
+                                .add(new Vector3(0, 1, 0).applyQuaternion(stitch.orientation)),
+                        ]),
+                        new LineBasicMaterial({ color: 0x00ff00 }),
+                    ),
+                );
+                mainGroup.add(
+                    new Line(
+                        new BufferGeometry().setFromPoints([
+                            stitch.position.clone(),
+                            stitch.position
+                                .clone()
                                 .add(new Vector3(1, 0, 0).applyQuaternion(stitch.orientation)),
                         ]),
-                        new LineBasicMaterial({ color: 0xffffff }),
+                        new LineBasicMaterial({ color: 0xff0000 }),
                     ),
                 );
             });
