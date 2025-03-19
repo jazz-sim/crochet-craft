@@ -32,6 +32,8 @@ export function copyPasteStitches(placedStitches: Pattern<PlacedStitch>): Patter
             stitches.length ? stitches[0].position : new Vector3(0, 0, 0),
         ),
         orientation: new Quaternion(),
+        parents: null,
+        children: [],
         links: {},
     };
     const foundationModel = substituteStitch(placedFoundationStitch);
