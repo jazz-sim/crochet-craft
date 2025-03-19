@@ -1,28 +1,72 @@
-import { Quaternion, Vector3 } from 'three';
+import { Matrix4, Quaternion, Vector3 } from 'three';
 import { Pattern, PlacedStitch } from '../../types';
 
 const X_AXIS = new Vector3(1, 0, 0);
 const NEG_X_AXIS = new Vector3(-1, 0, 0);
+const IDENTITY = new Quaternion();
 
 /**
  * Sets orientation of stitches based on the position of the following stitch.
  * This will mutate the input pattern.
  */
 export function setOrientations(pattern: Pattern<PlacedStitch>): Pattern<PlacedStitch> {
-    const numStitches = pattern.stitches.length;
-
-    for (let i = 0; i < numStitches - 1; ++i) {
-        pattern.stitches[i].orientation = rotationToDirection(
-            X_AXIS,
-            pattern.stitches[i + 1].position.clone().sub(pattern.stitches[i].position),
-        );
+    for (let i = 0; i < pattern.stitches.length; ++i) {
+        pattern.stitches[i].orientation = computeOrientation(pattern, i);
     }
-    if (numStitches > 1) {
-        pattern.stitches[numStitches - 1].orientation =
-            pattern.stitches[numStitches - 2].orientation;
-    }
-
     return pattern;
+}
+
+function computeOrientation(pattern: Pattern<PlacedStitch>, i: number): Quaternion {
+    const stitch = pattern.stitches[i];
+    const previous = pattern.stitches[i - 1];
+    const next = pattern.stitches[i + 1];
+
+    // Compute stitch's local X axis
+    let localX: Vector3;
+    if (previous && next) {
+        localX = next.position.clone().sub(previous.position);
+    } else if (previous) {
+        localX = stitch.position.clone().sub(previous.position);
+    } else if (next) {
+        localX = next.position.clone().sub(stitch.position);
+    } else {
+        return IDENTITY; // only 1 stitch in the whole pattern :flushed: forget about it
+    }
+    localX.normalize();
+
+    // Compute stitch's local Y axis
+    const localY = new Vector3();
+    if (stitch.parents) {
+        for (const parent of stitch.parents) {
+            localY.sub(pattern.stitches[parent].position);
+        }
+    }
+    for (const child of stitch.children) {
+        localY.add(pattern.stitches[child].position);
+    }
+    const numParents = stitch.parents?.length ?? 0;
+    const numChildren = stitch.children.length;
+    if (!numParents && !numChildren) {
+        localY.y = 1; // default value if no parents or children
+    } else {
+        localY.add(stitch.position.clone().multiplyScalar(numParents - numChildren));
+    }
+
+    // Compute stitch's local Z axis
+    const localZ = localX.clone().cross(localY).normalize();
+
+    // Ensure localY is perpendicular
+    localY.crossVectors(localZ, localX);
+
+    return new Quaternion().setFromRotationMatrix(
+        // prettier-ignore
+        new Matrix4(
+            localX.x, localY.x, localZ.x, 0,
+            localX.y, localY.y, localZ.y, 0,
+            localX.z, localY.z, localZ.z, 0,
+            0, 0, 0, 0,
+        ),
+    );
 }
 
 /**

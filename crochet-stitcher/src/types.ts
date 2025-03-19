@@ -6,6 +6,8 @@ export enum Foundation {
 }
 
 export enum StitchType {
+    SlipKnot = 'SlipKnot',
+    MagicRing = 'MagicRing',
     Chain = 'Chain',
     Slip = 'Slip',
     Single = 'Single',
@@ -90,6 +92,8 @@ export interface PlacedStitch {
     type: StitchType;
     position: Vector3;
     orientation: Quaternion;
+    parents: number[] | null;
+    children: number[];
     links: {
         prev?: PlacedStitch;
         next?: PlacedStitch;
