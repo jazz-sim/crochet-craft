@@ -83,6 +83,7 @@
         if (doElaboration) {
             const elaboratedMeshes = elaborate(placer(link(parse(currentSample))));
             // Before adding the meshes to the scene, merge each curve to comprise a stitch:
+            /*
             const mergedMeshes = elaboratedMeshes.map((stitch) => {
                 let stitchMeshMaterial = stitch[0].material as MeshLambertMaterial;
                 let stitchGeometryCollection = stitch.map((mesh) => {
@@ -93,6 +94,8 @@
                 return new Mesh(singleGeometry, stitchMeshMaterial);
             });
             mergedMeshes.forEach((mesh) => mainGroup.add(mesh));
+            */
+            elaboratedMeshes.forEach((a) => a.forEach((mesh) => mainGroup.add(mesh)));
         } else {
             const placedPoints = placer(link(parse(currentSample)));
 

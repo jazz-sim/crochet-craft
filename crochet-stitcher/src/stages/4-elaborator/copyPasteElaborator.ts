@@ -33,6 +33,8 @@ export function copyPasteStitches(placedStitches: Pattern<PlacedStitch>): Patter
         ),
         orientation: new Quaternion(),
         links: {},
+        parents: [],
+        children: [],
     };
     const foundationModel = substituteStitch(placedFoundationStitch);
     const foundationStitch: StitchIR = {
