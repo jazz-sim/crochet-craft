@@ -28,7 +28,13 @@ function computeOrientation(pattern: Pattern<PlacedStitch>, i: number): Quaterni
     // Compute stitch's local X axis
     let localX: Vector3;
     if (previous && next) {
-        localX = next.position.clone().sub(previous.position);
+        // (next - cur) * 9 + (cur - prev)
+        localX = next.position
+            .clone()
+            .sub(stitch.position)
+            .multiplyScalar(9)
+            .add(stitch.position)
+            .sub(previous.position);
     } else if (previous) {
         localX = stitch.position.clone().sub(previous.position);
     } else if (next) {
