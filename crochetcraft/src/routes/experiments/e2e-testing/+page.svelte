@@ -38,7 +38,7 @@
         '20x30 cylinder': 'ch 30, sc 570',
         '30 ring': 'ch 30, sc 1',
         'increase test': 'ch 6, turn, sc 5, ch 1, turn, sc 3, inc, sc 2',
-        'decrease test': 'ch 7, turn, sc 2, dec 1, sc 2',
+        'decrease test': 'ch 11, turn, sc 10, ch 1, turn, sc 1, sc2tog, sc 6',
         circle: `\
 1. MR, 6 sc
 2. 6 inc

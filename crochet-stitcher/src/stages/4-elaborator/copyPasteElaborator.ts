@@ -79,6 +79,8 @@ function substituteStitch(stitch: PlacedStitch): StitchModel {
             return StitchModel.CHAIN;
         case StitchType.Single:
             return StitchModel.SINGLE_CROCHET;
+        case StitchType.Sc2tog:
+            return StitchModel.SC2TOG;
         case StitchType.SlipKnot:
             return StitchModel.SLIP_KNOT;
         case StitchType.MagicRing:
