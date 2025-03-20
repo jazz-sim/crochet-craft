@@ -91,6 +91,7 @@
                 : (pat: Pattern<LinkedStitch>) => gdPlace(pat, placerMaxIterations);
             const elaboratedMeshes = elaborate(placer(link(parse(State.pattern))));
             // Before adding the meshes to the scene, merge each curve to comprise a stitch:
+            /*
             const mergedMeshes = elaboratedMeshes.map((stitch) => {
                 let stitchMeshMaterial = stitch[0].material as MeshLambertMaterial;
                 stitchMeshMaterial.emissiveIntensity = 0;
@@ -101,8 +102,10 @@
                 let singleGeometry = mergeGeometries(stitchGeometryCollection);
                 return new Mesh(singleGeometry, stitchMeshMaterial);
             });
+            */
 
-            mergedMeshes.forEach((mesh) => mainGroup.add(mesh));
+            // mergedMeshes.forEach((mesh) => mainGroup.add(mesh));
+            elaboratedMeshes.forEach((a) => a.forEach((mesh) => mainGroup.add(mesh)));
             State.scene.add(mainGroup);
         }
     }
