@@ -26,6 +26,7 @@
 
     let placerAlgorithm: 'if' | 'gd' = 'gd';
     let placerMaxIterations = 50;
+    let smallSpheres = false;
 
     const sampleInputs: { [key: string]: string } = {
         'default chain': 'ch 10',
@@ -101,7 +102,7 @@
                     (p) => new Vector3(p.position.x, p.position.y, p.position.z),
                 ),
                 mainGroup,
-                0.5,
+                smallSpheres ? 0.3 : 0.5,
             );
 
             // Draw directions of stitches
@@ -168,6 +169,11 @@
     <label>
         <input class="rounded-lg" type="checkbox" bind:checked={doElaboration} />
         <i>Do elaboration?</i>
+    </label>
+
+    <label>
+        <input class="rounded-lg" type="checkbox" bind:checked={smallSpheres} />
+        <i>Small spheres (for checking orientation)?</i>
     </label>
 </Panel>
 <ThreeCanvas
