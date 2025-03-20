@@ -1,5 +1,5 @@
 import { Matrix4, Quaternion, Vector3 } from 'three';
-import { Pattern, PlacedStitch } from '../../types';
+import { Pattern, PlacedStitch, StitchType } from '../../types';
 
 const X_AXIS = new Vector3(1, 0, 0);
 const NEG_X_AXIS = new Vector3(-1, 0, 0);
@@ -18,8 +18,12 @@ export function setOrientations(pattern: Pattern<PlacedStitch>): Pattern<PlacedS
 
 function computeOrientation(pattern: Pattern<PlacedStitch>, i: number): Quaternion {
     const stitch = pattern.stitches[i];
-    const previous = pattern.stitches[i - 1];
-    const next = pattern.stitches[i + 1];
+    let previous: PlacedStitch | null = pattern.stitches[i - 1];
+    let next: PlacedStitch | null = pattern.stitches[i + 1];
+    // Ignore chains when computing X orientation, except when both previous and
+    // next are chains, then just keep the next one.
+    if (previous?.type === StitchType.Chain) previous = null;
+    else if (next?.type === StitchType.Chain) next = null;
 
     // Compute stitch's local X axis
     let localX: Vector3;
