@@ -17,11 +17,7 @@
     }
     const ADD_STITCH_BUTTONS: AddStitchButtonData[] = [
         { name: 'ch', hovertext: 'chain', disabled: false },
-        { name: 'slst', hovertext: 'slip stitch', disabled: false },
         { name: 'sc', hovertext: 'single crochet', disabled: false },
-        { name: 'dc', hovertext: 'double crochet', disabled: false },
-        { name: 'tr', hovertext: 'treble crochet', disabled: false },
-        { name: 'hdc', hovertext: 'half double crochet', disabled: false },
         { name: 'inc', hovertext: 'increase', disabled: false },
         { name: 'dec', hovertext: 'decrease', disabled: false },
     ];
