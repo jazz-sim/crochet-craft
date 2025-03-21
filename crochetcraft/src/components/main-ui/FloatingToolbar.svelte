@@ -72,7 +72,7 @@
         title={axesToggleTitle}
         onclick={toggleAxesHelperVisibility}
     >
-        <i class="fi fi-br-model-cube-arrows"></i>
+        <i class="override-white fi fi-br-model-cube-arrows"></i>
     </button>
     <button
         class={'btn btn-xl rounded-lg p-2 text-white '.concat(algoToggleClass)}
@@ -83,3 +83,9 @@
         <b class="pl-1 pr-1 text-base">IF</b>
     </button>
 </div>
+
+<style>
+    .override-white {
+        color: white;
+    }
+</style>
