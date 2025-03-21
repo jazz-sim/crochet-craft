@@ -1,14 +1,13 @@
 <script lang="ts">
     import Panel, { type PanelPosition } from '$components/option-panel/Panel.svelte';
     import State from '$lib/state.svelte';
-    import { type PopupSettings } from '@skeletonlabs/skeleton';
+    import { ListBox, ListBoxItem, popup, type PopupSettings } from '@skeletonlabs/skeleton';
     import { parse, link, place, elaborate, gdPlace } from 'crochet-stitcher';
     import type { LinkedStitch, ParsedInstruction, Pattern } from 'crochet-stitcher/types';
-    import { Group, MeshLambertMaterial, Mesh } from 'three';
+    import { BufferGeometry, Group, MeshLambertMaterial, Mesh } from 'three';
     import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 
     let { position }: { position: PanelPosition } = $props();
-    let currentPattern = '';
 
     // For the individual stitch buttons:
     interface AddStitchButtonData {
@@ -83,20 +82,20 @@
     let placerMaxIterations = 50;
     let mainGroup: Group = new Group();
 
-    $effect(() => {
-        runPipeline();
-    });
-
-    // For debouncing pattern input:
-    const debounce = (patternText: string, timeout = 300) => {
+    // Adapted debounce example: https://www.freecodecamp.org/news/javascript-debounce-example/
+    const debounce = (func: Function, timeout = 10) => {
         let timer: ReturnType<typeof setTimeout>;
         return (...args: any) => {
             clearTimeout(timer);
             timer = setTimeout(() => {
-                State.pattern = patternText;
+                func();
             }, timeout);
         };
     };
+
+    $effect(() => {
+        runPipeline();
+    });
 
     function runPipeline() {
         if (Object.values(examplePatterns).find((pat) => State.pattern === pat) == undefined) {
@@ -136,20 +135,19 @@
     }
 
     function appendToPattern(stitch: string) {
-        if (!/^$|[\n:,.]\s*$/.test(currentPattern)) {
-            currentPattern += ', ';
-        } else if (!/^$|\s$/.test(currentPattern)) {
-            currentPattern += ' ';
+        if (!/^$|[\n:,.]\s*$/.test(State.pattern)) {
+            State.pattern += ', ';
+        } else if (!/^$|\s$/.test(State.pattern)) {
+            State.pattern += ' ';
         }
-        currentPattern += stitch;
-        debounce(currentPattern);
-        runPipeline();
+        State.pattern += stitch;
+        debounce(runPipeline);
     }
 
     function exampleUpdatePattern() {
         if (selectedExampleName != 'Select an example...') {
-            currentPattern = examplePatterns[selectedExampleName];
-            debounce(currentPattern);
+            State.pattern = examplePatterns[selectedExampleName];
+            debounce(runPipeline);
         }
     }
 </script>
@@ -161,9 +159,9 @@
         class="textarea rounded-lg"
         rows="6"
         placeholder="Enter your crochet pattern here"
-        bind:value={currentPattern}
-        oninput={runPipeline}
-        onchange={runPipeline}
+        bind:value={State.pattern}
+        oninput={debounce(runPipeline)}
+        onchange={debounce(runPipeline)}
     ></textarea>
 
     <!-- Output feedback -->
