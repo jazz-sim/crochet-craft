@@ -95,6 +95,9 @@
     };
 
     $effect(() => {
+        // Explicitly include state variables that should cause pipeline to rerun
+        State.pattern;
+        State.placerAlgo;
         debounce(runPipeline, effectDelay);
         // JANK: make the first render instant, but debounce subsequent ones
         effectDelay = 300;
