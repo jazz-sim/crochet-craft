@@ -82,19 +82,22 @@
     let placerMaxIterations = 50;
     let mainGroup: Group = new Group();
 
+    let effectDelay = 0;
+    let timer: ReturnType<typeof setTimeout>;
+
     // Adapted debounce example: https://www.freecodecamp.org/news/javascript-debounce-example/
-    const debounce = (func: Function, timeout = 5) => {
-        let timer: ReturnType<typeof setTimeout>;
-        return (...args: any) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => {
-                func();
-            }, timeout);
-        };
+    const debounce = (func: Function, timeout = 300) => {
+        const id = Math.floor(Math.random() * 100);
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            func();
+        }, timeout);
     };
 
     $effect(() => {
-        runPipeline();
+        debounce(runPipeline, effectDelay);
+        // JANK: make the first render instant, but debounce subsequent ones
+        effectDelay = 300;
     });
 
     function runPipeline() {
@@ -160,8 +163,8 @@
         rows="6"
         placeholder="Enter your crochet pattern here"
         bind:value={State.pattern}
-        oninput={debounce(runPipeline)}
-        onchange={debounce(runPipeline)}
+        oninput={() => debounce(runPipeline)}
+        onchange={() => debounce(runPipeline)}
     ></textarea>
 
     <!-- Output feedback -->

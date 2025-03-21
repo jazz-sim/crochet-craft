@@ -1,8 +1,6 @@
-import { Vector3 } from 'three';
 import { PatternIR, StitchIR } from './ir';
 
 export function smoothConnections(pattern: PatternIR): PatternIR {
-    console.log('Smoother Start!');
     return {
         foundation: pattern.foundation,
         stitches: pattern.stitches.map((stitch, index, arr) => {
