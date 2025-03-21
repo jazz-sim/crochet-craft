@@ -98,6 +98,7 @@ const KEYWORD_LUT: Record<string, Keyword> = Object.fromEntries(
 const COLOR_LUT = new Set<string>([
     'white',
     'black',
+    'grey',
     'red',
     'orange',
     'yellow',
@@ -105,4 +106,6 @@ const COLOR_LUT = new Set<string>([
     'blue',
     'indigo',
     'violet',
+    'pink',
+    'lightblue',
 ]);

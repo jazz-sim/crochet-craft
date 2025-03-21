@@ -56,7 +56,7 @@
             <p>
                 CrochetCraft is a <a
                     class="anchor"
-                    href="https://uwaterloo.ca/capstone-design/project-abstracts/2025-capstone-design-projects"
+                    href="https://uwaterloo.ca/capstone-design/project-abstracts/2025-capstone-design-projects/2025-software-engineering-capstone-designs"
                     >Final Year Design Project (FYDP)</a
                 > from a team of University of Waterloo Software Engineering 2025 students.
             </p>
