@@ -83,7 +83,7 @@
     let mainGroup: Group = new Group();
 
     // Adapted debounce example: https://www.freecodecamp.org/news/javascript-debounce-example/
-    const debounce = (func: Function, timeout = 10) => {
+    const debounce = (func: Function, timeout = 5) => {
         let timer: ReturnType<typeof setTimeout>;
         return (...args: any) => {
             clearTimeout(timer);
