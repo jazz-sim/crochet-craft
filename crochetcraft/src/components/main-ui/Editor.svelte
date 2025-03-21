@@ -31,14 +31,34 @@
         closeQuery: '.listbox-item',
     };
     const examplePatterns: { [key: string]: string } = {
-        'default chain': 'ch 10',
-        '3x3 square': 'ch 4, turn, sc 3, ch1, turn, sc3',
-        '3x10 rectangle': 'ch 11, turn, sc 10, ch1, turn, sc10',
-        '5x10 cylinder': 'ch 10, sc 40',
-        '10x20 cylinder': 'ch 20, sc 180',
-        '30 ring': 'ch 30, sc 1',
-        'decrease test': 'ch 11, turn, sc 10, ch 1, turn, sc 1, sc2tog, sc 6',
-        bowl: `\
+        'default colour: 10 chain': 'ch 10',
+        'default colour: 3x3 square': 'ch 4, turn, sc 3, ch1, turn, sc3',
+        'white: 3x10 rectangle': 'white: ch 11, turn, sc 10, ch1, turn, sc10',
+        'yellow: 5x10 cylinder': 'yellow: ch 10, sc 40',
+        'yellow: 10x20 cylinder': 'yellow: ch 20, sc 180',
+        'default colour: 30 ring': 'ch 30, sc 1',
+        'pink: triangle': `1. pink: ch 10, turn
+2. sc 9, turn
+3. sc 8, turn
+4. sc 7, turn
+5. sc 6, turn
+6. sc 5, turn
+7. sc 4, turn
+8. sc 3, turn
+9. sc 2, turn
+10. sc 1`,
+        'light blue: circle': `\
+1. MR, lightblue: 6 sc
+2. 6 inc
+3. 6 (inc, 1 sc)
+4. 1 sc, 5 (inc, 2 sc), inc, sc
+5. 6 (inc, 3sc)
+6. 3 sc, 5 (inc, 4 sc), inc, sc
+7. 6 (inc, 5 sc)
+8. 4 sc, 5 (inc, 6 sc), inc, 2 sc
+9. 6 (inc, 7 sc)
+10. 5 sc, 5 (inc, 8 sc), inc, 3 sc`,
+        'default colour: bowl': `\
 1. MR, sc 6
 2. inc 6
 3. 6 (sc 1, inc 1)
@@ -46,7 +66,7 @@
 5. sc 7, 2 (inc 1, sc 7)
 6. sc 25
 7. sc 25`,
-        sphere: `\
+        'default colour: sphere': `\
 1. MR, sc 6
 2. inc 6
 3. 6 (sc, inc)
@@ -57,10 +77,21 @@
 8. 6 dec`,
     };
     const examplePatternNames = Object.keys(examplePatterns);
-    let selectedExampleName = $state('default chain');
+    let selectedExampleName = $state('default colour: 10 chain');
 
     let placerMaxIterations = 50;
     let mainGroup: Group = new Group();
+
+    // Adapted debounce example: https://www.freecodecamp.org/news/javascript-debounce-example/
+    const debounce = (func: Function, timeout = 5) => {
+        let timer: ReturnType<typeof setTimeout>;
+        return (...args: any) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                func();
+            }, timeout);
+        };
+    };
 
     $effect(() => {
         runPipeline();
@@ -110,12 +141,13 @@
             State.pattern += ' ';
         }
         State.pattern += stitch;
-        runPipeline();
+        debounce(runPipeline);
     }
 
     function exampleUpdatePattern() {
         if (selectedExampleName != 'Select an example...') {
             State.pattern = examplePatterns[selectedExampleName];
+            debounce(runPipeline);
         }
     }
 </script>
@@ -128,8 +160,8 @@
         rows="6"
         placeholder="Enter your crochet pattern here"
         bind:value={State.pattern}
-        oninput={runPipeline}
-        onchange={runPipeline}
+        oninput={debounce(runPipeline)}
+        onchange={debounce(runPipeline)}
     ></textarea>
 
     <!-- Output feedback -->

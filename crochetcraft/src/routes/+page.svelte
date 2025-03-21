@@ -25,10 +25,37 @@
     </div>
 </div>
 
-<style>
-    @media (orientation: portrait) {
+<!-- <div class="small-screen flex flex-col">
+        <div class="flex items-center justify-center pt-5">
+            <img src="/cc-logo-new-1-purple.png" width="65%" alt="CrochetCraft logo." />
+        </div>
+        <div class="flex items-center justify-center p-5">
+            <p>
+                CrochetCraft looks and works a lot better on desktop, or something with a wider
+                screen!
+            </p>
+        </div>
+    </div> -->
+
+<!-- <style>
+    @media (aspect-ratio <= 3/2) {
         .cover {
-            visibility: hidden;
+            content-visibility: hidden;
+            visibility: collapse;
+        }
+        .small-screen {
+            content-visibility: visible;
+            visibility: visible;
         }
     }
-</style>
+    @media (aspect-ratio > 3/2) {
+        .cover {
+            content-visibility: visible;
+            visibility: visible;
+        }
+        .small-screen {
+            content-visibility: hidden;
+            visibility: collapse;
+        }
+    }
+</style> -->

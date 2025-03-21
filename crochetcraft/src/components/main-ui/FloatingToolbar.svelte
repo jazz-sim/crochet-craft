@@ -75,7 +75,7 @@
         <i class="fi fi-br-model-cube-arrows"></i>
     </button>
     <button
-        class={'btn btn-xl rounded-lg p-2 '.concat(algoToggleClass)}
+        class={'btn btn-xl rounded-lg p-2 text-white '.concat(algoToggleClass)}
         aria-label="Toggle placer algorithm"
         title={algoToggleTitle}
         onclick={togglePlacerAlgorithm}
