@@ -12,7 +12,7 @@
  */
 
 import { Quaternion, Vector3 } from 'three';
-import { Foundation, LinkedStitch, Pattern, PlacedStitch, RowEnding } from '../../types';
+import { LinkedStitch, Pattern, PlacedStitch, RowEnding } from '../../types';
 
 /**
  * Infers lines from a linked pattern.
@@ -59,7 +59,6 @@ const IDENITY_QUATERNION = new Quaternion().identity();
 export function naivePlacer(pattern: Pattern<LinkedStitch>) {
     const out: PlacedStitch[] = [];
     const lines = pattern.rows !== undefined ? pattern.rows : convertPatternToLines(pattern);
-    console.log(lines);
     const endings = pattern.endings;
 
     // Give up
