@@ -6,18 +6,18 @@
 
 These are the limitations that apply to the pattern text:\index{pattern!limitations}
 \begin{itemize}
-\item The crochet pattern text input is not inclusive of all terminology recognized by American crochet terminology, or other natural language. The crochet pattern text input is limited to what is included in the table describing the grammar used by the \PTI.
+\item The crochet pattern text input is not inclusive of all terminology recognized by American crochet terminology, or other natural language. The crochet pattern text input is limited to what is included in the table describing the grammar used by the @PTI.
 \item Supported crochet pattern text is limited to the list of acceptable tokens only. Invisible characters, combining characters, or other Unicode characters that interfere with normal text display shall not be supported.
 \end{itemize}
 
 Limitations on the crochet pattern text input apply to uploaded pattern texts too.
 
-For performance reasons, there are limitations on the number of stitches that \CC{} can render. \CC{} supports patterns with up to \num{20000} stitches before user interactions have unreasonable delays of above \qty{300}{ms}. 
+For performance reasons, there are limitations on the number of stitches that @CC can render. @CC supports patterns with up to \num{20000} stitches before user interactions have unreasonable delays of above \qty{300}{ms}. 
 
-The \CC{} application makes a few assumptions about real-world crochet \term*{pattern}[s], which limits what crochet patterns can be rendered satisfactorily. Here are the following assumptions:
+The @CC application makes a few assumptions about real-world crochet \term{pattern}[s], which limits what crochet patterns can be rendered satisfactorily. Here are the following assumptions:
 
 \begin{itemize}
-\item Crochet patterns in the real world only contain one \term*{foundation} stitch.
+\item Crochet patterns in the real world only contain one \term{foundation} stitch.
 \item Crochet patterns in the real world do not contain yarn threads intersecting through each other.
 \item Crochet patterns in the real world are composed of a common set of well-defined stitches.
 \item Crochet patterns in the real world are constructed one stitch at a time.
@@ -25,13 +25,13 @@ The \CC{} application makes a few assumptions about real-world crochet \term*{pa
 \item In the real world, crochet patterns are continuous.
 \end{itemize}
 
-The assumptions and resulting limitations on stitch attributes within \CC{} are as follows:
+The assumptions and resulting limitations on stitch attributes within @CC are as follows:
 
 \begin{itemize}
-\item Yarn \term*{colour} is limited by the underlying browser. It is likely that this limitation will be 24-bit RGB, and there is no support for transparency.
-\item Crochet \term*{hook size} in the real world is assumed to fit into the range of values from \qty{5}{mm} to \qty{25}{mm} supported by \CC. 
-\item Yarn \term*{thickness} in the real world is assumed to fit into the range of values from \qty{5}{mm} to \qty{25}{mm} supported by \CC.
-\item Yarn looseness, or \term*{laxity}, in the real world is assumed to fit neatly into the range of values from 0--1.5 supported by \CC.
+\item Yarn \term{colour} is limited by the underlying browser. It is likely that this limitation will be 24-bit RGB, and there is no support for transparency.
+\item Crochet \term{hook size} in the real world is assumed to fit into the range of values from \qty{5}{mm} to \qty{25}{mm} supported by @CC. 
+\item Yarn \term{thickness} in the real world is assumed to fit into the range of values from \qty{5}{mm} to \qty{25}{mm} supported by @CC.
+\item Yarn looseness, or \term{laxity}, in the real world is assumed to fit neatly into the range of values from 0--1.5 supported by @CC.
 \end{itemize}
 
 \end{document}

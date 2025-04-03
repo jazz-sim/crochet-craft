@@ -2,7 +2,7 @@
 \RequirePackage[l2tabu, orthodox]{nag} % https://tex.stackexchange.com/a/589
 \documentclass[letterpaper,12pt]{report}
 
-\usepackage[20241211]{jtai}
+\usepackage[20250403]{jtai}
 \jtaisetup{
     title = CrochetCraft User Manual,
     author = {
@@ -14,7 +14,7 @@
         Osman Wong
     },
     font = libertine,
-    modules = {term},
+    modules = {atcmd, term, symbols, mathops},
     packages = {fancyhdr, imakeidx, minted, parskip, siunitx, subfiles, tcolorbox},
 }
 
@@ -29,36 +29,26 @@
 \newcommand{\io}[1]{\textsf{#1}}
 \newcommand{\ui}[1]{\textsf{\emph{#1}}}
 
-\NewDocumentCommand{\NewTerm}{mmooo}{
-    \NewDocumentCommand{#1}{s}{%
-        \IfBooleanT{##1}{%
-            \IfValueT{#3}{\index{#3}}%
-            \IfValueT{#4}{\index{#4}}%
-            \IfValueT{#5}{\index{#5}}%
-        }%
-        #2%
-    }
-}
-
-\NewTerm{\IR}{internal representation}[internal representation]
-\NewTerm{\CC}{\io{CrochetCraft}}[CrochetCraft]
-\NewTerm{\RM}{\ui{Rendered Model}}[rendered model]
-\NewTerm{\CRW}{\ui{Crochet Rendering Window}}[crochet rendering window]
-\NewTerm{\PatSidebar}{\ui{Pattern Sidebar}}[sidebar!pattern][pattern!sidebar]
-\NewTerm{\PTI}{\ui{Pattern Text Input}}[pattern!text input]
-\NewTerm{\ASB}{\ui{Add Stitch Button}}[button!add stitch]
-\NewTerm{\ASBs}{\ui{Add Stitch Buttons}}[button!add stitch]
-\NewTerm{\NCSB}{\ui{Next Colour Stitch Button}}[button!next colour stitch]
-\NewTerm{\PropSidebar}{\ui{Properties Sidebar}}[sidebar!properties]
-\NewTerm{\YCP}{\ui{Yarn Colour Picker}}[yarn colour picker]
-\NewTerm{\YTS}{\ui{Yarn Thickness Selector}}[selector!yarn thickness]
-\NewTerm{\SLS}{\ui{Stitch Laxity Selector}}[selector!stitch laxity]
-\NewTerm{\HSS}{\ui{Hook Size Selector}}[selector!hook size]
-\NewTerm{\MenuBar}{\ui{Menu Bar}}[menu bar]
-\NewTerm{\UB}{\ui{Upload Button}}[button!upload]
-\NewTerm{\DB}{\ui{Download Button}}[button!download]
-\NewTerm{\EB}{\ui{Export Button}}[button!export]
-\NewTerm{\ScLayout}{\ui{Screen Layout}}[screen layout]
+\atcmdEnable
+\newterm{@IR}{internal representation}
+\newterm{@CC}[CrochetCraft]{\io{CrochetCraft}}
+\newterm{@RM}[rendered model]{\ui{Rendered Model}}
+\newterm{@CRW}[crochet rendering window]{\ui{Crochet Rendering Window}}
+\newterm{@PatSidebar}[sidebar!pattern][pattern!sidebar]{\ui{Pattern Sidebar}}
+\newterm{@PTI}[pattern!text input]{\ui{Pattern Text Input}}
+\newterm{@ASB}[button!add stitch]{\ui{Add Stitch Button}}
+\newterm{@ASBs}[button!add stitch]{\ui{Add Stitch Buttons}}
+\newterm{@NCSB}[button!next colour stitch]{\ui{Next Colour Stitch Button}}
+\newterm{@PropSidebar}[sidebar!properties]{\ui{Properties Sidebar}}
+\newterm{@YCP}[yarn colour picker]{\ui{Yarn Colour Picker}}
+\newterm{@YTS}[selector!yarn thickness]{\ui{Yarn Thickness Selector}}
+\newterm{@SLS}[selector!stitch laxity]{\ui{Stitch Laxity Selector}}
+\newterm{@HSS}[selector!hook size]{\ui{Hook Size Selector}}
+\newterm{@MenuBar}[menu bar]{\ui{Menu Bar}}
+\newterm{@UB}[button!upload]{\ui{Upload Button}}
+\newterm{@DB}[button!download]{\ui{Download Button}}
+\newterm{@EB}[button!export]{\ui{Export Button}}
+\newterm{@ScLayout}[screen layout]{\ui{Screen Layout}}
 
 \newcommand{\Solution}[1]{\begin{itemize}\item[$\to$]#1\end{itemize}}
 
