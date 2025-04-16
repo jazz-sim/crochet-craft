@@ -34,11 +34,33 @@ The following text conventions are used in this manual:
 Listing~\ref{lst:grammar} details the basic \term{grammar} used when parsing the pattern text.
 Furthermore, table~\ref{tbl:keywords} contains the list of \term[grammar!keywords]{keywords}.
 In each row, the keywords listed next to each other can be used inter\-changeably.
-For example, \io{ss} has the same meaning as \io{slst}, so whenever the grammar includes ``\io{slst},'' \io{ss} can also be used.
+For example, \io{sc2tog} has the same meaning as \io{dec}, so whenever the grammar includes ``\io{dec}'', \io{sc2tog} can also be used.
 
 \begin{listing}[htbp]
-    \begin{tcolorbox}[breakable, parbox = false, colback = black!5, colframe = black!30]
-        {\input{grammar.code.tex}}
+    \begin{tcolorbox}[parbox = false, colback = black!5, colframe = black!30]
+    \begin{bnf}
+    \setlength{\parskip}{8pt} % dunno why this is needed
+
+    'pattern' = ('line'? <newline>)* 'line'? \\
+    'line' = 'row_number'? 'foundation'? 'instructions'
+
+    'row_number' = <integer> ("--" <integer>)? "." \\
+    'foundation' = "mr" ","
+
+    'instructions' = ('instruction' "," | <color> ":")* 'instruction' \\
+    'instruction' = "turn" | 'stitches' | 'repeat'
+
+    'stitches' = 'stitch' | 'stitch' 'count' | 'count' 'stitch' \\
+    'stitch' = "dec" | 'stitch_type' "st"? "inc"? \\
+    'stitch_type' = "ch" | "sc"
+
+    'repeat' = "(" 'instructions' ")" 'count' \\
+    \phantom{}\hspace{4em}| 'count' "(" 'instructions' ")" \\
+    \phantom{}\hspace{4em}| "\*" 'instructions' "," "rep" 'count' "from"? "\*" \\
+    \phantom{}\hspace{4em}| "\*" 'instructions' "," "rep" "from"? "\*" 'count'
+
+    'count' = "x"? (<integer> | "twice" | "thrice") "x"? "more"? "times"?
+    \end{bnf}
     \end{tcolorbox}
     \caption{The pattern grammar understood by @CC}
     \label{lst:grammar}
@@ -52,7 +74,7 @@ For example, \io{ss} has the same meaning as \io{slst}, so whenever the grammar 
         \io{stitch}, \io{st} & stitch \\
         \io{mr}, \io{mc} & magic ring \\
         \io{chain}, \io{ch} & chain \\
-        \io{slip}, \io{sl}, \io{slst}, \io{ss} & slip stitch \\
+        % \io{slip}, \io{sl}, \io{slst}, \io{ss} & slip stitch \\
         \io{single}, \io{sc} & single crochet \\
         % \io{double}, \io{dc} & double crochet \\
         % \io{hdc} & half double crochet \\

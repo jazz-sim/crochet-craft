@@ -14,7 +14,7 @@
         Osman Wong
     },
     font = libertine,
-    modules = {atcmd, term, symbols, mathops},
+    modules = {atcmd, term, symbols, mathops, bnf},
     packages = {fancyhdr, imakeidx, minted, parskip, siunitx, subfiles, tcolorbox},
 }
 
@@ -25,6 +25,11 @@
 \fancyhead[L]{CrochetCraft User Manual}
 \fancyhead[R]{\rightmark}
 \fancyfoot[C]{\thepage}
+
+\bnfset{
+    terminal = {``\io{#1}''},
+    define = {$:=$\,},
+}
 
 \newcommand{\io}[1]{\textsf{#1}}
 \newcommand{\ui}[1]{\textsf{#1}}
