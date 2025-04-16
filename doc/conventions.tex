@@ -10,7 +10,9 @@ You, the user of @CC, are assumed to understand American crochet terminology, an
 
 \section{Computer System Assumptions}\label{sec:csassumptions}
 
-@CC runs in a browser, so it is assumed that you are using a browser that is up-to-date, and has not been tampered with. It is assumed that you are using a device with a keyboard and mouse. If you wish to use any features of the computer filesystem, it is assumed that there is sufficient space for these features.
+@CC runs in a web browser, so it is assumed that you are using a browser that is up-to-date, and has not been tampered with.
+It is assumed that you are using a device with a keyboard and mouse.
+If you wish to use any features of the computer filesystem, it is assumed that your device has sufficient free space for these features.
 
 \section{Notational Conventions}
 
@@ -18,25 +20,27 @@ The following text conventions are used in this manual:
 
 \begin{itemize}
 \item Libertine is used for normal text.
-\item \emph{Libertine italicized} is used for emphasis and new terms in normal text.
-\item \textbf{Libertine bolded} is used for emphasis in figures and tables.
+\item \emph{Libertine italicized} is used for new terms in normal text.
+\item \textbf{Libertine bolded} is used for emphasis.
 % \item Libertine in gray is used for section titles. For example, the title of the ``Conventions'' section is in Heading 3.
 \item \io{Noto Sans} is used for program names and user interface input/output.
 \item \ui{Noto Sans italicized} is used for widget names.
-\item \Verb`Bitstream Vera Sans Mono` is used for @IR contents.
-\item \emph{\Verb`Bitstream Vera Sans Mono italicized`} is used for variables of @IR syntax.
+\item \Verb`Bitstream Vera Sans Mono` is used for @ir contents.
+\item \emph{\Verb`Bitstream Vera Sans Mono italicized`} is used for variables of @ir syntax.
 \end{itemize}
 
 \section{Terms}\label{sec:terms}
 
 Listing~\ref{lst:grammar} details the basic \term{grammar} used when parsing the pattern text.
-Furthermore, table~\ref{tbl:keywords} contains the list of \term[grammar!keywords]{keywords}. In each row, the keywords listed next to each other can be used inter\-changeably. For example, \io{ss} has the same meaning as \io{slst}, so whenever the grammar includes ``\io{slst},'' \io{ss} can also be used.
+Furthermore, table~\ref{tbl:keywords} contains the list of \term[grammar!keywords]{keywords}.
+In each row, the keywords listed next to each other can be used inter\-changeably.
+For example, \io{ss} has the same meaning as \io{slst}, so whenever the grammar includes ``\io{slst},'' \io{ss} can also be used.
 
 \begin{listing}[htbp]
     \begin{tcolorbox}[breakable, parbox = false, colback = black!5, colframe = black!30]
         {\input{grammar.code.tex}}
     \end{tcolorbox}
-    \caption{The pattern grammar understood by @CC.}
+    \caption{The pattern grammar understood by @CC}
     \label{lst:grammar}
 \end{listing}
 
@@ -50,12 +54,12 @@ Furthermore, table~\ref{tbl:keywords} contains the list of \term[grammar!keyword
         \io{chain}, \io{ch} & chain \\
         \io{slip}, \io{sl}, \io{slst}, \io{ss} & slip stitch \\
         \io{single}, \io{sc} & single crochet \\
-        \io{double}, \io{dc} & double crochet \\
-        \io{hdc} & half double crochet \\
-        \io{treble}, \io{triple}, \io{tr}, \io{tc} & treble crochet \\
+        % \io{double}, \io{dc} & double crochet \\
+        % \io{hdc} & half double crochet \\
+        % \io{treble}, \io{triple}, \io{tr}, \io{tc} & treble crochet \\
         \io{increase}, \io{inc} & increase \\
-        \io{invisible}, \io{inv} & invisible \\
-        \io{decrease}, \io{dec} & decrease \\
+        % \io{invisible}, \io{inv} & invisible \\
+        \io{decrease}, \io{dec}, \io{sc2tog} & decrease \\
         \io{turn} & turn \\
         % \io{into}, \io{in} & into \\
         % \io{next} & next \\
@@ -72,67 +76,63 @@ Furthermore, table~\ref{tbl:keywords} contains the list of \term[grammar!keyword
 
 The following terms are used throughout the manual:
 
-\begin{itemize}
-\item @CC* - the name of the web application / program.
-\item \term{user} - the person who uses @CC, addressed by ``you''. 
-\item \term{crochet} - this refers to the ``process of creating textiles by using a crochet hook to interlock loops of yarn, thread, or strands of other materials''.
-\item \term{yarn} - this refers to ``a long continuous length of interlocked fibres, used in sewing, crocheting, knitting, weaving, embroidery, ropemaking, and the production of textiles''.
-\item \term[pattern!text]{pattern text} - this refers to a set of textual instructions that detail how to create a crochet project. 
-\item \term{stitch} - a simple, indivisible knot built on top of previous stitches, used to build patterns. See Figure 2 for a list of acceptable stitches.
-\item \term{foundation} - this is the initial loop used to start a pattern. See the table above for a list of acceptable foundations.
-\item @RM* - this refers to the 3D object created and shown based on the inputted pattern text.
-\item @CRW* - this refers to the area of the screen used for displaying the @RM.
-\item \term{hook} - ``A crochet hook, or crochet needle, is an implement used to make loops in thread or yarn and to interlock them into crochet stitches''.
-\item \term{attribute} - a characteristic of a stitch, where the characteristics are:
-    \begin{itemize}\compact
-        \item \term{colour} - the pigmentation of the stitch
-        \item \term{thickness} - the diameter of the yarn that constitutes the stitch
-        \item \term{laxity} - the looseness of the stitch. In other words, the spacing between stitches
-        \item \term{hook size} - used to determine the scale of the render model
-    \end{itemize}
-\item @IR* - refers to @CC code responsible for drawing the @RM in the @CRW.
-\item \term{session} - an invocation of @CC.
-\item @PatSidebar* - this refers to the user interface widget on the left side of the @CRW, which contains the @PTI, the @ASBs, and the @NCSB. The @PatSidebar is used for causing input to the IR. The content changes in the @PatSidebar affect the @RM and the @CRW.
-\item @PTI* - this refers to the text box which holds your input pattern text.
-\item @ASBs* - this refers to the set of buttons below of the @PTI where each button corresponds to a different type of stitch that is supported by the grammar.
-\item @NCSB* - this refers to the button below the @ASBs which opens up a colour picker to set the colour for the next added stitch.
-\item @PropSidebar* - this refers to the user interface widget on the right side of the @CRW, which contains the @YCP, @YTS, @SLS, and the @HSS. This sidebar causes input to the @IR. The content changes in the @PropSidebar affect the @RM and the @CRW. The content changes in the @PropSidebar will update the @PTI in the @PatSidebar.
-\item @YCP* - this refers to the button on the @PropSidebar which opens up a colour picker to set the colour for the selected stitch on the @RM.
-\item @YTS* - this refers to the input box on the @PropSidebar that changes the thickness of the yarn for the selected stitch on the @RM.
-\item @SLS* - this refers to the slider on the @PropSidebar that changes the laxity of the selected stitch on the @RM.
-\item @HSS* - this refers to the input box on the @PropSidebar that changes the hook size of the selected stitch on the @RM.
-\item @MenuBar* - this refers to the user interface component at the top of the @CRW, which contains the @UB, @DB, and @EB.
-\item @UB* - this refers to the button in the @MenuBar that when pressed allows you to select a text file from your local device such that the contents of that text file populate the @PTI.
-\item @DB* - this refers to the button in the @MenuBar that when pressed allows you to download your pattern text with some metadata as a text file to your local device.
-\item @EB* - this refers to the button in the @MenuBar that when pressed allows you to download your @RM as a .OBJ file to your local device.
-\item \Term{OBJ} - ``a geometry definition file format first developed by Wavefront Technologies for its Advanced Visualizer animation package''.
-\item @ScLayout* - made up of a @MenuBar, @PatSidebar, @PropSidebar, @CRW, and potentially a @RM, if there is a valid pattern text to render.
-\item \emph{left mouse click} (\term{LMC}) - a left mouse click. 
-\item \emph{right mouse click} (\term{RMC}) - a right mouse click.
-\item \emph{what you see is what you get} (WYSIWYG) - this refers to ``software that allows content to be edited in a form that resembles its appearance when printed or displayed as a finished product''.
-\item \term{device} - this refers to whatever @CC is currently running on, inclusive of hardware and operating system.
-\item \term{amigurumi} - this refers to the ``Japanese art of knitting or crocheting small, stuffed yarn creatures''.
-\end{itemize}
+\begin{description}
+\item[@CC**] the name of the web application
+\item[\term*{user}] the person who uses @CC, addressed by ``you''
+\item[\term*{device}] whatever electronic device @CC is currently running on, inclusive of hardware and operating system
+
+% Basic crochet things
+\item[\term*{crochet}] the art of creating textiles by using a crochet hook and yarn
+\item[\term*{yarn}] the material used in the art of crochet
+\item[\term*{amigurumi}] the Japanese art of knitting or crocheting stuffed toys out of yarn
+\item[\term*{pattern}] a set of textual instructions that detail how to create a crochet project
+\item[\term*{stitch}] a simple, indivisible knot built on top of previous stitches, used to build patterns
+\item[\term*{foundation}] the initial loop used to start a pattern
+
+% CC things
+\item[@layout**] the buttons, text boxes, widgets, and other elements visible on the screen in the @CC app
+\item[@renarea**] the area of the screen used for displaying the @rm
+\item[@rm**] the 3D object created and shown based on the inputted pattern text
+\item[\term*{session}] an invocation of @CC
+\item[@patbar**] the user interface widget to the left of the @renarea
+\item[@patbox**] the text box within the @patbar which holds your input pattern text
+\item[@asbs**] the set of buttons below the @patbox that allows the user to input stitches one at a time
+\item[@nextcol**] the colour picker below the @asbs which determines the colour for the next added stitch
+\item[@postpanel**] the user interface widget on the right side of the @renarea
+\item[@stcol**] the button in the @postpanel which can change the colour for the selected stitch in the @rm
+\item[@menu**] the user interface component above the @renarea, which contains the @ubtn, @dbtn, and @ebtn
+\item[@ubtn**] the button in the @menu that, when pressed, allows you to select a text file from your local device such that the contents of that text file populate the @patbox
+\item[@dbtn**] the button in the @menu that, when pressed, allows you to download your pattern text as a text file to your local device
+\item[@ebtn**] the button in the @menu that, when pressed, allows you to download your @rm as an @OBJ file to your local device
+\end{description}
 
 \section{Other Abbreviations}
 
-\begin{itemize}
-\item \Term{GUI} - Graphical User Interface
-\end{itemize}
+\begin{description}
+\item[@ir**] any kind of data, not visible to the user, used internally by @CC to represent crochet patterns
+\item[\Term*{GUI}] Graphical User Interface
+\item[@OBJ**] a geometry definition file format, to which a @rm can be exported
+\item[\emph{what you see is what you get} (\Term*{WYSIWYG})] software that displays content in a realistic form while it is being edited
+\end{description}
 
 \section{Basic User Interface Goals}
 
-@CC aims to be a friendly \term{GUI} for crochet amateurs and enthusiasts. Not much crochet modelling software exists, and most of this software does not provide fast and accessible rendering. The main appeal of @CC is from the benefits of \term{WYSIWYG} and the ability to view the @RM from any angle. Some other basic goals for the GUI of @CC are:
+@CC aims to be a friendly \term{GUI} for crochet amateurs and enthusiasts.
+Not much crochet modelling software exists, and most of this software does not provide fast and accessible rendering.
+The main appeal of @CC is from the benefits of its \term{WYSIWYG} approach and its capability of fast pattern iteration.
+Its basic goals are:
 
 \begin{itemize}
-\item Specifying the attributes of a stitch can be done from within the @PTI, before rendering, as well as after rendering.
-\item There is no need to confirm the end of a @PTI.
-\item It is easy for you to minimize, open, and move sidebars such that the @RM on the @CRW is easily visible.
-\item It is simple for you to import your crochet pattern text into the @PTI, and it is simple for you to export a 3D object of the @RM in OBJ format.
+\item It is simple for you to import your crochet pattern text into the @patbox, and it is simple for you to export a 3D object of the @rm in @OBJ format.
+\item It is easy for you to view your @rm at many different angles.
+\item It is easy for a pattern designer to iterate and make modifications to a pattern, to improve it.
 \end{itemize}
 
 \section{Organization of this Manual}
 
-The remainder of this manual is organized primarily on use cases. The \nameref{chp:use} chapter describes the basic use cases, including the possible GUI interactions in depth. After the \nameref{chp:use} chapter, the \nameref{chp:troubleshooting} chapter describes what you should do if you encounter common errors as well as how to use @CC effectively. Lastly, the \nameref{chp:limitations} chapter describes the restrictions on the current version of @CC.
+The remainder of this manual is organized primarily on use cases.
+The \nameref{chp:use} chapter describes the basic use cases, including the possible GUI interactions in depth.
+After the \nameref{chp:use} chapter, the \nameref{chp:troubleshooting} chapter describes what you should do if you encounter common errors as well as how to use @CC effectively.
+Lastly, the \nameref{chp:limitations} chapter describes the restrictions on the current version of @CC.
 
 \end{document}

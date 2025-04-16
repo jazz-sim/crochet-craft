@@ -2,7 +2,7 @@
 \RequirePackage[l2tabu, orthodox]{nag} % https://tex.stackexchange.com/a/589
 \documentclass[letterpaper,12pt]{report}
 
-\usepackage[20250403]{jtai}
+\usepackage[20250416]{jtai}
 \jtaisetup{
     title = CrochetCraft User Manual,
     author = {
@@ -27,28 +27,45 @@
 \fancyfoot[C]{\thepage}
 
 \newcommand{\io}[1]{\textsf{#1}}
-\newcommand{\ui}[1]{\textsf{\emph{#1}}}
+\newcommand{\ui}[1]{\textsf{#1}}
 
 \atcmdEnable
-\newterm{@IR}{internal representation}
-\newterm{@CC}[CrochetCraft]{\io{CrochetCraft}}
-\newterm{@RM}[rendered model]{\ui{Rendered Model}}
-\newterm{@CRW}[crochet rendering window]{\ui{Crochet Rendering Window}}
-\newterm{@PatSidebar}[sidebar!pattern][pattern!sidebar]{\ui{Pattern Sidebar}}
-\newterm{@PTI}[pattern!text input]{\ui{Pattern Text Input}}
-\newterm{@ASB}[button!add stitch]{\ui{Add Stitch Button}}
-\newterm{@ASBs}[button!add stitch]{\ui{Add Stitch Buttons}}
-\newterm{@NCSB}[button!next colour stitch]{\ui{Next Colour Stitch Button}}
-\newterm{@PropSidebar}[sidebar!properties]{\ui{Properties Sidebar}}
-\newterm{@YCP}[yarn colour picker]{\ui{Yarn Colour Picker}}
-\newterm{@YTS}[selector!yarn thickness]{\ui{Yarn Thickness Selector}}
-\newterm{@SLS}[selector!stitch laxity]{\ui{Stitch Laxity Selector}}
-\newterm{@HSS}[selector!hook size]{\ui{Hook Size Selector}}
-\newterm{@MenuBar}[menu bar]{\ui{Menu Bar}}
-\newterm{@UB}[button!upload]{\ui{Upload Button}}
-\newterm{@DB}[button!download]{\ui{Download Button}}
-\newterm{@EB}[button!export]{\ui{Export Button}}
-\newterm{@ScLayout}[screen layout]{\ui{Screen Layout}}
+
+% CrochetCraft terms
+\newterm{@CC}[CrochetCraft]{CrochetCraft}
+\newterm{@ir}{internal representation}
+\newterm{@OBJ}[OBJ file]{\ui{OBJ}}
+
+% Basic things for people who know nothing about computers
+\newterm{@lmc}[click!left]{left-click}
+\newterm{@Lmc}[click!left]{Left-click}
+\newterm{@rmc}[click!right]{right-click}
+\newterm{@Rmc}[click!right]{Right-click}
+
+% UI elements
+\newterm{@layout}[layout!screen]{screen layout}
+
+\newterm{@renarea}[rendering area]{rendering area}
+\newterm{@rm}[rendered model]{rendered model}
+\newterm{@selallbtn}[button!select all]{\ui{Select All Stitches} button}
+\newterm{@homebtn}[button!recentre model]{\ui{Recentre Model} button}
+\newterm{@axesbtn}[button!axes helper]{\ui{Toggle Axes Helper} button}
+\newterm{@placerbtn}[button!placer algorithm]{\ui{Toggle Placer Algorithm} button}
+
+\newterm{@patbar}[sidebar!pattern][pattern!sidebar]{\ui{Pattern} sidebar}
+\newterm{@patbox}[pattern!text box]{\ui{Pattern} text box}
+\newterm{@asb}[button!add stitch]{add-stitch button}
+\newterm{@asbs}[button!add stitch]{add-stitch buttons}
+\newterm{@exsel}[example selector]{example selector}
+\newterm{@nextcol}[colour picker!next stitch]{\ui{Next Stitch Colour} picker}
+
+\newterm{@postpanel}[panel!post-processing]{\ui{Post-Processing} panel}
+\newterm{@stcol}[colour picker!stitch (post-processing)]{\ui{Stitch Colour} picker}
+
+\newterm{@menu}[menu bar]{menu bar}
+\newterm{@ubtn}[button!upload]{\ui{Upload Pattern Text} button}
+\newterm{@dbtn}[button!download]{\ui{Download Pattern Text} button}
+\newterm{@ebtn}[button!export]{\ui{Export 3D Object} button}
 
 \newcommand{\Solution}[1]{\begin{itemize}\item[$\to$]#1\end{itemize}}
 
