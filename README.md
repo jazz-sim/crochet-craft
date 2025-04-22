@@ -9,12 +9,16 @@
 🧶3D modelling of crochet designs!
 
 > [!NOTE]
-> You can view the [literature review](https://drive.google.com/file/d/1i-xJP93g1HtWESavKybHgczw1jFTRnaT/view?usp=sharing) from SE 390's Mini Project 3.
+> You can view the [literature review here](https://drive.google.com/file/d/1i-xJP93g1HtWESavKybHgczw1jFTRnaT/view?usp=sharing) from SE 390's Mini Project 3.
+
+> [!NOTE]
+> You can view the [final report video here](https://drive.google.com/file/d/1MD9toIfjKfOauaXvyQwO2jPIVvGqYSwL/view) from SE 491. Due to conflicting availabilities at the end of the 4B term, a majority of the video is voiced by text-to-speech.
 
 ## Repository Structure
 
 - [crochet-stitcher](crochet-stitcher): contains the library that processes and renders the crochet pattern.
 - [crochetcraft](crochetcraft): contains the web frontend for crochet-stitcher.
+- SE 491 Report.pdf: in the root of the repository; the final report for the FYDP.
 
 ## Deployment infrastructure
 
