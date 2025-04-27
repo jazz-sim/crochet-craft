@@ -35,6 +35,8 @@ export function copyPasteStitches(placedStitches: Pattern<PlacedStitch>): Patter
         parents: null,
         children: [],
         links: {},
+        parents: [],
+        children: [],
     };
     const foundationModel = substituteStitch(placedFoundationStitch);
     const foundationStitch: StitchIR = {
